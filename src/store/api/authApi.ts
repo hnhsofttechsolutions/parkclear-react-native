@@ -16,8 +16,15 @@ export const authApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    otp: builder.mutation<any, any>({
+      query: ({ formData }: any) => ({
+        url: 'authentication/v1/user/register_verify_otp/',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useLoginMutation, useSignupMutation } = authApi;
+export const { useLoginMutation, useSignupMutation, useOtpMutation } = authApi;

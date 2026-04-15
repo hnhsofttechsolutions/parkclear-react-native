@@ -48,8 +48,7 @@ const appBarStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    minHeight: 56,
-    paddingHorizontal: 4,
+    minHeight: 60,
   },
   leadWrap: { width: 70, alignItems: 'flex-start' },
   leadCircle: {

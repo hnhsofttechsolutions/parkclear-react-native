@@ -1,21 +1,20 @@
 import { ArrowLeft } from 'lucide-react-native';
 import React from 'react';
 import {
-  Image,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import Markdown from 'react-native-markdown-display';
+import NoParkingIcon from '../assets/images/no_parking.svg';
+import YesParkingIcon from '../assets/images/yes_parking.svg';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import AppText from '../components/ui/app-text';
+import { GradientButton } from '../components/ui/gradient-button';
 import { PATHS } from '../navigation/paths';
 import { ResultScreenProps } from '../navigation/types';
 import { Colors, Gradient } from '../utils/colors';
-import { GradientButton } from '../components/ui/gradient-button';
-import YesParkingIcon from '../assets/images/yes_parking.svg';
-import NoParkingIcon from '../assets/images/no_parking.svg';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const { variant, summarize_message } = route.params;
@@ -24,7 +23,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const handleReset = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: PATHS.Home }],
+      routes: [{ name: PATHS.Dashboard }],
     });
   };
 

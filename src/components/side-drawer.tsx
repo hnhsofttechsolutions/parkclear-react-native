@@ -1,34 +1,37 @@
+import { HomeIcon } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  TouchableOpacity,
   Animated,
   Dimensions,
-  StyleSheet,
-  Modal,
   Easing,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import SafeAreaWrapper from './safe-area-wrapper';
 import LinearGradient from 'react-native-linear-gradient';
-import { HomeIcon } from 'lucide-react-native';
-import AppText from './ui/app-text';
-import { Colors } from '../utils/colors';
+import { useDispatch } from 'react-redux';
+import BackArrowIcon from '../assets/images/back_arrow.svg';
+import CancelIcon from '../assets/images/cancel_circle.svg';
+import GalleryIcon from '../assets/images/gallery.svg';
+import LogoutIcon from '../assets/images/logout.svg';
+import MyProfileIcon from '../assets/images/my_profile.svg';
+import RemoveAdsIcon from '../assets/images/remove_ads.svg';
+import SettingsIcon from '../assets/images/settings.svg';
+import StartTrialIcon from '../assets/images/start_trial.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
-import BackArrowIcon from '../assets/images/back_arrow.svg';
-import GalleryIcon from '../assets/images/gallery.svg';
-import RemoveAdsIcon from '../assets/images/remove_ads.svg';
-import MyProfileIcon from '../assets/images/my_profile.svg';
-import StartTrialIcon from '../assets/images/start_trial.svg';
-import SettingsIcon from '../assets/images/settings.svg';
-import CancelIcon from '../assets/images/cancel_circle.svg';
-import LogoutIcon from '../assets/images/logout.svg';
+import { logout } from '../store/slices/authSlice';
+import { Colors } from '../utils/colors';
+import SafeAreaWrapper from './safe-area-wrapper';
+import AppText from './ui/app-text';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
 const DRAWER_MS = 320;
 
 export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
+  const dispatch = useDispatch();
   const anim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(drawer);
 
@@ -72,6 +75,14 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const navigateTo = (path: string) => {
     closeDrawer();
     navigation.navigate(path);
+  };
+
+  const handlerLogout = () => {
+    dispatch(logout());
+    navigation.reset({
+      index: 0,
+      routes: [{ name: PATHS.LoginRegister }],
+    });
   };
 
   return (
@@ -175,7 +186,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 <DrawerRow
                   icon={<LogoutIcon width={25} height={25} />}
                   label="Logout"
-                  onPress={closeDrawer}
+                  onPress={handlerLogout}
                 />
               </View>
             </SafeAreaWrapper>

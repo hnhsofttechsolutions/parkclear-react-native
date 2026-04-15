@@ -12,7 +12,7 @@ export type RootStackParamList = {
   [PATHS.Onboard]: undefined;
   [PATHS.LoginRegister]: undefined;
   [PATHS.Trial]: undefined;
-  [PATHS.Otp]: { verificationId?: string };
+  [PATHS.OtpRegister]: { verificationId?: string };
   [PATHS.CreateNewPassword]: undefined;
   [PATHS.Dashboard]: undefined;
   [PATHS.Settings]: undefined;

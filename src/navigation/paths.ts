@@ -5,7 +5,7 @@ export const PATHS = {
   Onboard: 'Onboard',
   LoginRegister: 'LoginRegister',
   Trial: 'Trial',
-  Otp: 'Otp',
+  OtpRegister: 'OtpRegister',
   CreateNewPassword: 'CreateNewPassword',
   Dashboard: 'Dashboard',
   Settings: 'Settings',

@@ -29,7 +29,7 @@ export const FlutterStrings = {
   createAccount: 'Create Account',
 
   pleaseCheckYourMsg: 'Please Check Your Message',
-  verification: 'Verification',
+  verification: 'Verify Code',
 
   createNewPassword: 'Create New Password',
   newPassword: 'New Password',

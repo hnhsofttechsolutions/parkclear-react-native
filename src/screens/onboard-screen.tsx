@@ -9,22 +9,23 @@ import AppText from '../components/ui/app-text';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { Colors } from '../utils/colors';
+import { setHasSeenOnboard } from '../store/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const OnboardScreen = ({ navigation }: any) => {
+  const dispatch = useDispatch();
   const [step, setStep] = useState(0);
 
-  const goLogin = useCallback(() => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: PATHS.LoginRegister }],
-    });
-  }, [navigation]);
+  const handleSkip = () => {
+    dispatch(setHasSeenOnboard());
+    navigation.replace(PATHS.LoginRegister);
+  };
 
   if (step === 0) {
     return (
       <SafeAreaWrapper style={styles.safe}>
         <View style={styles.pad}>
-          <TouchableOpacity style={styles.skip} onPress={goLogin}>
+          <TouchableOpacity style={styles.skip} onPress={handleSkip}>
             <AppText
               font="medium"
               size={16}
@@ -74,7 +75,7 @@ const OnboardScreen = ({ navigation }: any) => {
   return (
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.pad}>
-        <TouchableOpacity style={styles.skip} onPress={goLogin}>
+        <TouchableOpacity style={styles.skip} onPress={handleSkip}>
           <AppText
             font="medium"
             size={16}
@@ -87,7 +88,7 @@ const OnboardScreen = ({ navigation }: any) => {
         <StepBody
           step={phase}
           onAdvance={() => {
-            if (step >= 3) goLogin();
+            if (step >= 3) handleSkip();
             else setStep(s => s + 1);
           }}
         />

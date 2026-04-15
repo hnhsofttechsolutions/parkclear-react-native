@@ -4,7 +4,6 @@ import ResultScreen from '../../screens/result-screen';
 import OnboardScreen from '../../screens/onboard-screen';
 import LoginRegisterScreen from '../../screens/auth/login-register-screen';
 import TrialScreen from '../../screens/trial-screen';
-import OtpScreen from '../../screens/auth/otp-screen';
 import CreateNewPasswordScreen from '../../screens/auth/create-new-password-screen';
 import DashboardScreen from '../../screens/dashboard-screen';
 import SettingsScreen from '../../screens/settings-screen';
@@ -19,6 +18,7 @@ import UploadPhotoScreen from '../../screens/upload-photo-screen';
 import SubscriptionScreen from '../../screens/subscription-screen';
 import UpdateScreen from '../../screens/update-screen';
 import CameraScreen from '../../screens/camera-screen';
+import OtpRegisterScreen from '../../screens/auth/otp-register-screen';
 
 export const APP_SCREENS = [
   { name: PATHS.Dashboard, component: DashboardScreen },
@@ -43,6 +43,6 @@ export const APP_SCREENS = [
 export const AUTH_SCREENS = [
   { name: PATHS.Onboard, component: OnboardScreen },
   { name: PATHS.LoginRegister, component: LoginRegisterScreen },
-  { name: PATHS.Otp, component: OtpScreen },
+  { name: PATHS.OtpRegister, component: OtpRegisterScreen },
   { name: PATHS.CreateNewPassword, component: CreateNewPasswordScreen },
 ];

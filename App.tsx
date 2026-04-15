@@ -6,6 +6,7 @@ import { MyDarkTheme, MyLightTheme } from './src/utils/colors';
 import { Provider } from 'react-redux';
 import { persistor, store } from './src/store/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import Toast from 'react-native-toast-message';
 
 function App() {
   const isDark = useColorScheme() === 'dark';
@@ -15,6 +16,7 @@ function App() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <NavigationContainer theme={isDark ? MyDarkTheme : MyLightTheme}>
             <StackNavigation />
+            <Toast />
           </NavigationContainer>
         </GestureHandlerRootView>
       </PersistGate>
