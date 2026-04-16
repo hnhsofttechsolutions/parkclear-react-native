@@ -23,7 +23,6 @@ import { PATHS } from '../navigation/paths';
 import { logout } from '../store/slices/authSlice';
 import { Colors } from '../utils/colors';
 import DeleteModal from './modals/delete-modal';
-import SafeAreaWrapper from './safe-area-wrapper';
 import AppText from './ui/app-text';
 
 const { width } = Dimensions.get('window');
@@ -93,6 +92,8 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
         visible={modalVisible}
         onRequestClose={closeDrawer}
         animationType="none"
+        statusBarTranslucent
+        navigationBarTranslucent
       >
         <View style={styles.container}>
           <Animated.View
@@ -114,79 +115,72 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
               end={{ x: 1, y: 0 }}
               style={styles.fullFlex}
             >
-              <SafeAreaWrapper
-                ignoreStatusBar
-                backgroundColor="transparent"
-                style={styles.fullFlex}
-                edges={['top', 'right', 'bottom']}
-              >
-                <View style={styles.drawerPad}>
-                  <TouchableOpacity
-                    onPress={closeDrawer}
-                    style={styles.drawerClose}
-                  >
-                    <BackArrowIcon width={40} height={40} />
-                  </TouchableOpacity>
+              <View style={styles.drawerPad}>
+                <TouchableOpacity
+                  onPress={closeDrawer}
+                  style={styles.drawerClose}
+                >
+                  <BackArrowIcon width={40} height={40} />
+                </TouchableOpacity>
 
-                  <View style={{ height: 20 }} />
+                <View style={{ height: 20 }} />
 
-                  <DrawerRow
-                    icon={<HomeIcon color="white" size={25} />}
-                    label="Home"
-                    onPress={closeDrawer}
-                  />
+                <DrawerRow
+                  icon={<HomeIcon color="white" size={25} />}
+                  label="Home"
+                  onPress={closeDrawer}
+                />
 
-                  <DrawerRow
-                    icon={<GalleryIcon width={25} height={25} />}
-                    label={FlutterStrings.gallery}
-                    onPress={() => navigateTo(PATHS.Gallery)}
-                  />
+                <DrawerRow
+                  icon={<GalleryIcon width={25} height={25} />}
+                  label={FlutterStrings.gallery}
+                  onPress={() => navigateTo(PATHS.Gallery)}
+                />
 
-                  <DrawerRow
-                    icon={<MyProfileIcon width={25} height={25} />}
-                    label={FlutterStrings.myProfile}
-                    onPress={() => navigateTo(PATHS.MyProfile)}
-                  />
-                  <TouchableOpacity
-                    style={styles.removeAdsRow}
-                    onPress={() => navigateTo(PATHS.Subscription)}
-                  >
-                    <RemoveAdsIcon width={20} height={20} color="white" />
-                    <AppText size={17} color="#FFFFFF" style={styles.rowText}>
-                      {FlutterStrings.removeAds}
+                <DrawerRow
+                  icon={<MyProfileIcon width={25} height={25} />}
+                  label={FlutterStrings.myProfile}
+                  onPress={() => navigateTo(PATHS.MyProfile)}
+                />
+                <TouchableOpacity
+                  style={styles.removeAdsRow}
+                  onPress={() => navigateTo(PATHS.Subscription)}
+                >
+                  <RemoveAdsIcon width={20} height={20} color="white" />
+                  <AppText size={17} color="#FFFFFF" style={styles.rowText}>
+                    {FlutterStrings.removeAds}
+                  </AppText>
+                  <View style={styles.trialBadge}>
+                    <AppText
+                      size={12}
+                      color="#FFFFFF"
+                      style={{ fontWeight: '700' }}
+                    >
+                      TRIAL
                     </AppText>
-                    <View style={styles.trialBadge}>
-                      <AppText
-                        size={12}
-                        color="#FFFFFF"
-                        style={{ fontWeight: '700' }}
-                      >
-                        TRIAL
-                      </AppText>
-                    </View>
-                  </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
 
-                  <DrawerRow
-                    icon={<SettingsIcon width={25} height={25} />}
-                    label={FlutterStrings.settings}
-                    onPress={() => navigateTo(PATHS.Settings)}
-                  />
+                <DrawerRow
+                  icon={<SettingsIcon width={25} height={25} />}
+                  label={FlutterStrings.settings}
+                  onPress={() => navigateTo(PATHS.Settings)}
+                />
 
-                  <DrawerRow
-                    icon={<CancelIcon width={25} height={25} />}
-                    label="Cancel Alerts"
-                    onPress={closeDrawer}
-                  />
+                <DrawerRow
+                  icon={<CancelIcon width={25} height={25} />}
+                  label="Cancel Alerts"
+                  onPress={closeDrawer}
+                />
 
-                  <View style={{ flex: 1 }} />
+                <View style={{ flex: 1 }} />
 
-                  <DrawerRow
-                    icon={<LogoutIcon width={25} height={25} />}
-                    label="Logout"
-                    onPress={() => setIsLogoutModal(true)}
-                  />
-                </View>
-              </SafeAreaWrapper>
+                <DrawerRow
+                  icon={<LogoutIcon width={25} height={25} />}
+                  label="Logout"
+                  onPress={() => setIsLogoutModal(true)}
+                />
+              </View>
             </LinearGradient>
           </Animated.View>
         </View>
@@ -236,7 +230,8 @@ const styles = StyleSheet.create({
   drawerPad: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingTop: 28,
+    paddingBottom: 14,
   },
   drawerClose: {
     alignSelf: 'flex-start',

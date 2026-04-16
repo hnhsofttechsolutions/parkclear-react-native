@@ -77,7 +77,7 @@ const DashboardScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.root}>
-      <PageLoader visible={isLoading} message="Analyzing Image..." />
+      <PageLoader visible={isLoading} />
       <LinearGradient
         colors={[Colors.gradientStart, Colors.darkBlue]}
         style={StyleSheet.absoluteFill}

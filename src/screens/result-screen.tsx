@@ -1,11 +1,6 @@
 import { ArrowLeft } from 'lucide-react-native';
 import React from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import NoParkingIcon from '../assets/images/no_parking.svg';
 import YesParkingIcon from '../assets/images/yes_parking.svg';
@@ -31,9 +26,11 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
     <SafeAreaWrapper
       backgroundColor={isResolve ? Colors.greenDark : Colors.redDark}
       statusBarStyle="light-content"
+      ignoreStatusBar
+      edges={['left', 'right']}
       style={styles.inner}
     >
-      <View style={{ marginTop: 8 }}>
+      <View>
         <TouchableOpacity
           style={styles.menuBtn}
           onPress={handleReset}
@@ -69,6 +66,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   menuBtn: {
     width: 48,
@@ -77,6 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 20,
   },
   scroll: {
     flexGrow: 0,
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     maxHeight: 300,
   },
   cta: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
 });
 
