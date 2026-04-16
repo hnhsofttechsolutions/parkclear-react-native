@@ -10,7 +10,6 @@ import { Colors } from '../../utils/colors';
 
 interface PageLoaderProps {
   visible: boolean;
-  message?: string;
 }
 
 const PageLoader = ({ visible }: PageLoaderProps) => {

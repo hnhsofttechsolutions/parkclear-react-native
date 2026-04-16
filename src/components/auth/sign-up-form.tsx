@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import { Apple } from 'lucide-react-native';
+import { Apple, Eye, LockKeyhole } from 'lucide-react-native';
 import React from 'react';
 import { Platform, View } from 'react-native';
 
@@ -54,6 +54,7 @@ function SignUpForm({ navigation }: any) {
         first_name: '',
         last_name: '',
         email: '',
+        password: '',
         phone_no: '',
       }}
       validationSchema={signUpSchema}
@@ -101,6 +102,18 @@ function SignUpForm({ navigation }: any) {
             value={values.email}
           />
           <ErrorText visible={touched.email} error={errors.email} />
+          <View style={{ height: 20 }} />
+          <AppTextField
+            label="Password"
+            prefix={<LockKeyhole width={22} height={22} color={Colors.grey} />}
+            placeholder={FlutterStrings.enterYourPassword}
+            secureTextEntry={true}
+            autoCapitalize="none"
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
+            value={values.password}
+          />
+          <ErrorText visible={touched.password} error={errors.password} />
           <View style={{ height: 20 }} />
           <AppTextField
             label={FlutterStrings.phoneNumber}

@@ -2,7 +2,10 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
-import { FlutterAboutUsRich, FlutterStrings } from '../../constants/flutterStrings';
+import {
+  FlutterAboutUsRich,
+  FlutterStrings,
+} from '../../constants/flutterStrings';
 import { Colors } from '../../utils/colors';
 import { AppBar } from '../../components/ui/app-bar';
 
@@ -23,14 +26,15 @@ const AboutUsScreen = ({ navigation }: any) => {
             {R.missionTitle}
           </AppText>
         </AppText>
-        <AppText color={Colors.headerGrey} style={{ lineHeight: 24 }}>
+        
+        <AppText color={Colors.headerGrey}>
           <AppText font="semiBold" color={Colors.headerGrey}>
             {R.brand}
           </AppText>
           <AppText color={Colors.headerGrey}>{R.p1}</AppText>
         </AppText>
         <AppText color={Colors.headerGrey}>{R.p2}</AppText>
-        <AppText color={Colors.headerGrey}>{R.p3}</AppText>
+          <AppText color={Colors.headerGrey}>{R.p3}</AppText>
         <AppText>
           <AppText font="semiBold" color={Colors.headerGrey}>
             {R.brand2}

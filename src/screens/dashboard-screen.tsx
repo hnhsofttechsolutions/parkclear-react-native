@@ -25,7 +25,7 @@ import { useCameraPermission } from '../hooks/use-camera-permission';
 import { PATHS } from '../navigation/paths';
 import { useUploadImageMutation } from '../store/api/uploadApi';
 import { Colors } from '../utils/colors';
-import { pickerOptions, uriFromResponse } from '../utils/helpers';
+import { pickerOptions, shareApp, uriFromResponse } from '../utils/helpers';
 
 const { height } = Dimensions.get('window');
 
@@ -125,7 +125,7 @@ const DashboardScreen = ({ navigation }: any) => {
 
             <TouchableOpacity
               style={styles.btnWhiteBg}
-              onPress={() => {}}
+              onPress={shareApp}
               activeOpacity={0.85}
             >
               <ShareIcon width={50} height={50} />

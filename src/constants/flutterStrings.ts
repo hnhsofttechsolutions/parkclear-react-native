@@ -18,6 +18,9 @@ export const FlutterStrings = {
   password: 'Password',
   enterYourPassword: 'Enter your password',
   forgotPassword: 'Forgot Password?',
+  forgotPasswordDescription:
+    "Enter the email address linked with your account and we'll send a confirmation to reset your password.",
+  resetPassword: 'Reset Password',
   orSignInWith: 'Or Sign in With',
   signInWithGoogle: 'Sign in with Google',
   firstName: 'First Name',
@@ -49,6 +52,7 @@ export const FlutterStrings = {
   termsConditions: 'Terms & Conditions',
   removeAds: 'Remove Ads',
   feedback: 'Feedback',
+  feedbackDesc: 'Share your thoughts or suggestions with us.',
   restorePurchase: 'Restore Purchase',
 
   privacyPolicyDesc:
@@ -74,10 +78,11 @@ export const FlutterStrings = {
   cancelAnytime: 'Cancel Anytime',
   downloadNow: 'Download Now',
   noThanks: 'No Thanks',
+  noAdsTrial: 'No Ads Trial',
 
   availNow: 'Avail Now',
   freeFor30Days: 'Enjoy ParkClear ad-free for 30 days!',
-  startSubscription: 'Start Subscription for Rs 1,400 Monthly',
+  startSubscription: 'Start Today a $4.99 Monthly ',
   deleteAccount: 'Delete Account',
 } as const;
 

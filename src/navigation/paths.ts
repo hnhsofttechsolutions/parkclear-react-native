@@ -6,6 +6,7 @@ export const PATHS = {
   LoginRegister: 'LoginRegister',
   Trial: 'Trial',
   OtpRegister: 'OtpRegister',
+  OtpForgot: 'OtpForgot',
   CreateNewPassword: 'CreateNewPassword',
   Dashboard: 'Dashboard',
   Settings: 'Settings',

@@ -1,4 +1,5 @@
 import { ImagePickerResponse } from 'react-native-image-picker';
+import Share from 'react-native-share';
 
 export const pickerOptions = {
   mediaType: 'photo' as const,
@@ -32,4 +33,18 @@ export const formatDateToYYYYMMDD = (date: Date | null) => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const dayOfMonth = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${dayOfMonth}`;
+};
+
+export const shareApp = async () => {
+  const shareOptions = {
+    title: 'ParkClear App',
+    message: `Confusing Parking Signs? ParkClear can Help!
+Download App:
+https://play.google.com/store/apps/details?id=com.app.parkclear&pcampaignid=web_share`,
+  };
+  try {
+    await Share.open(shareOptions);
+  } catch (error) {
+    console.log(error);
+  }
 };

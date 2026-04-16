@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import OnboardHero from '../assets/images/onboard.svg';
 import SlideToContinue from '../components/onboard/slide-to-continue';
@@ -15,11 +15,27 @@ import { useDispatch } from 'react-redux';
 const OnboardScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const [step, setStep] = useState(0);
+  const isNavigatingRef = useRef(false);
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
+    if (isNavigatingRef.current) {
+      return;
+    }
+    isNavigatingRef.current = true;
     dispatch(setHasSeenOnboard());
     navigation.replace(PATHS.LoginRegister);
-  };
+  }, [dispatch, navigation]);
+
+  const handleAdvance = useCallback(() => {
+    setStep(currentStep => {
+      if (currentStep >= 3) {
+        handleSkip();
+        return currentStep;
+      }
+
+      return currentStep + 1;
+    });
+  }, [handleSkip]);
 
   if (step === 0) {
     return (
@@ -87,10 +103,7 @@ const OnboardScreen = ({ navigation }: any) => {
         </TouchableOpacity>
         <StepBody
           step={phase}
-          onAdvance={() => {
-            if (step >= 3) handleSkip();
-            else setStep(s => s + 1);
-          }}
+          onAdvance={handleAdvance}
         />
       </View>
     </SafeAreaWrapper>

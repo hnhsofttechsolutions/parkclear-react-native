@@ -1,5 +1,5 @@
 import { ChevronRight } from 'lucide-react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import AboutUsImg from '../assets/images/about_us.svg';
 import ContactUsImg from '../assets/images/contact_us.svg';
@@ -8,6 +8,7 @@ import FeedbackImg from '../assets/images/feedback.svg';
 import PrivacyPolicyImg from '../assets/images/privacy_policy.svg';
 import RestoreImg from '../assets/images/restore.svg';
 import TermsImg from '../assets/images/terms_and_condition.svg';
+import FeedBackForm from '../components/feedback/feedback-from';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import SettingRow from '../components/settings/setting-row';
 import SettingsBoxRow from '../components/settings/settings-box-row';
@@ -16,12 +17,48 @@ import AppText from '../components/ui/app-text';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { Colors } from '../utils/colors';
+import DeleteModal from '../components/modals/delete-modal';
+import { useDeleteAccountMutation } from '../store/api/settingApi';
+import PageLoader from '../components/ui/page-loader';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/slices/authSlice';
+import Toast from 'react-native-toast-message';
 
 const chevron = <ChevronRight size={15} color={Colors.primary} />;
 
 const SettingsScreen = ({ navigation }: any) => {
+  const dispatch = useDispatch();
+  const [isVisible, setIsVisible] = useState(false);
+  const [isDeletetModal, setIsDeletetModal] = useState(false);
+  const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
+
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await deleteAccount({}).unwrap();
+      if (response?.status) {
+        Toast.show({
+          type: 'success',
+          text1: 'Account Deleted',
+          text2: response?.message,
+        });
+        dispatch(logout());
+        navigation.reset({
+          index: 0,
+          routes: [{ name: PATHS.LoginRegister }],
+        });
+      }
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Delete Failed',
+        text2: error?.data?.message,
+      });
+    }
+  };
+
   return (
     <SafeAreaWrapper style={styles.safe}>
+      <PageLoader visible={isLoading} />
       <View style={styles.hPad}>
         <AppBar
           title={FlutterStrings.settings}
@@ -66,7 +103,7 @@ const SettingsScreen = ({ navigation }: any) => {
             icon={<FeedbackImg width={20} height={20} />}
             title={FlutterStrings.feedback}
             suffix={chevron}
-            onPress={() => {}}
+            onPress={() => setIsVisible(true)}
           />
           <View style={{ height: 20 }} />
           <SettingsBoxRow
@@ -77,14 +114,22 @@ const SettingsScreen = ({ navigation }: any) => {
           />
           <View style={{ height: 20 }} />
           <SettingsBoxRow
+            danger
             icon={<DeleteImg width={20} height={20} />}
             title={FlutterStrings.deleteAccount}
             suffix={<ChevronRight size={15} color={Colors.settingsRed} />}
-            danger
-            onPress={() => {}}
+            onPress={() => setIsDeletetModal(true)}
           />
         </ScrollView>
       </View>
+      <FeedBackForm isVisible={isVisible} setIsVisible={setIsVisible} />
+      <DeleteModal
+        title="Delete “ParkClear” App ?"
+        description="Deleting this app will also delete its data."
+        visible={isDeletetModal}
+        onClose={() => setIsDeletetModal(false)}
+        onDelete={handleDeleteAccount}
+      />
     </SafeAreaWrapper>
   );
 };

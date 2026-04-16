@@ -6,7 +6,11 @@ import AppText from '../components/ui/app-text';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { Colors } from '../utils/colors';
-import { GradientButton } from '../components/ui/gradient-button';
+import {
+  GradientButton,
+  GreyPillButton,
+  OutlineButton,
+} from '../components/ui/gradient-button';
 import { GradientText } from '../components/ui/gradient-text';
 
 const TrialScreen = ({ navigation }: any) => {
@@ -16,35 +20,46 @@ const TrialScreen = ({ navigation }: any) => {
         <View style={styles.flex}>
           <View style={styles.center}>
             <SubscriptionArt width={300} height={300} />
+            <View style={{ alignItems: 'center' }}>
+              <GradientText fontSize={28}>Enjoy 30 Days </GradientText>
+              <AppText font="semiBold" size={28}>
+                With NO Ads!
+              </AppText>
+            </View>
             <AppText
               color={Colors.primary}
               align="center"
-              style={{ marginTop: 50, paddingHorizontal: 8, fontWeight: '400' }}
+              style={{ paddingHorizontal: 8, fontWeight: '400' }}
             >
               {FlutterStrings.subscriptionDesc}
             </AppText>
-            <View style={{ marginTop: 30, alignItems: 'center' }}>
-              <View style={{ flexDirection: 'row' }}>
-                <AppText font="semiBold" size={28}>
-                  Join{' '}
-                </AppText>
-                <GradientText fontSize={28}>ParkClear</GradientText>
-              </View>
-              <AppText font="semiBold" size={28} align="center">
-                {FlutterStrings.freeFor30Days}
-              </AppText>
-            </View>
           </View>
         </View>
-        <GradientButton
-          label={FlutterStrings.availNow}
-          onPress={() =>
-            navigation.reset({
-              index: 0,
-              routes: [{ name: PATHS.Dashboard }],
-            })
-          }
-        />
+        <View style={{ gap: 10 }}>
+          <OutlineButton
+            label={FlutterStrings.noAdsTrial}
+            onPress={() => navigation.goBack()}
+          />
+          <GradientButton
+            label={FlutterStrings.startSubscription}
+            onPress={() =>
+              navigation.reset({
+                index: 0,
+                routes: [{ name: PATHS.Dashboard }],
+              })
+            }
+          />
+          <GreyPillButton onPress={() => navigation.goBack()}>
+            <AppText
+              font="medium"
+              size={18}
+              color={Colors.primary}
+              style={{ fontWeight: '500' }}
+            >
+              {FlutterStrings.cancelAnytime}
+            </AppText>
+          </GreyPillButton>
+        </View>
         <View style={{ height: 30 }} />
       </View>
     </SafeAreaWrapper>
@@ -55,7 +70,7 @@ export default TrialScreen;
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.white },
-  pad: { flex: 1, paddingHorizontal: 20, paddingBottom: 28 },
+  pad: { flex: 1, paddingHorizontal: 20 },
   flex: { flex: 1 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

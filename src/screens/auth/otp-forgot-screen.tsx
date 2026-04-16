@@ -14,12 +14,12 @@ import ErrorText from '../../components/ui/error-text';
 import { GradientButton } from '../../components/ui/gradient-button';
 import { FlutterStrings } from '../../constants/flutterStrings';
 import { PATHS } from '../../navigation/paths';
-import { useOtpRegisterMutation } from '../../store/api/authApi';
+import { useOtpForgotMutation } from '../../store/api/authApi';
 import { Colors } from '../../utils/colors';
 
 const CELL_COUNT = 5;
 
-const OtpRegisterScreen = ({ navigation, route }: any) => {
+const OtpForgotScreen = ({ navigation, route }: any) => {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const email = route?.params?.email || 'user@example.com';
@@ -29,7 +29,7 @@ const OtpRegisterScreen = ({ navigation, route }: any) => {
     value,
     setValue,
   });
-  const [useOtpRegister, { isLoading }] = useOtpRegisterMutation();
+  const [verifyOtp, { isLoading }] = useOtpForgotMutation();
 
   const handleVerify = async () => {
     if (value.length < CELL_COUNT) {
@@ -41,14 +41,17 @@ const OtpRegisterScreen = ({ navigation, route }: any) => {
       const formData = new FormData();
       formData.append('email', email);
       formData.append('otp', value);
-      const response = await useOtpRegister({ formData }).unwrap();
+      const response = await verifyOtp({ formData }).unwrap();
       if (response?.status) {
         Toast.show({
           type: 'success',
           text1: 'Verified Successfully!',
           text2: response?.message,
         });
-        navigation.navigate(PATHS.LoginRegister);
+        navigation.navigate(PATHS.CreateNewPassword, {
+          email: email,
+          otp: value,
+        });
       }
     } catch (err: any) {
       setError(err?.data?.message || 'Invalid OTP. Please try again.');
@@ -124,7 +127,7 @@ const OtpRegisterScreen = ({ navigation, route }: any) => {
   );
 };
 
-export default OtpRegisterScreen;
+export default OtpForgotScreen;
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.white },

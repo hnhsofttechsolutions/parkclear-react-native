@@ -18,11 +18,11 @@ import LogoutIcon from '../assets/images/logout.svg';
 import MyProfileIcon from '../assets/images/my_profile.svg';
 import RemoveAdsIcon from '../assets/images/remove_ads.svg';
 import SettingsIcon from '../assets/images/settings.svg';
-import StartTrialIcon from '../assets/images/start_trial.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { logout } from '../store/slices/authSlice';
 import { Colors } from '../utils/colors';
+import DeleteModal from './modals/delete-modal';
 import SafeAreaWrapper from './safe-area-wrapper';
 import AppText from './ui/app-text';
 
@@ -34,6 +34,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const dispatch = useDispatch();
   const anim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(drawer);
+  const [isLogoutModal, setIsLogoutModal] = useState(false);
 
   useEffect(() => {
     if (drawer) {
@@ -86,114 +87,117 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   };
 
   return (
-    <Modal
-      transparent
-      visible={modalVisible}
-      onRequestClose={closeDrawer}
-      animationType="none"
-    >
-      <View style={styles.container}>
-        <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
-          <TouchableOpacity
-            style={styles.fullFlex}
-            activeOpacity={1}
-            onPress={closeDrawer}
-          />
-        </Animated.View>
-
-        <Animated.View
-          style={[styles.drawerContent, { transform: [{ translateX }] }]}
-        >
-          <LinearGradient
-            colors={[Colors.darkBlue, Colors.gradientStart]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.fullFlex}
+    <>
+      <Modal
+        transparent
+        visible={modalVisible}
+        onRequestClose={closeDrawer}
+        animationType="none"
+      >
+        <View style={styles.container}>
+          <Animated.View
+            style={[styles.backdrop, { opacity: backdropOpacity }]}
           >
-            <SafeAreaWrapper
-              ignoreStatusBar
-              backgroundColor="transparent"
+            <TouchableOpacity
               style={styles.fullFlex}
-              edges={['top', 'right', 'bottom']}
+              activeOpacity={1}
+              onPress={closeDrawer}
+            />
+          </Animated.View>
+
+          <Animated.View
+            style={[styles.drawerContent, { transform: [{ translateX }] }]}
+          >
+            <LinearGradient
+              colors={[Colors.darkBlue, Colors.gradientStart]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.fullFlex}
             >
-              <View style={styles.drawerPad}>
-                <TouchableOpacity
-                  onPress={closeDrawer}
-                  style={styles.drawerClose}
-                >
-                  <BackArrowIcon width={40} height={40} />
-                </TouchableOpacity>
+              <SafeAreaWrapper
+                ignoreStatusBar
+                backgroundColor="transparent"
+                style={styles.fullFlex}
+                edges={['top', 'right', 'bottom']}
+              >
+                <View style={styles.drawerPad}>
+                  <TouchableOpacity
+                    onPress={closeDrawer}
+                    style={styles.drawerClose}
+                  >
+                    <BackArrowIcon width={40} height={40} />
+                  </TouchableOpacity>
 
-                <View style={{ height: 20 }} />
+                  <View style={{ height: 20 }} />
 
-                <DrawerRow
-                  icon={<HomeIcon color="white" size={25} />}
-                  label="Home"
-                  onPress={closeDrawer}
-                />
+                  <DrawerRow
+                    icon={<HomeIcon color="white" size={25} />}
+                    label="Home"
+                    onPress={closeDrawer}
+                  />
 
-                <DrawerRow
-                  icon={<GalleryIcon width={25} height={25} />}
-                  label={FlutterStrings.gallery}
-                  onPress={() => navigateTo(PATHS.Gallery)}
-                />
+                  <DrawerRow
+                    icon={<GalleryIcon width={25} height={25} />}
+                    label={FlutterStrings.gallery}
+                    onPress={() => navigateTo(PATHS.Gallery)}
+                  />
 
-                <DrawerRow
-                  icon={<MyProfileIcon width={25} height={25} />}
-                  label={FlutterStrings.myProfile}
-                  onPress={() => navigateTo(PATHS.MyProfile)}
-                />
-
-                <DrawerRow
-                  icon={<StartTrialIcon width={25} height={25} />}
-                  label="Start Trial"
-                  onPress={() => navigateTo(PATHS.Trial)}
-                />
-
-                <TouchableOpacity
-                  style={styles.removeAdsRow}
-                  onPress={() => navigateTo(PATHS.Subscription)}
-                >
-                  <RemoveAdsIcon width={20} height={20} color="white" />
-                  <AppText size={17} color="#FFFFFF" style={styles.rowText}>
-                    {FlutterStrings.removeAds}
-                  </AppText>
-                  <View style={styles.trialBadge}>
-                    <AppText
-                      size={12}
-                      color="#FFFFFF"
-                      style={{ fontWeight: '700' }}
-                    >
-                      TRIAL
+                  <DrawerRow
+                    icon={<MyProfileIcon width={25} height={25} />}
+                    label={FlutterStrings.myProfile}
+                    onPress={() => navigateTo(PATHS.MyProfile)}
+                  />
+                  <TouchableOpacity
+                    style={styles.removeAdsRow}
+                    onPress={() => navigateTo(PATHS.Subscription)}
+                  >
+                    <RemoveAdsIcon width={20} height={20} color="white" />
+                    <AppText size={17} color="#FFFFFF" style={styles.rowText}>
+                      {FlutterStrings.removeAds}
                     </AppText>
-                  </View>
-                </TouchableOpacity>
+                    <View style={styles.trialBadge}>
+                      <AppText
+                        size={12}
+                        color="#FFFFFF"
+                        style={{ fontWeight: '700' }}
+                      >
+                        TRIAL
+                      </AppText>
+                    </View>
+                  </TouchableOpacity>
 
-                <DrawerRow
-                  icon={<SettingsIcon width={25} height={25} />}
-                  label={FlutterStrings.settings}
-                  onPress={() => navigateTo(PATHS.Settings)}
-                />
+                  <DrawerRow
+                    icon={<SettingsIcon width={25} height={25} />}
+                    label={FlutterStrings.settings}
+                    onPress={() => navigateTo(PATHS.Settings)}
+                  />
 
-                <DrawerRow
-                  icon={<CancelIcon width={25} height={25} />}
-                  label="Cancel Alerts"
-                  onPress={closeDrawer}
-                />
+                  <DrawerRow
+                    icon={<CancelIcon width={25} height={25} />}
+                    label="Cancel Alerts"
+                    onPress={closeDrawer}
+                  />
 
-                <View style={{ flex: 1 }} />
+                  <View style={{ flex: 1 }} />
 
-                <DrawerRow
-                  icon={<LogoutIcon width={25} height={25} />}
-                  label="Logout"
-                  onPress={handlerLogout}
-                />
-              </View>
-            </SafeAreaWrapper>
-          </LinearGradient>
-        </Animated.View>
-      </View>
-    </Modal>
+                  <DrawerRow
+                    icon={<LogoutIcon width={25} height={25} />}
+                    label="Logout"
+                    onPress={() => setIsLogoutModal(true)}
+                  />
+                </View>
+              </SafeAreaWrapper>
+            </LinearGradient>
+          </Animated.View>
+        </View>
+      </Modal>
+      <DeleteModal
+        title="Are you sure want to log out of this account?"
+        visible={isLogoutModal}
+        onClose={() => setIsLogoutModal(false)}
+        onDelete={handlerLogout}
+      />
+    </>
   );
 }
 

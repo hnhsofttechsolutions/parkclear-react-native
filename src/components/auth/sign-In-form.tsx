@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
-import { Apple } from 'lucide-react-native';
-import { Platform, View } from 'react-native';
+import { Apple, Eye, EyeOff, LockKeyhole } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 import GoogleLogo from '../../assets/images/google_logo.svg';
@@ -15,10 +16,13 @@ import { AppTextField } from '../ui/app-text-field';
 import ErrorText from '../ui/error-text';
 import { GradientButton, GreyPillButton } from '../ui/gradient-button';
 import PhonePrefix from '../ui/phone-prefix';
+import ForgotPasswordForm from './forgot-password-form';
 
 function SignInForm({ navigation }: any) {
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
+  const [securePassword, setSecurePassword] = useState(true);
+  const [isForgotVisible, setIsForgotVisible] = useState(false);
 
   const handleLogin = async (values: any) => {
     try {
@@ -51,77 +55,131 @@ function SignInForm({ navigation }: any) {
   };
 
   return (
-    <Formik
-      initialValues={{ phone_no: '' }}
-      validationSchema={loginSchema}
-      onSubmit={handleLogin}
-    >
-      {({
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        values,
-        errors,
-        touched,
-      }) => (
-        <View style={{ paddingTop: 20 }}>
-          <AppTextField
-            label={FlutterStrings.phoneNumber}
-            prefix={<PhonePrefix />}
-            placeholder={FlutterStrings.enterYourPhoneNumber}
-            keyboardType="phone-pad"
-            maxLength={10}
-            onChangeText={handleChange('phone_no')}
-            onBlur={handleBlur('phone_no')}
-            value={values.phone_no}
-          />
-          <ErrorText visible={touched.phone_no} error={errors.phone_no} />
-          <View style={{ height: 35 }} />
-          <GradientButton
-            label={FlutterStrings.signIn}
-            onPress={handleSubmit}
-            isLoading={isLoading}
-          />
-          <View style={{ height: 35 }} />
-          <AppText
-            size={14}
-            color={Colors.grey}
-            align="center"
-            style={{ fontWeight: '400' }}
-          >
-            {FlutterStrings.orSignInWith}
-          </AppText>
-          <View style={{ height: 15 }} />
-          <GreyPillButton>
-            <GoogleLogo width={24} height={24} />
-            <AppText
-              font="medium"
-              size={18}
-              color={Colors.primary}
-              style={{ fontWeight: '500' }}
-            >
-              {FlutterStrings.signInWithGoogle}
-            </AppText>
-          </GreyPillButton>
-          {Platform.OS === 'ios' ? (
-            <View style={{ marginTop: 15 }}>
-              <GreyPillButton onPress={() => {}}>
-                <Apple size={32} color={Colors.primary} />
-                <AppText
-                  font="medium"
-                  size={18}
-                  color={Colors.primary}
-                  style={{ fontWeight: '500' }}
+    <>
+      <Formik
+        initialValues={{ phone_no: '', password: '' }}
+        validationSchema={loginSchema}
+        onSubmit={handleLogin}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <View style={{ paddingTop: 20 }}>
+            <AppTextField
+              label={FlutterStrings.phoneNumber}
+              prefix={<PhonePrefix />}
+              placeholder={FlutterStrings.enterYourPhoneNumber}
+              keyboardType="phone-pad"
+              maxLength={10}
+              onChangeText={handleChange('phone_no')}
+              onBlur={handleBlur('phone_no')}
+              value={values.phone_no}
+            />
+            <ErrorText visible={touched.phone_no} error={errors.phone_no} />
+            <View style={{ height: 20 }} />
+            <AppTextField
+              label={FlutterStrings.password}
+              prefix={
+                <LockKeyhole width={22} height={22} color={Colors.greyIcon} />
+              }
+              placeholder={FlutterStrings.enterYourPassword}
+              secureTextEntry={securePassword}
+              autoCapitalize="none"
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              value={values.password}
+              suffix={
+                <TouchableOpacity
+                  onPress={() => setSecurePassword(value => !value)}
+                  hitSlop={8}
                 >
-                  {FlutterStrings.signInWithApple}
-                </AppText>
-              </GreyPillButton>
-            </View>
-          ) : null}
-        </View>
-      )}
-    </Formik>
+                  {securePassword ? (
+                    <EyeOff size={22} color={Colors.greyIcon} />
+                  ) : (
+                    <Eye size={22} color={Colors.greyIcon} />
+                  )}
+                </TouchableOpacity>
+              }
+            />
+            <ErrorText visible={touched.password} error={errors.password} />
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={() => setIsForgotVisible(true)}
+              style={styles.forgotButton}
+            >
+              <AppText
+                font="medium"
+                size={14}
+                color={Colors.primary}
+                style={{ fontWeight: '500' }}
+              >
+                {FlutterStrings.forgotPassword}
+              </AppText>
+            </TouchableOpacity>
+            <View style={{ height: 20 }} />
+            <GradientButton
+              label={FlutterStrings.signIn}
+              onPress={handleSubmit}
+              isLoading={isLoading}
+            />
+            <View style={{ height: 35 }} />
+            <AppText
+              size={14}
+              color={Colors.grey}
+              align="center"
+              style={{ fontWeight: '400' }}
+            >
+              {FlutterStrings.orSignInWith}
+            </AppText>
+            <View style={{ height: 15 }} />
+            <GreyPillButton>
+              <GoogleLogo width={24} height={24} />
+              <AppText
+                font="medium"
+                size={18}
+                color={Colors.primary}
+                style={{ fontWeight: '500' }}
+              >
+                {FlutterStrings.signInWithGoogle}
+              </AppText>
+            </GreyPillButton>
+            {Platform.OS === 'ios' ? (
+              <View style={{ marginTop: 15 }}>
+                <GreyPillButton onPress={() => {}}>
+                  <Apple size={32} color={Colors.primary} />
+                  <AppText
+                    font="medium"
+                    size={18}
+                    color={Colors.primary}
+                    style={{ fontWeight: '500' }}
+                  >
+                    {FlutterStrings.signInWithApple}
+                  </AppText>
+                </GreyPillButton>
+              </View>
+            ) : null}
+          </View>
+        )}
+      </Formik>
+
+      <ForgotPasswordForm
+        isForgotVisible={isForgotVisible}
+        setIsForgotVisible={setIsForgotVisible}
+      />
+    </>
   );
 }
 
 export default SignInForm;
+
+const styles = StyleSheet.create({
+  forgotButton: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+  },
+});

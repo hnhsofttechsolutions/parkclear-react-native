@@ -19,10 +19,10 @@ import SubscriptionScreen from '../../screens/subscription-screen';
 import UpdateScreen from '../../screens/update-screen';
 import CameraScreen from '../../screens/camera-screen';
 import OtpRegisterScreen from '../../screens/auth/otp-register-screen';
+import OtpForgotScreen from '../../screens/auth/otp-forgot-screen';
 
 export const APP_SCREENS = [
   { name: PATHS.Dashboard, component: DashboardScreen },
-  { name: PATHS.Trial, component: TrialScreen },
   { name: PATHS.Settings, component: SettingsScreen },
   { name: PATHS.AboutUs, component: AboutUsScreen },
   { name: PATHS.PrivacyPolicy, component: PrivacyPolicyScreen },
@@ -35,7 +35,8 @@ export const APP_SCREENS = [
   { name: PATHS.Subscription, component: SubscriptionScreen },
   { name: PATHS.Update, component: UpdateScreen },
   { name: PATHS.Camera, component: CameraScreen },
-
+  { name: PATHS.Trial, component: TrialScreen },
+  
   { name: PATHS.Home, component: HomeScreen },
   { name: PATHS.Result, component: ResultScreen },
 ];
@@ -44,5 +45,6 @@ export const AUTH_SCREENS = [
   { name: PATHS.Onboard, component: OnboardScreen },
   { name: PATHS.LoginRegister, component: LoginRegisterScreen },
   { name: PATHS.OtpRegister, component: OtpRegisterScreen },
+  { name: PATHS.OtpForgot, component: OtpForgotScreen },
   { name: PATHS.CreateNewPassword, component: CreateNewPasswordScreen },
 ];
