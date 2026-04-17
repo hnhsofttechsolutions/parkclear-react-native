@@ -14,6 +14,13 @@ import {
 import { GradientText } from '../components/ui/gradient-text';
 
 const TrialScreen = ({ navigation }: any) => {
+  const handlerReset = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: PATHS.LoginRegister }],
+    });
+  };
+
   return (
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.pad}>
@@ -29,7 +36,7 @@ const TrialScreen = ({ navigation }: any) => {
             <AppText
               color={Colors.primary}
               align="center"
-              style={{ paddingHorizontal: 8, fontWeight: '400' }}
+              style={{ paddingHorizontal: 8, fontWeight: '400', marginTop: 10 }}
             >
               {FlutterStrings.subscriptionDesc}
             </AppText>
@@ -38,18 +45,13 @@ const TrialScreen = ({ navigation }: any) => {
         <View style={{ gap: 10 }}>
           <OutlineButton
             label={FlutterStrings.noAdsTrial}
-            onPress={() => navigation.goBack()}
+            onPress={handlerReset}
           />
           <GradientButton
             label={FlutterStrings.startSubscription}
-            onPress={() =>
-              navigation.reset({
-                index: 0,
-                routes: [{ name: PATHS.Dashboard }],
-              })
-            }
+            onPress={handlerReset}
           />
-          <GreyPillButton onPress={() => navigation.goBack()}>
+          <GreyPillButton onPress={handlerReset}>
             <AppText
               font="medium"
               size={18}

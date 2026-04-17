@@ -12,6 +12,7 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
     alignSelf: 'center' as const,
+    width: 'auto' as const,
     maxWidth: '100%' as const,
   };
 
@@ -51,37 +52,37 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
   }
   if (step === 2) {
     return (
-      <View style={rowStyle}>
+      <>
         <AppText
           font="semiBold"
           size={TITLE_SIZE}
           color={Colors.primary}
           {...fitTitle}
+          style={{ flexShrink: 0 }}
         >
-          Confused by Parking{' '}
+          Confused by Parking
         </AppText>
         <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
           Signs?
         </GradientText>
-      </View>
+      </>
     );
   }
   return (
-    <View style={{ alignItems: 'center', width: '100%' }}>
-      <View style={rowStyle}>
-        <AppText
-          font="semiBold"
-          size={TITLE_SIZE}
-          color={Colors.primary}
-          {...fitTitle}
-        >
-          Avoid Parking{' '}
-        </AppText>
-        <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
-          Tickets!
-        </GradientText>
-      </View>
-    </View>
+    <>
+      <AppText
+        font="semiBold"
+        size={TITLE_SIZE}
+        color={Colors.primary}
+        {...fitTitle}
+        style={{ flexShrink: 0 }}
+      >
+        Avoid Parking
+      </AppText>
+      <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
+        Tickets!
+      </GradientText>
+    </>
   );
 }
 

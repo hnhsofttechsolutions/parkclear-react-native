@@ -36,6 +36,11 @@ const DashboardScreen = ({ navigation }: any) => {
   const { requestCameraPermission } = useCameraPermission();
 
   const openCamera = async () => {
+    // navigation.navigate(PATHS.Result, {
+    //   variant: 'resolve',
+    //   summarize_message:
+    //     'Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps',
+    // });
     const ok = await requestCameraPermission();
     if (!ok) return;
     launchCamera(
@@ -152,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: 20,
+    marginTop: 10,
     zIndex: 10,
   },
   iconCircle: {

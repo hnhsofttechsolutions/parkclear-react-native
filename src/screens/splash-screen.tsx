@@ -1,10 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, Image, StyleSheet, View } from 'react-native';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
-import SplashBrand from '../assets/images/ic_subscription.svg';
-import { PATHS } from '../navigation/paths';
 import { Colors } from '../utils/colors';
-import { GradientButton } from '../components/ui/gradient-button';
 
 const SplashScreen = ({ navigation }: any) => {
   const scale = useRef(new Animated.Value(0.5)).current;
@@ -21,13 +18,12 @@ const SplashScreen = ({ navigation }: any) => {
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.body}>
         <Animated.View style={{ transform: [{ scale }], alignItems: 'center' }}>
-          <SplashBrand width={200} height={200} />
+          <Image
+            source={require('../assets/images/logo.png')}
+            style={{ width: 200, height: 200 }}
+            resizeMode="contain"
+          />
         </Animated.View>
-        <GradientButton
-          label="Continue"
-          onPress={() => navigation.replace(PATHS.Onboard)}
-          style={{ marginTop: 48, alignSelf: 'stretch' }}
-        />
       </View>
     </SafeAreaWrapper>
   );

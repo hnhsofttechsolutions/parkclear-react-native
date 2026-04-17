@@ -7,7 +7,7 @@ export const FlutterStrings = {
   step2Subtitle:
     'No more wasted time and frustrations,\nwe’re here to help you Park Clear!',
   step3Subtitle:
-    "With ParkClear, you'll always know where\nto park and avoid costly tickets.",
+    "Get instant “Yes” or “No” answers with AI-Powered Responses.",
 
   parkingMadeSimpleAndClear: 'Parking Made Simple and Clear',
   getGreatExperienceWithParkClear: 'Get great experience with ParkClear',
@@ -88,11 +88,11 @@ export const FlutterStrings = {
 
 export const FlutterAboutUsRich = {
   lead: 'Learn More About Our ',
-  missionTitle: 'Mission and Vision\n\n',
+  missionTitle: 'Mission and Vision',
   brand: 'ParkClear ',
-  p1: 'is designed to make parking simple, efficient, and stress-free. We provide drivers with clear, reliable parking information so they can make quick decisions with confidence.\n\n',
-  p2: 'Our mission is to use real-time data and intelligent technology to transform how people navigate parking. By reducing uncertainty and wasted time, ParkClear helps drivers save money, lower stress, and move through cities more smoothly.\n\n',
-  p3: 'We envision a future where parking is no longer a point of friction, but a seamless part of urban mobility. By improving access, clarity, and efficiency, ParkClear contributes to smarter cities and more sustainable urban living.\n\nAt ',
-  brand2: 'ParkClear, ',
+  p1: 'is designed to make parking simple, efficient, and stress-free. We provide drivers with clear, reliable parking information so they can make quick decisions with confidence.',
+  p2: 'Our mission is to use real-time data and intelligent technology to transform how people navigate parking. By reducing uncertainty and wasted time, ParkClear helps drivers save money, lower stress, and move through cities more smoothly.',
+  p3: 'We envision a future where parking is no longer a point of friction, but a seamless part of urban mobility. By improving access, clarity, and efficiency, ParkClear contributes to smarter cities and more sustainable urban living.',
+  brand2: 'At ParkClear, ',
   p4: 'we are committed to convenience, reliability, and innovation at every step of the parking journey.',
 } as const;

@@ -26,7 +26,7 @@ const AboutUsScreen = ({ navigation }: any) => {
             {R.missionTitle}
           </AppText>
         </AppText>
-        
+
         <AppText color={Colors.headerGrey}>
           <AppText font="semiBold" color={Colors.headerGrey}>
             {R.brand}
@@ -34,7 +34,7 @@ const AboutUsScreen = ({ navigation }: any) => {
           <AppText color={Colors.headerGrey}>{R.p1}</AppText>
         </AppText>
         <AppText color={Colors.headerGrey}>{R.p2}</AppText>
-          <AppText color={Colors.headerGrey}>{R.p3}</AppText>
+        <AppText color={Colors.headerGrey}>{R.p3}</AppText>
         <AppText>
           <AppText font="semiBold" color={Colors.headerGrey}>
             {R.brand2}
@@ -51,5 +51,5 @@ export default AboutUsScreen;
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.white },
   appBarPad: { paddingHorizontal: 20 },
-  body: { padding: 20, paddingBottom: 40 },
+  body: { padding: 20, paddingBottom: 40, gap: 20 },
 });

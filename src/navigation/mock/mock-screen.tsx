@@ -20,6 +20,7 @@ import UpdateScreen from '../../screens/update-screen';
 import CameraScreen from '../../screens/camera-screen';
 import OtpRegisterScreen from '../../screens/auth/otp-register-screen';
 import OtpForgotScreen from '../../screens/auth/otp-forgot-screen';
+import SplashScreen from '../../screens/splash-screen';
 
 export const APP_SCREENS = [
   { name: PATHS.Dashboard, component: DashboardScreen },
@@ -35,16 +36,17 @@ export const APP_SCREENS = [
   { name: PATHS.Subscription, component: SubscriptionScreen },
   { name: PATHS.Update, component: UpdateScreen },
   { name: PATHS.Camera, component: CameraScreen },
-  { name: PATHS.Trial, component: TrialScreen },
-  
+
   { name: PATHS.Home, component: HomeScreen },
   { name: PATHS.Result, component: ResultScreen },
 ];
 
 export const AUTH_SCREENS = [
   { name: PATHS.Onboard, component: OnboardScreen },
+  { name: PATHS.Trial, component: TrialScreen },
   { name: PATHS.LoginRegister, component: LoginRegisterScreen },
   { name: PATHS.OtpRegister, component: OtpRegisterScreen },
   { name: PATHS.OtpForgot, component: OtpForgotScreen },
   { name: PATHS.CreateNewPassword, component: CreateNewPasswordScreen },
+  { name: PATHS.Splash, component: SplashScreen },
 ];

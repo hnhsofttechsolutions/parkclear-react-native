@@ -231,7 +231,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 28,
-    paddingBottom: 14,
+    paddingBottom: 20,
+    marginTop: 20,
   },
   drawerClose: {
     alignSelf: 'flex-start',

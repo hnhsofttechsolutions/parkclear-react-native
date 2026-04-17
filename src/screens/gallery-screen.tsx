@@ -49,9 +49,6 @@ const GalleryScreen = ({ navigation }: any) => {
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.cell}
-                onPress={() =>
-                  navigation.navigate(PATHS.GalleryDetails, { imageUrl: item })
-                }
                 activeOpacity={0.9}
               >
                 <Image

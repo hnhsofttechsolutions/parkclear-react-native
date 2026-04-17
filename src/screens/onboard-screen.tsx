@@ -23,7 +23,7 @@ const OnboardScreen = ({ navigation }: any) => {
     }
     isNavigatingRef.current = true;
     dispatch(setHasSeenOnboard());
-    navigation.replace(PATHS.LoginRegister);
+    navigation.replace(PATHS.Trial);
   }, [dispatch, navigation]);
 
   const handleAdvance = useCallback(() => {
@@ -32,7 +32,6 @@ const OnboardScreen = ({ navigation }: any) => {
         handleSkip();
         return currentStep;
       }
-
       return currentStep + 1;
     });
   }, [handleSkip]);

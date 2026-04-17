@@ -2,11 +2,12 @@ import { ArrowLeft } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
+
 import NoParkingIcon from '../assets/images/no_parking.svg';
 import YesParkingIcon from '../assets/images/yes_parking.svg';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import AppText from '../components/ui/app-text';
-import { GradientButton } from '../components/ui/gradient-button';
+
 import { PATHS } from '../navigation/paths';
 import { ResultScreenProps } from '../navigation/types';
 import { Colors, Gradient } from '../utils/colors';
@@ -26,35 +27,50 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
     <SafeAreaWrapper
       backgroundColor={isResolve ? Colors.greenDark : Colors.redDark}
       statusBarStyle="light-content"
-      ignoreStatusBar
-      edges={['left', 'right']}
-      style={styles.inner}
+      style={styles.container}
     >
-      <View>
-        <TouchableOpacity
-          style={styles.menuBtn}
-          onPress={handleReset}
-          activeOpacity={0.85}
-        >
-          <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
-        </TouchableOpacity>
-        {isResolve ? (
-          <YesParkingIcon width={340} height={340} />
-        ) : (
-          <NoParkingIcon width={340} height={340} />
-        )}
-        <AppText font="bold" size={20} align="center" color={Colors.white}>
-          {isResolve ? 'Permitted Parking' : 'Prohibited Parking'}
-        </AppText>
-        <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-          <Markdown style={markdownStyles}>{summarize_message}</Markdown>
-        </ScrollView>
-      </View>
-      <GradientButton
-        label="START OVER"
+      <TouchableOpacity
+        style={styles.menuBtn}
         onPress={handleReset}
-        style={styles.cta}
-      />
+        activeOpacity={0.85}
+      >
+        <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
+      </TouchableOpacity>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 20 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View>
+          <View style={styles.iconWrapper}>
+            {isResolve ? (
+              <YesParkingIcon width={320} height={320} />
+            ) : (
+              <NoParkingIcon width={320} height={320} />
+            )}
+          </View>
+
+          <AppText
+            font="bold"
+            size={20}
+            align="center"
+            color={Colors.white}
+            style={styles.title}
+          >
+            {isResolve ? 'Permitted Parking' : 'Prohibited Parking'}
+          </AppText>
+
+          <Markdown style={markdownStyles}>{summarize_message}</Markdown>
+        </View>
+        <TouchableOpacity style={styles.overBtn} onPress={handleReset}>
+          <AppText
+            font="medium"
+            size={16}
+            color={isResolve ? Colors.greenDark : Colors.redDark}
+          >
+            START OVER
+          </AppText>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaWrapper>
   );
 };
@@ -62,29 +78,37 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
 export default ResultScreen;
 
 const styles = StyleSheet.create({
-  inner: {
+  container: {
     flex: 1,
-    justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
   },
   menuBtn: {
     width: 48,
     height: 48,
+    marginTop: 10,
     borderRadius: 24,
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
   },
-  scroll: {
-    flexGrow: 0,
-    flexShrink: 1,
-    maxHeight: 300,
+  iconWrapper: {
+    alignItems: 'center',
   },
-  cta: {
-    marginBottom: 20,
+  title: {
+    marginBottom: 10,
+  },
+  overBtn: {
+    minHeight: 60,
+    borderRadius: 40,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

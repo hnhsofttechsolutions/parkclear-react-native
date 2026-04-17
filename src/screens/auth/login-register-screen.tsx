@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import SignInForm from '../../components/auth/sign-In-form';
 import SignUpForm from '../../components/auth/sign-up-form';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
 import { FlutterStrings } from '../../constants/flutterStrings';
 import { Colors } from '../../utils/colors';
