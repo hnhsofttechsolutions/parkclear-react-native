@@ -1,4 +1,4 @@
-package com.parkclear
+package com.app.parkclear
 
 import android.app.Application
 import com.facebook.react.PackageList

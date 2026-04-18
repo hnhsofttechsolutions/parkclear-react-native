@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BackArrowIcon from '../assets/images/back_arrow.svg';
 import CancelIcon from '../assets/images/cancel_circle.svg';
 import GalleryIcon from '../assets/images/gallery.svg';
@@ -21,8 +21,15 @@ import SettingsIcon from '../assets/images/settings.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { logout } from '../store/slices/authSlice';
+import { RootState } from '../store/store';
 import { Colors } from '../utils/colors';
+import {
+  handlePaywallResult,
+  initRevenueCat,
+  showPaywall,
+} from '../utils/revenuecat-service';
 import DeleteModal from './modals/delete-modal';
+import DrawerRow from './settings/drawer-row';
 import AppText from './ui/app-text';
 
 const { width } = Dimensions.get('window');
@@ -34,6 +41,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const anim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(drawer);
   const [isLogoutModal, setIsLogoutModal] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (drawer) {
@@ -85,6 +93,16 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
     });
   };
 
+  const handleShowPaywall = async () => {
+    try {
+      await initRevenueCat(user?.id);
+      const result = await showPaywall();
+      handlePaywallResult(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -105,7 +123,6 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
               onPress={closeDrawer}
             />
           </Animated.View>
-
           <Animated.View
             style={[styles.drawerContent, { transform: [{ translateX }] }]}
           >
@@ -122,21 +139,17 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 >
                   <BackArrowIcon width={40} height={40} />
                 </TouchableOpacity>
-
                 <View style={{ height: 20 }} />
-
                 <DrawerRow
                   icon={<HomeIcon color="white" size={25} />}
                   label="Home"
                   onPress={closeDrawer}
                 />
-
                 <DrawerRow
                   icon={<GalleryIcon width={25} height={25} />}
                   label={FlutterStrings.gallery}
                   onPress={() => navigateTo(PATHS.Gallery)}
                 />
-
                 <DrawerRow
                   icon={<MyProfileIcon width={25} height={25} />}
                   label={FlutterStrings.myProfile}
@@ -144,7 +157,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 />
                 <TouchableOpacity
                   style={styles.removeAdsRow}
-                  onPress={() => navigateTo(PATHS.Subscription)}
+                  onPress={handleShowPaywall}
                 >
                   <RemoveAdsIcon width={20} height={20} color="white" />
                   <AppText size={17} color="#FFFFFF" style={styles.rowText}>
@@ -160,26 +173,23 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                     </AppText>
                   </View>
                 </TouchableOpacity>
-
                 <DrawerRow
                   icon={<SettingsIcon width={25} height={25} />}
                   label={FlutterStrings.settings}
                   onPress={() => navigateTo(PATHS.Settings)}
                 />
-
                 <DrawerRow
                   icon={<CancelIcon width={25} height={25} />}
                   label="Cancel Alerts"
                   onPress={closeDrawer}
                 />
-
                 <View style={{ flex: 1 }} />
-
                 <DrawerRow
                   icon={<LogoutIcon width={25} height={25} />}
                   label="Logout"
                   onPress={() => setIsLogoutModal(true)}
                 />
+                <View style={{ height: 40 }} />
               </View>
             </LinearGradient>
           </Animated.View>
@@ -192,17 +202,6 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
         onDelete={handlerLogout}
       />
     </>
-  );
-}
-
-function DrawerRow({ icon, label, onPress }: any) {
-  return (
-    <TouchableOpacity onPress={onPress} style={styles.drawerRow}>
-      <View style={styles.iconContainer}>{icon}</View>
-      <AppText size={17} color="#FFFFFF" style={styles.rowText}>
-        {label}
-      </AppText>
-    </TouchableOpacity>
   );
 }
 
@@ -238,20 +237,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 10,
   },
-  drawerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-  },
   removeAdsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
     marginVertical: 4,
-  },
-  iconContainer: {
-    width: 30,
-    alignItems: 'center',
   },
   rowText: {
     marginLeft: 15,

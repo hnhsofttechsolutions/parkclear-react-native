@@ -19,8 +19,8 @@ import { Colors } from '../../utils/colors';
 import { RootState } from '../../store/store';
 
 const REVENUECAT_API_KEY = Platform.select({
-  ios: 'app3cf199ce50',
-  android: 'appb0b01ef597',
+  ios: 'appl_DqdhKMtYkQIUWXfGnvZjlrwdtIY',
+  android: 'goog_QEsNqmtAzOJzkLobdZwIiVSEZpY',
 });
 
 const ENTITLEMENT_ID = 'pro_features';
@@ -49,10 +49,12 @@ const SubscriptionPackagesScreen = ({ navigation }: any) => {
       setIsPro(Boolean(customerInfo.entitlements.active[ENTITLEMENT_ID]));
 
       const offerings = await Purchases.getOfferings();
-      const availablePackages = offerings.current?.availablePackages ?? [];
+      console.log(offerings, 'offerings');
+      const availablePackages = offerings.all?.parkclear?.availablePackages ?? [];
       setPackages(availablePackages);
     } catch (error) {
-      Alert.alert('Error', 'Packages fetch nahi ho sake.');
+      console.log(error, 'errorerror');
+      Alert.alert('Error', 'Unable to fetch subscription packages.');
     } finally {
       setLoading(false);
     }
@@ -88,7 +90,12 @@ const SubscriptionPackagesScreen = ({ navigation }: any) => {
       disabled={Boolean(purchasingId)}
     >
       <View style={styles.cardHeader}>
-        <AppText font="semiBold" size={18} color={Colors.primary} style={styles.titleFlex}>
+        <AppText
+          font="semiBold"
+          size={18}
+          color={Colors.primary}
+          style={styles.titleFlex}
+        >
           {item.product.title}
         </AppText>
         <View style={styles.priceBadge}>
@@ -98,13 +105,20 @@ const SubscriptionPackagesScreen = ({ navigation }: any) => {
         </View>
       </View>
 
-      <AppText size={14} color={Colors.greyIcon} style={styles.packageDescription}>
-        {item.product.description || 'Premium access with smart parking insights.'}
+      <AppText
+        size={14}
+        color={Colors.greyIcon}
+        style={styles.packageDescription}
+      >
+        {item.product.description ||
+          'Premium access with smart parking insights.'}
       </AppText>
 
       <View style={styles.ctaRow}>
         <AppText font="medium" size={14} color={Colors.darkBlue}>
-          {purchasingId === item.identifier ? 'Processing...' : 'Tap to purchase'}
+          {purchasingId === item.identifier
+            ? 'Processing...'
+            : 'Tap to purchase'}
         </AppText>
       </View>
     </TouchableOpacity>
@@ -124,7 +138,12 @@ const SubscriptionPackagesScreen = ({ navigation }: any) => {
         <AppText font="bold" size={28} align="center" style={styles.heading}>
           Choose Your Plan
         </AppText>
-        <AppText size={15} align="center" color={Colors.greyIcon} style={styles.subHeading}>
+        <AppText
+          size={15}
+          align="center"
+          color={Colors.greyIcon}
+          style={styles.subHeading}
+        >
           Select a package to unlock premium features.
         </AppText>
 
@@ -137,7 +156,12 @@ const SubscriptionPackagesScreen = ({ navigation }: any) => {
             <View style={styles.proIconWrap}>
               <Check size={22} color={Colors.white} />
             </View>
-            <AppText font="semiBold" size={18} align="center" color={Colors.white}>
+            <AppText
+              font="semiBold"
+              size={18}
+              align="center"
+              color={Colors.white}
+            >
               You are already a Pro member.
             </AppText>
           </View>
@@ -162,7 +186,9 @@ const SubscriptionPackagesScreen = ({ navigation }: any) => {
             try {
               setLoading(true);
               const customerInfo = await Purchases.restorePurchases();
-              const restored = Boolean(customerInfo.entitlements.active[ENTITLEMENT_ID]);
+              const restored = Boolean(
+                customerInfo.entitlements.active[ENTITLEMENT_ID],
+              );
               setIsPro(restored);
               Alert.alert(
                 restored ? 'Restored' : 'No Subscription',

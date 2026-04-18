@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:429728101706:android:e5ddc268364303d998fdb3",
+        "mobilesdk_app_id": "1:429728101706:android:428df29525ba629e98fdb3",
         "android_client_info": {
-          "package_name": "com.parkclear"
+          "package_name": "com.app.parkclear"
         }
       },
       "oauth_client": [],

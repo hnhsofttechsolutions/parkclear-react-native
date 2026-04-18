@@ -1,4 +1,4 @@
-package com.parkclear
+package com.app.parkclear
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

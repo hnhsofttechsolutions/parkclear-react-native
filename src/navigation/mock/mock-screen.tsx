@@ -16,13 +16,13 @@ import GalleryScreen from '../../screens/gallery-screen';
 import GalleryDetailsScreen from '../../screens/gallery-details-screen';
 import UploadPhotoScreen from '../../screens/upload-photo-screen';
 import SubscriptionScreen from '../../screens/subcription/subscription-screen';
-import SubscriptionPackagesScreen from '../../screens/subcription/subscriptionPackagesScreen';
 import UpdateScreen from '../../screens/update-screen';
 import CameraScreen from '../../screens/camera-screen';
 import OtpRegisterScreen from '../../screens/auth/otp-register-screen';
 import OtpForgotScreen from '../../screens/auth/otp-forgot-screen';
 import SplashScreen from '../../screens/splash-screen';
 import ReminderSetScreen from '../../screens/home/reminder-set-screen';
+import SubscriptionPackagesScreen from '../../screens/subcription/subscription-packages-screen';
 
 export const APP_SCREENS = [
   { name: PATHS.Dashboard, component: DashboardScreen },

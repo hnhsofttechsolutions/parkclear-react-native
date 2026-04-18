@@ -36,6 +36,7 @@
     "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-permissions": "^5.5.1",
     "react-native-purchases": "^10.0.1",
+    "react-native-purchases-ui": "^10.0.1",
     "react-native-safe-area-context": "^5.7.0",
     "react-native-screens": "4.20.0",
     "react-native-share": "^12.2.6",

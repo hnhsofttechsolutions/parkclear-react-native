@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import SubscriptionArt from '../../assets/images/ic_subscription.svg';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import { AppBar } from '../../components/ui/app-bar';
 import AppText from '../../components/ui/app-text';
 import {
   GradientButton,
@@ -16,6 +17,7 @@ const SubscriptionScreen = ({ navigation }: any) => {
   return (
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.pad}>
+        <AppBar title="Subcription" onBack={() => navigation.goBack()} />
         <View style={styles.flex}>
           <View style={styles.center}>
             <SubscriptionArt width={300} height={300} />
@@ -29,7 +31,11 @@ const SubscriptionScreen = ({ navigation }: any) => {
               <AppText font="semiBold" size={28} align="center">
                 for only Rs 1,400
               </AppText>
-              <AppText color={Colors.primary} align="center" style={styles.mt10}>
+              <AppText
+                color={Colors.primary}
+                align="center"
+                style={styles.mt10}
+              >
                 {FlutterStrings.subscriptionDesc}
               </AppText>
             </View>

@@ -6854,6 +6854,13 @@ react-native-permissions@^5.5.1:
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-5.5.1.tgz#c262a3727f94700bcf2984893021f9c180bb8320"
   integrity sha512-nTKFoj47b6EXNqbbg+8VFwBWMpxF1/UTbrNBLpXkWpt005pH4BeFv/NwpcC1iNhToKBrxQD+5kI0z6+kTYoYWA==
 
+react-native-purchases-ui@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-purchases-ui/-/react-native-purchases-ui-10.0.1.tgz#c4631c3a40e11c32450c069213459ccfbda52f5a"
+  integrity sha512-sCwtdyucZbCSg6RVfpexALzSHtKByyPfFB8lgpWB1S9z8q0zLBZ0oqs5TzyI3b5ohT+h+S7Ez8j5t1z1fGxNtw==
+  dependencies:
+    "@revenuecat/purchases-typescript-internal" "18.1.0"
+
 react-native-purchases@^10.0.1:
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/react-native-purchases/-/react-native-purchases-10.0.1.tgz#046f4b0f38d48a5d562351269e70f245646791e3"
