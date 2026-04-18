@@ -13,6 +13,7 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   height?: number;
+  disableBackdropClose?: boolean;
   children: React.ReactNode;
 }
 
@@ -21,6 +22,7 @@ const BottomSheetModal = ({
   onClose,
   height = 420,
   children,
+  disableBackdropClose,
 }: Props) => {
   const translateY = useRef(new Animated.Value(height)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -84,7 +86,10 @@ const BottomSheetModal = ({
     <Modal transparent visible={visible} animationType="none">
       <View style={styles.root}>
         <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={close} />
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={disableBackdropClose ? undefined : close}
+          />
         </Animated.View>
         <Animated.View style={[styles.sheet, { transform: [{ translateY }] }]}>
           <View {...panResponder.panHandlers}>

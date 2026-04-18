@@ -7,6 +7,9 @@ export type RootStackParamList = {
     variant: 'resolve' | 'reject';
     summarize_message: string;
   };
+  [PATHS.ReminderSet]: {
+    reminderMinutes: number;
+  };
 
   [PATHS.Splash]: undefined;
   [PATHS.Onboard]: undefined;
@@ -36,4 +39,8 @@ export type HomeScreenProps = NativeStackScreenProps<
 export type ResultScreenProps = NativeStackScreenProps<
   RootStackParamList,
   typeof PATHS.Result
+>;
+export type ReminderSetScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  typeof PATHS.ReminderSet
 >;

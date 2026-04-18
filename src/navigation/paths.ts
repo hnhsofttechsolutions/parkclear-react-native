@@ -1,6 +1,7 @@
 export const PATHS = {
   Home: 'Home',
   Result: 'Result',
+  ReminderSet: 'ReminderSet',
   Splash: 'Splash',
   Onboard: 'Onboard',
   LoginRegister: 'LoginRegister',

@@ -25,7 +25,7 @@ export const Colors = {
   divider: '#F4F4F4',
   completedStroke: '#26A6F7',
   indicatorStroke: '#AFD1FA',
-  greenDark: '#41B540',
+  greenDark: '#49B945',
   redDark: '#F62C30',
 } as const;
 

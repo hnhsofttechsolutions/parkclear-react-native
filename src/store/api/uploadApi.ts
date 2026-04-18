@@ -13,8 +13,19 @@ export const uploadApi = baseApi.injectEndpoints({
     getUploadImage: builder.query<any, void>({
       query: () => `authentication/v1/parking-sign-analysis/park_gallery_view/`,
     }),
+    resultRemind: builder.mutation<any, any>({
+      query: ({ formData }: any) => ({
+        url: 'authentication/v1/user/set_parking_reminder/',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useUploadImageMutation, useGetUploadImageQuery } = uploadApi;
+export const {
+  useUploadImageMutation,
+  useGetUploadImageQuery,
+  useResultRemindMutation,
+} = uploadApi;

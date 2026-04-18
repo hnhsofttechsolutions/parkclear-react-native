@@ -36,48 +36,48 @@ const DashboardScreen = ({ navigation }: any) => {
   const { requestCameraPermission } = useCameraPermission();
 
   const openCamera = async () => {
-    // navigation.navigate(PATHS.Result, {
-    //   variant: 'resolve',
-    //   summarize_message:
-    //     'Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps',
-    // });
-    const ok = await requestCameraPermission();
-    if (!ok) return;
-    launchCamera(
-      { ...pickerOptions, saveToPhotos: Platform.OS === 'ios' },
-      async res => {
-        if (res.didCancel) return;
-        if (res.errorCode) {
-          Alert.alert('Camera Error', res.errorMessage || res.errorCode);
-          return;
-        }
-        const uri = uriFromResponse(res);
-        if (!uri) {
-          return;
-        }
-        const formData = new FormData();
-        const fileOBJ = {
-          uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
-          type: 'image/jpeg',
-          name: 'parking_sign.jpg',
-        };
-        formData.append('file', fileOBJ);
-        formData.append('timezone', 'EST');
-        const result = await uploadImage({ formData }).unwrap();
-        if (result?.status === true) {
-          navigation.navigate(PATHS.Result, {
-            variant: result?.park_status ? 'resolve' : 'reject',
-            summarize_message: result?.summarize_message,
-          });
-        } else {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: result?.message || 'Invalid image.',
-          });
-        }
-      },
-    );
+    navigation.navigate(PATHS.Result, {
+      variant: 'resolve',
+      summarize_message:
+        'Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps',
+    });
+    // const ok = await requestCameraPermission();
+    // if (!ok) return;
+    // launchCamera(
+    //   { ...pickerOptions, saveToPhotos: Platform.OS === 'ios' },
+    //   async res => {
+    //     if (res.didCancel) return;
+    //     if (res.errorCode) {
+    //       Alert.alert('Camera Error', res.errorMessage || res.errorCode);
+    //       return;
+    //     }
+    //     const uri = uriFromResponse(res);
+    //     if (!uri) {
+    //       return;
+    //     }
+    //     const formData = new FormData();
+    //     const fileOBJ = {
+    //       uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
+    //       type: 'image/jpeg',
+    //       name: 'parking_sign.jpg',
+    //     };
+    //     formData.append('file', fileOBJ);
+    //     formData.append('timezone', 'PST');
+    //     const result = await uploadImage({ formData }).unwrap();
+    //     if (result?.status === true) {
+    //       navigation.navigate(PATHS.Result, {
+    //         variant: result?.park_status ? 'resolve' : 'reject',
+    //         summarize_message: result?.summarize_message,
+    //       });
+    //     } else {
+    //       Toast.show({
+    //         type: 'error',
+    //         text1: 'Error',
+    //         text2: result?.message || 'Invalid image.',
+    //       });
+    //     }
+    //   },
+    // );
   };
 
   return (

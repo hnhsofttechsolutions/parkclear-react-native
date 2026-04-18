@@ -21,6 +21,7 @@ import CameraScreen from '../../screens/camera-screen';
 import OtpRegisterScreen from '../../screens/auth/otp-register-screen';
 import OtpForgotScreen from '../../screens/auth/otp-forgot-screen';
 import SplashScreen from '../../screens/splash-screen';
+import ReminderSetScreen from '../../screens/reminder-set-screen';
 
 export const APP_SCREENS = [
   { name: PATHS.Dashboard, component: DashboardScreen },
@@ -37,6 +38,7 @@ export const APP_SCREENS = [
   { name: PATHS.Update, component: UpdateScreen },
   { name: PATHS.Camera, component: CameraScreen },
 
+  { name: PATHS.ReminderSet, component: ReminderSetScreen },
   { name: PATHS.Home, component: HomeScreen },
   { name: PATHS.Result, component: ResultScreen },
 ];

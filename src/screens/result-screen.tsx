@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 
@@ -8,19 +8,28 @@ import YesParkingIcon from '../assets/images/yes_parking.svg';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import AppText from '../components/ui/app-text';
 
+import RemindCard from '../components/card/remind-card';
+import ReminderModal from '../components/modals/reminder-modal';
 import { PATHS } from '../navigation/paths';
 import { ResultScreenProps } from '../navigation/types';
 import { Colors, Gradient } from '../utils/colors';
+import { FontFamily } from '../utils/fonts';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const { variant, summarize_message } = route.params;
   const isResolve = variant === 'resolve';
+  const [reminderMinutes, setReminderMinutes] = useState(15);
+  const [showReminderModal, setShowReminderModal] = useState(false);
 
   const handleReset = () => {
     navigation.reset({
       index: 0,
       routes: [{ name: PATHS.Dashboard }],
     });
+  };
+
+  const handleConfirmReminder = () => {
+    setShowReminderModal(true);
   };
 
   return (
@@ -60,17 +69,48 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
           </AppText>
 
           <Markdown style={markdownStyles}>{summarize_message}</Markdown>
+
+          {isResolve && (
+            <RemindCard
+              reminderMinutes={reminderMinutes}
+              setReminderMinutes={setReminderMinutes}
+            />
+          )}
         </View>
-        <TouchableOpacity style={styles.overBtn} onPress={handleReset}>
-          <AppText
-            font="medium"
-            size={16}
-            color={isResolve ? Colors.greenDark : Colors.redDark}
+        <View style={styles.actionsWrapper}>
+          {isResolve && (
+            <TouchableOpacity
+              style={styles.confirmBtn}
+              onPress={handleConfirmReminder}
+            >
+              <AppText font="medium" size={16} color={Colors.greenDark}>
+                CONFIRM
+              </AppText>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={[
+              styles.overBtn,
+              isResolve ? styles.overBtnResolve : styles.overBtnDefault,
+            ]}
+            onPress={handleReset}
           >
-            START OVER
-          </AppText>
-        </TouchableOpacity>
+            <AppText
+              font="medium"
+              size={16}
+              color={isResolve ? Colors.white : Colors.redDark}
+            >
+              START OVER
+            </AppText>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
+
+      <ReminderModal
+        reminderMinutes={reminderMinutes}
+        showReminderModal={showReminderModal}
+        setShowReminderModal={setShowReminderModal}
+      />
     </SafeAreaWrapper>
   );
 };
@@ -101,7 +141,10 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 10,
   },
-  overBtn: {
+  actionsWrapper: {
+    gap: 14,
+  },
+  confirmBtn: {
     minHeight: 60,
     borderRadius: 40,
     paddingHorizontal: 20,
@@ -109,6 +152,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  overBtn: {
+    minHeight: 60,
+    borderRadius: 40,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  overBtnResolve: {
+    borderWidth: 1.5,
+    borderColor: Colors.white,
+    backgroundColor: 'transparent',
+  },
+  overBtnDefault: {
+    backgroundColor: Colors.white,
   },
 });
 
@@ -123,7 +182,8 @@ const markdownStyles = {
   },
   paragraph: {
     marginTop: 0,
-    marginBottom: 12,
+    marginBottom: 20,
+    fontFamily: FontFamily.regular,
   },
   list_item: {
     marginTop: 4,

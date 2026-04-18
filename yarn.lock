@@ -1975,6 +1975,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@notifee/react-native@^9.1.8":
+  version "9.1.8"
+  resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-9.1.8.tgz#3d55cb3fbcc21f9e35931e366afdf64b294da891"
+  integrity sha512-Az/dueoPerJsbbjRxu8a558wKY+gONUrfoy3Hs++5OqbeMsR0dYe6P+4oN6twrLFyzAhEA1tEoZRvQTFDRmvQg==
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -2193,6 +2198,11 @@
   integrity sha512-vvVOJAHjU8TFBzTUjQzANCL6C3pZSE2zjfutCATk790uz7ASEc2tOBD+EIG4BTelWtP2G9jqvXp2L7XGdhEBRg==
   dependencies:
     invariant "^2.2.4"
+
+"@react-native-community/slider@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-5.2.0.tgz#c154ac4ec10537160462d7a9f3e2e43098257302"
+  integrity sha512-484sH8aWEaSjxaZ7HT3YZ8CKDcNes2synko1vdEz5DFEdvKAduxKJTj22L/qBMD7rtIkfbX69DMzWDAGbOAV6w==
 
 "@react-native-firebase/app@^24.0.0":
   version "24.0.0"
@@ -2488,6 +2498,23 @@
     redux "^5.0.1"
     redux-thunk "^3.1.0"
     reselect "^5.1.0"
+
+"@revenuecat/purchases-js-hybrid-mappings@18.1.0":
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/@revenuecat/purchases-js-hybrid-mappings/-/purchases-js-hybrid-mappings-18.1.0.tgz#5f702146058cd7f539c20614101f730a09560d4d"
+  integrity sha512-P2KtqjPUcdEhTx51nzXAWNFoNTRzQm9lR/g2S90jQ/uzwrB4H7OJNRJ9B1NFNa511Uc84LfwmmIh51oeQO9+qQ==
+  dependencies:
+    "@revenuecat/purchases-js" "1.34.0"
+
+"@revenuecat/purchases-js@1.34.0":
+  version "1.34.0"
+  resolved "https://registry.yarnpkg.com/@revenuecat/purchases-js/-/purchases-js-1.34.0.tgz#0d07db0fa3bedab6a4c6ad234b706ebcb37ca78e"
+  integrity sha512-p3hpHHvyllAckqnjpjaCoj+lVK0gNJwqR1F8EwZPw7eMKFummE0UItbGzBCfncJIPxGA1NJHrgZb1dLflEmjhg==
+
+"@revenuecat/purchases-typescript-internal@18.1.0":
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/@revenuecat/purchases-typescript-internal/-/purchases-typescript-internal-18.1.0.tgz#e72c58aa0d23510f2def57e52a3f76900881fe65"
+  integrity sha512-aoXmrvDSCVStXAbv+yfUkb1BEIga2hXYiUSLHOoGMX6luXXlSLNMeG7nhvMa7gXTgjnEZXDYOG59en4NNBtJ6A==
 
 "@sideway/address@^4.1.5":
   version "4.1.5"
@@ -6826,6 +6853,14 @@ react-native-permissions@^5.5.1:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-5.5.1.tgz#c262a3727f94700bcf2984893021f9c180bb8320"
   integrity sha512-nTKFoj47b6EXNqbbg+8VFwBWMpxF1/UTbrNBLpXkWpt005pH4BeFv/NwpcC1iNhToKBrxQD+5kI0z6+kTYoYWA==
+
+react-native-purchases@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-purchases/-/react-native-purchases-10.0.1.tgz#046f4b0f38d48a5d562351269e70f245646791e3"
+  integrity sha512-FyJgOLuGo2TqR/sswzgkUebiYu30FPAsB9N2goyv4q2pr5ixPL0v6QrETrYDpnPI8kz/wg+aMv8/HsAU9b6ajw==
+  dependencies:
+    "@revenuecat/purchases-js-hybrid-mappings" "18.1.0"
+    "@revenuecat/purchases-typescript-internal" "18.1.0"
 
 react-native-safe-area-context@^5.7.0:
   version "5.7.0"

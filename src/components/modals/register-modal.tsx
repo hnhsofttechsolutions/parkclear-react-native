@@ -18,7 +18,11 @@ function RegisterModal({ isVisible, setIsVisible, email }: Props) {
   const navigation = useNavigation<any>();
   return (
     <>
-      <BottomSheetModal visible={isVisible} onClose={() => setIsVisible(false)}>
+      <BottomSheetModal
+        visible={isVisible}
+        onClose={() => setIsVisible(false)}
+        disableBackdropClose={true}
+      >
         <View style={styles.sheetIconWrap}>
           <RegisterSuccess width={200} height={200} />
         </View>

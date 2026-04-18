@@ -7,6 +7,7 @@ import EmailImg from '../../assets/images/email.svg';
 import GoogleLogo from '../../assets/images/google_logo.svg';
 import UserImg from '../../assets/images/user_img.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
+import { useFirebase } from '../../hooks/use-firebase';
 import { signUpSchema } from '../../schema/authSchema';
 import { useSignupMutation } from '../../store/api/authApi';
 import { Colors } from '../../utils/colors';
@@ -18,12 +19,14 @@ import { GradientButton, GreyPillButton } from '../ui/gradient-button';
 import PhonePrefix from '../ui/phone-prefix';
 
 function SignUpForm({ navigation }: any) {
+  const { fcmToken } = useFirebase();
   const [signup, { isLoading }] = useSignupMutation();
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
 
   const handleSignUp = async (values: any) => {
     try {
       const formData = new FormData();
+      formData.append('fcm_token', fcmToken);
       Object.keys(values).forEach(key => {
         formData.append(key, values[key]);
       });
@@ -35,8 +38,7 @@ function SignUpForm({ navigation }: any) {
       Toast.show({
         type: 'error',
         text1: 'Sign Up Failed',
-        text2:
-          error?.data?.message || 'Something went wrong, please try again.',
+        text2: error?.data?.message,
       });
     }
   };
