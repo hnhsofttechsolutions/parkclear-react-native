@@ -15,25 +15,25 @@ import {
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import DayModal from '../components/modals/day-modal';
-import SafeAreaWrapper from '../components/safe-area-wrapper';
-import AppText from '../components/ui/app-text';
-import { useCameraPermission } from '../hooks/use-camera-permission';
-import { useGalleryPermission } from '../hooks/use-gallery-permission';
-import { PATHS } from '../navigation/paths';
-import { HomeScreenProps } from '../navigation/types';
-import { useUploadImageMutation } from '../store/api/uploadApi';
-import { Colors, Gradient } from '../utils/colors';
+import DayModal from '../../components/modals/day-modal';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import AppText from '../../components/ui/app-text';
+import { useCameraPermission } from '../../hooks/use-camera-permission';
+import { useGalleryPermission } from '../../hooks/use-gallery-permission';
+import { PATHS } from '../../navigation/paths';
+import { HomeScreenProps } from '../../navigation/types';
+import { useUploadImageMutation } from '../../store/api/uploadApi';
+import { Colors, Gradient } from '../../utils/colors';
 import {
   formatDateToYYYYMMDD,
   formatTimeToAMPM,
   pickerOptions,
   uriFromResponse,
-} from '../utils/helpers';
+} from '../../utils/helpers';
 import {
   GradientButton,
   OutlineButton,
-} from '../components/ui/gradient-button';
+} from '../../components/ui/gradient-button';
 
 const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const [uploadImage] = useUploadImageMutation();

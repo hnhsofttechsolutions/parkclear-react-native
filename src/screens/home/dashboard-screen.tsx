@@ -12,26 +12,26 @@ import {
 import { launchCamera } from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
-import GalleryFabIcon from '../assets/images/gallery_circle.svg';
-import HamburgerIcon from '../assets/images/hamburger_menu.svg';
-import ProfileIcon from '../assets/images/my_profile_circle.svg';
-import ShareIcon from '../assets/images/share_img.svg';
-import CurrentTime from '../components/current-time';
-import SafeAreaWrapper from '../components/safe-area-wrapper';
-import SideDrawer from '../components/side-drawer';
-import { GradientButton } from '../components/ui/gradient-button';
-import PageLoader from '../components/ui/page-loader';
-import { useCameraPermission } from '../hooks/use-camera-permission';
-import { PATHS } from '../navigation/paths';
-import { useUploadImageMutation } from '../store/api/uploadApi';
-import { Colors } from '../utils/colors';
-import { pickerOptions, shareApp, uriFromResponse } from '../utils/helpers';
+import GalleryFabIcon from '../../assets/images/gallery_circle.svg';
+import HamburgerIcon from '../../assets/images/hamburger_menu.svg';
+import ProfileIcon from '../../assets/images/my_profile_circle.svg';
+import ShareIcon from '../../assets/images/share_img.svg';
+import CurrentTime from '../../components/current-time';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import SideDrawer from '../../components/side-drawer';
+import { GradientButton } from '../../components/ui/gradient-button';
+import PageLoader from '../../components/ui/page-loader';
+import { useCameraPermission } from '../../hooks/use-camera-permission';
+import { PATHS } from '../../navigation/paths';
+import { useUploadImageMutation } from '../../store/api/uploadApi';
+import { Colors } from '../../utils/colors';
+import { pickerOptions, shareApp, uriFromResponse } from '../../utils/helpers';
 
 const { height } = Dimensions.get('window');
 
 const DashboardScreen = ({ navigation }: any) => {
   const [drawer, setDrawer] = useState(false);
-  const carSource = require('../assets/images/car.png');
+  const carSource = require('../../assets/images/car.png');
   const [uploadImage, { isLoading }] = useUploadImageMutation();
   const { requestCameraPermission } = useCameraPermission();
 

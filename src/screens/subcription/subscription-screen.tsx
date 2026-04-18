@@ -1,16 +1,16 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import SubscriptionArt from '../assets/images/ic_subscription.svg';
-import SafeAreaWrapper from '../components/safe-area-wrapper';
-import AppText from '../components/ui/app-text';
+import SubscriptionArt from '../../assets/images/ic_subscription.svg';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import AppText from '../../components/ui/app-text';
 import {
   GradientButton,
   OutlineButton,
-} from '../components/ui/gradient-button';
-import { GradientText } from '../components/ui/gradient-text';
-import { FlutterStrings } from '../constants/flutterStrings';
-import { PATHS } from '../navigation/paths';
-import { Colors } from '../utils/colors';
+} from '../../components/ui/gradient-button';
+import { GradientText } from '../../components/ui/gradient-text';
+import { FlutterStrings } from '../../constants/flutterStrings';
+import { PATHS } from '../../navigation/paths';
+import { Colors } from '../../utils/colors';
 
 const SubscriptionScreen = ({ navigation }: any) => {
   return (
@@ -19,8 +19,8 @@ const SubscriptionScreen = ({ navigation }: any) => {
         <View style={styles.flex}>
           <View style={styles.center}>
             <SubscriptionArt width={300} height={300} />
-            <View style={{ alignItems: 'center' }}>
-              <View style={{ flexDirection: 'row' }}>
+            <View style={styles.textWrap}>
+              <View style={styles.headingRow}>
                 <AppText font="semiBold" size={28}>
                   Join{' '}
                 </AppText>
@@ -29,27 +29,16 @@ const SubscriptionScreen = ({ navigation }: any) => {
               <AppText font="semiBold" size={28} align="center">
                 for only Rs 1,400
               </AppText>
-              <AppText
-                color={Colors.primary}
-                align="center"
-                style={styles.mt10}
-              >
-                {FlutterStrings.subscriptionDesc}
-              </AppText>
-              <AppText
-                color={Colors.primary}
-                align="center"
-                style={styles.mt10}
-              >
+              <AppText color={Colors.primary} align="center" style={styles.mt10}>
                 {FlutterStrings.subscriptionDesc}
               </AppText>
             </View>
           </View>
         </View>
-        <View style={{ gap: 10 }}>
+        <View style={styles.actions}>
           <GradientButton
             label={FlutterStrings.startSubscription}
-            onPress={() => navigation.navigate(PATHS.Dashboard)}
+            onPress={() => navigation.navigate(PATHS.SubscriptionPackages)}
           />
           <OutlineButton
             label={FlutterStrings.cancelAnytime}
@@ -68,5 +57,8 @@ const styles = StyleSheet.create({
   pad: { flex: 1, paddingHorizontal: 20, paddingBottom: 28 },
   flex: { flex: 1 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  textWrap: { alignItems: 'center' },
+  headingRow: { flexDirection: 'row', alignItems: 'center' },
   mt10: { marginTop: 10 },
+  actions: { gap: 10 },
 });

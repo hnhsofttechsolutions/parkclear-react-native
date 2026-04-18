@@ -5,12 +5,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SafeAreaWrapper from '../components/safe-area-wrapper';
-import AppText from '../components/ui/app-text';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import AppText from '../../components/ui/app-text';
 
-import { PATHS } from '../navigation/paths';
-import { ReminderSetScreenProps } from '../navigation/types';
-import { Colors } from '../utils/colors';
+import { PATHS } from '../../navigation/paths';
+import { ReminderSetScreenProps } from '../../navigation/types';
+import { Colors } from '../../utils/colors';
 
 const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
   const { reminderMinutes } = route.params;
@@ -34,7 +34,7 @@ const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
       >
         <View style={styles.contentWrapper}>
           <Image
-            source={require('../assets/images/tick-circle.png')}
+            source={require('../../assets/images/tick-circle.png')}
             style={styles.tickIcon}
           />
           <AppText font="bold" size={24} align="center" color={Colors.white}>

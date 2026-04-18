@@ -19,6 +19,7 @@ export const PATHS = {
   Gallery: 'Gallery',
   UploadPhoto: 'UploadPhoto',
   Subscription: 'Subscription',
+  SubscriptionPackages: 'SubscriptionPackages',
   Update: 'Update',
   Camera: 'Camera',
   GalleryDetails: 'GalleryDetails',

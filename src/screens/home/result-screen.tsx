@@ -3,17 +3,17 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 
-import NoParkingIcon from '../assets/images/no_parking.svg';
-import YesParkingIcon from '../assets/images/yes_parking.svg';
-import SafeAreaWrapper from '../components/safe-area-wrapper';
-import AppText from '../components/ui/app-text';
+import NoParkingIcon from '../../assets/images/no_parking.svg';
+import YesParkingIcon from '../../assets/images/yes_parking.svg';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import AppText from '../../components/ui/app-text';
 
-import RemindCard from '../components/card/remind-card';
-import ReminderModal from '../components/modals/reminder-modal';
-import { PATHS } from '../navigation/paths';
-import { ResultScreenProps } from '../navigation/types';
-import { Colors, Gradient } from '../utils/colors';
-import { FontFamily } from '../utils/fonts';
+import RemindCard from '../../components/card/remind-card';
+import ReminderModal from '../../components/modals/reminder-modal';
+import { PATHS } from '../../navigation/paths';
+import { ResultScreenProps } from '../../navigation/types';
+import { Colors, Gradient } from '../../utils/colors';
+import { FontFamily } from '../../utils/fonts';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const { variant, summarize_message } = route.params;

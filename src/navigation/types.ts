@@ -27,6 +27,7 @@ export type RootStackParamList = {
   [PATHS.Gallery]: undefined;
   [PATHS.UploadPhoto]: undefined;
   [PATHS.Subscription]: undefined;
+  [PATHS.SubscriptionPackages]: undefined;
   [PATHS.Update]: undefined;
   [PATHS.Camera]: undefined;
   [PATHS.GalleryDetails]: { imageUrl: string };
