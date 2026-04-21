@@ -1,6 +1,7 @@
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import Purchases from 'react-native-purchases';
 import RevenueCatUI, { PAYWALL_RESULT } from 'react-native-purchases-ui';
+import Toast from 'react-native-toast-message';
 
 const REVENUECAT_API_KEY = Platform.select({
   ios: 'appl_DqdhKMtYkQIUWXfGnvZjlrwdtIY',
@@ -49,20 +50,35 @@ export const showPaywall = async () => {
   }
 };
 
-export const handlePaywallResult = (result: PAYWALL_RESULT) => {
+export const handlePaywallResult = async (result: PAYWALL_RESULT) => {
   switch (result) {
     case PAYWALL_RESULT.NOT_PRESENTED:
-      Alert.alert('Success', 'You already have access!');
+      Toast.show({
+        type: 'success',
+        text1: 'Already Active',
+        text2: 'You already have access!',
+      });
       break;
     case PAYWALL_RESULT.PURCHASED:
     case PAYWALL_RESULT.RESTORED:
-      Alert.alert('Welcome!', 'Pro features unlocked.');
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Pro unlocked',
+      });
       break;
     case PAYWALL_RESULT.CANCELLED:
-      console.log('User closed paywall');
+      console.log('Cancelled');
+      // Toast.show({
+      //   type: 'info',
+      //   text1: 'Cancelled',
+      // });
       break;
     case PAYWALL_RESULT.ERROR:
-      Alert.alert('Error', 'Something went wrong');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+      });
       break;
   }
 };

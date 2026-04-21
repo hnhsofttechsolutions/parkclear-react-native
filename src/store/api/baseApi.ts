@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // export const baseURL = "https://laree-appraisive-randa.ngrok-free.dev/"
 // export const baseURL = "http://167.114.96.66:2009/"
 // export const baseURL = 'https://jlsxgq9c-8000.inc1.devtunnels.ms/';
-export const baseURL = 'http://167.114.96.66:3209/';
+// export const baseURL = 'http://167.114.96.66:3209/';
+export const baseURL = 'https://parkclearapi.hnhsofttechsolutions.com/';
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
@@ -19,6 +20,6 @@ export const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: [''],
+  tagTypes: ['UPLOAD_IMAGE'],
   endpoints: () => ({}),
 });

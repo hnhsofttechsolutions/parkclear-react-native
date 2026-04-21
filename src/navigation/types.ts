@@ -4,6 +4,7 @@ import { PATHS } from './paths';
 export type RootStackParamList = {
   [PATHS.Home]: undefined;
   [PATHS.Result]: {
+    id: string;
     variant: 'resolve' | 'reject';
     summarize_message: string;
   };

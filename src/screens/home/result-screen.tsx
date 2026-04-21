@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 
@@ -8,18 +8,28 @@ import YesParkingIcon from '../../assets/images/yes_parking.svg';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
 
+import Sound from 'react-native-sound';
+import { useSelector } from 'react-redux';
 import RemindCard from '../../components/card/remind-card';
 import ReminderModal from '../../components/modals/reminder-modal';
+import ResultFeedBack from '../../components/result/result-feedback';
 import { PATHS } from '../../navigation/paths';
 import { ResultScreenProps } from '../../navigation/types';
+import { RootState } from '../../store/store';
 import { Colors, Gradient } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
+import ReminderSubcriptionModal from '../../components/modals/reminder-subcription-modal';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
-  const { variant, summarize_message } = route.params;
+  const { id, variant, summarize_message } = route.params;
   const isResolve = variant === 'resolve';
   const [reminderMinutes, setReminderMinutes] = useState(15);
   const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderSubcriptionModal, setReminderSubcriptionModal] =
+    useState(false);
+  const [isFeedVisible, setIsFeedVisible] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const isPaid = user?.is_paid;
 
   const handleReset = () => {
     navigation.reset({
@@ -31,6 +41,33 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const handleConfirmReminder = () => {
     setShowReminderModal(true);
   };
+
+  useEffect(() => {
+    if (!isResolve) return;
+    const sound = new Sound('powerupsuccess.wav', Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.log('Sound load error', error);
+        return;
+      }
+      sound.play(success => {
+        if (!success) {
+          console.log('Playback failed');
+        }
+        sound.release();
+      });
+    });
+    return () => {
+      sound.release();
+    };
+  }, [isResolve]);
+
+  useEffect(() => {
+    if (!isPaid) {
+      setTimeout(() => {
+        setReminderSubcriptionModal(true);
+      }, 5000);
+    }
+  });
 
   return (
     <SafeAreaWrapper
@@ -70,7 +107,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
 
           <Markdown style={markdownStyles}>{summarize_message}</Markdown>
 
-          {isResolve && (
+          {isResolve && isPaid && (
             <RemindCard
               reminderMinutes={reminderMinutes}
               setReminderMinutes={setReminderMinutes}
@@ -78,7 +115,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
           )}
         </View>
         <View style={styles.actionsWrapper}>
-          {isResolve && (
+          {isResolve && isPaid && (
             <TouchableOpacity
               style={styles.confirmBtn}
               onPress={handleConfirmReminder}
@@ -88,6 +125,21 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
               </AppText>
             </TouchableOpacity>
           )}
+          <TouchableOpacity
+            style={[
+              styles.overBtn,
+              isResolve ? styles.overBtnResolve : styles.overBtnDefault,
+            ]}
+            onPress={() => setIsFeedVisible(true)}
+          >
+            <AppText
+              font="medium"
+              size={16}
+              color={isResolve ? Colors.white : Colors.redDark}
+            >
+              FEEDBACK
+            </AppText>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.overBtn,
@@ -106,10 +158,19 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
         </View>
       </ScrollView>
 
+      <ResultFeedBack
+        id={id}
+        isVisible={isFeedVisible}
+        setIsVisible={setIsFeedVisible}
+      />
       <ReminderModal
         reminderMinutes={reminderMinutes}
         showReminderModal={showReminderModal}
         setShowReminderModal={setShowReminderModal}
+      />
+      <ReminderSubcriptionModal
+        showReminderModal={reminderSubcriptionModal}
+        setShowReminderModal={setReminderSubcriptionModal}
       />
     </SafeAreaWrapper>
   );
@@ -142,6 +203,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   actionsWrapper: {
+    paddingBottom: 20,
     gap: 14,
   },
   confirmBtn: {

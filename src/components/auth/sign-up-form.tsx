@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
-import { Apple, LockKeyhole } from 'lucide-react-native';
+import { Apple, Eye, EyeOff, LockKeyhole } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import EmailImg from '../../assets/images/email.svg';
 import GoogleLogo from '../../assets/images/google_logo.svg';
@@ -22,6 +22,7 @@ function SignUpForm({ navigation }: any) {
   const { fcmToken } = useFirebase();
   const [signup, { isLoading }] = useSignupMutation();
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
+  const [securePassword, setSecurePassword] = useState(true);
 
   const handleSignUp = async (values: any) => {
     try {
@@ -109,11 +110,23 @@ function SignUpForm({ navigation }: any) {
                   <LockKeyhole width={22} height={22} color={Colors.grey} />
                 }
                 placeholder={FlutterStrings.enterYourPassword}
-                secureTextEntry={true}
+                secureTextEntry={securePassword}
                 autoCapitalize="none"
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
+                suffix={
+                  <TouchableOpacity
+                    onPress={() => setSecurePassword(value => !value)}
+                    hitSlop={8}
+                  >
+                    {securePassword ? (
+                      <EyeOff size={22} color={Colors.greyIcon} />
+                    ) : (
+                      <Eye size={22} color={Colors.greyIcon} />
+                    )}
+                  </TouchableOpacity>
+                }
               />
               <ErrorText visible={touched.password} error={errors.password} />
               <View style={{ height: 20 }} />

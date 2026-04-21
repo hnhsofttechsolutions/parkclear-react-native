@@ -12,6 +12,7 @@ import {
 import { launchCamera } from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
+import CameraIcon from '../../assets/images/camera.svg';
 import GalleryFabIcon from '../../assets/images/gallery_circle.svg';
 import HamburgerIcon from '../../assets/images/hamburger_menu.svg';
 import ProfileIcon from '../../assets/images/my_profile_circle.svg';
@@ -26,6 +27,10 @@ import { PATHS } from '../../navigation/paths';
 import { useUploadImageMutation } from '../../store/api/uploadApi';
 import { Colors } from '../../utils/colors';
 import { pickerOptions, shareApp, uriFromResponse } from '../../utils/helpers';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+import { useLazyGetProfileQuery } from '../../store/api/settingApi';
+import { usePaywall } from '../../hooks/use-paywall';
 
 const { height } = Dimensions.get('window');
 
@@ -34,6 +39,10 @@ const DashboardScreen = ({ navigation }: any) => {
   const carSource = require('../../assets/images/car.png');
   const [uploadImage, { isLoading }] = useUploadImageMutation();
   const { requestCameraPermission } = useCameraPermission();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const isPaid = user?.is_paid;
+  const [triggerGetProfile, { isLoading: isProfileLoading }] =
+    useLazyGetProfileQuery();
 
   const openCamera = async () => {
     // navigation.navigate(PATHS.Result, {
@@ -66,6 +75,7 @@ const DashboardScreen = ({ navigation }: any) => {
         const result = await uploadImage({ formData }).unwrap();
         if (result?.status === true) {
           navigation.navigate(PATHS.Result, {
+            id: result?.id,
             variant: result?.park_status ? 'resolve' : 'reject',
             summarize_message: result?.summarize_message,
           });
@@ -80,9 +90,16 @@ const DashboardScreen = ({ navigation }: any) => {
     );
   };
 
+  const onClose = () => setDrawer(false);
+
+  const { openPaywall } = usePaywall({
+    onClose,
+    triggerGetProfile,
+  });
+
   return (
     <View style={styles.root}>
-      <PageLoader visible={isLoading} />
+      <PageLoader visible={isLoading || isProfileLoading} />
       <LinearGradient
         colors={[Colors.gradientStart, Colors.darkBlue]}
         style={StyleSheet.absoluteFill}
@@ -101,12 +118,18 @@ const DashboardScreen = ({ navigation }: any) => {
           >
             <HamburgerIcon width={45} height={45} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(PATHS.Gallery)}
-            activeOpacity={0.85}
-          >
-            <GalleryFabIcon width={45} height={45} />
-          </TouchableOpacity>
+          {isPaid ? (
+            <TouchableOpacity
+              onPress={() => navigation.navigate(PATHS.Camera)}
+              activeOpacity={0.85}
+            >
+              <CameraIcon width={45} height={45} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={openPaywall} activeOpacity={0.85}>
+              <GalleryFabIcon width={45} height={45} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView

@@ -37,6 +37,13 @@ export const authApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    changePassword: builder.mutation<any, any>({
+      query: ({ formData }: any) => ({
+        url: 'authentication/v1/user/change_password/',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
     otpRegister: builder.mutation<any, any>({
       query: ({ formData }: any) => ({
         url: 'authentication/v1/user/register_verify_otp/',
@@ -54,5 +61,6 @@ export const {
   useOtpRegisterMutation,
   useOtpForgotMutation,
   useCreateNewPasswordMutation,
+  useChangePasswordMutation,
   useForgotPasswordMutation,
 } = authApi;

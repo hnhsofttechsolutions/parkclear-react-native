@@ -9,7 +9,7 @@ interface Props {
 }
 
 function RemindCard({ reminderMinutes, setReminderMinutes }: Props) {
-  const minMinutes = 5;
+  const minMinutes = 1;
   const maxMinutes = 30;
 
   return (

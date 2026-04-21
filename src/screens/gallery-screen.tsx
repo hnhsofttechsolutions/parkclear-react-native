@@ -11,6 +11,7 @@ import {
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import { AppBar } from '../components/ui/app-bar';
 import AppText from '../components/ui/app-text';
+import { GradientButton } from '../components/ui/gradient-button';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { baseURL } from '../store/api/baseApi';
@@ -50,6 +51,11 @@ const GalleryScreen = ({ navigation }: any) => {
               <TouchableOpacity
                 style={styles.cell}
                 activeOpacity={0.9}
+                onPress={() =>
+                  navigation.navigate(PATHS.GalleryDetails, {
+                    item: item,
+                  })
+                }
               >
                 <Image
                   source={{ uri: `${baseURL}${item?.image}` }}
@@ -72,6 +78,12 @@ const GalleryScreen = ({ navigation }: any) => {
             }
           />
         )}
+        <View style={styles.bottomButtonWrap}>
+          <GradientButton
+            label="Add New Image"
+            onPress={() => navigation.navigate(PATHS.Dashboard)}
+          />
+        </View>
       </View>
     </SafeAreaWrapper>
   );
@@ -83,7 +95,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.white },
   flex: { flex: 1 },
   padH: { paddingHorizontal: 20 },
-  grid: { paddingHorizontal: 20, paddingVertical: 10 },
+  grid: { paddingHorizontal: 20, paddingVertical: 10, paddingBottom: 110 },
   row: { justifyContent: 'flex-start', gap: 10, marginBottom: 10 },
   cell: { width: COLUMN_WIDTH, height: COLUMN_WIDTH },
   thumb: {
@@ -101,5 +113,11 @@ const styles = StyleSheet.create({
   emptyContainer: {
     marginTop: 100,
     alignItems: 'center',
+  },
+  bottomButtonWrap: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    bottom: 20,
   },
 });

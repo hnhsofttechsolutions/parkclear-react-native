@@ -15,12 +15,10 @@ const StackNavigation = () => {
   const renderScreens = () => {
     if (!hasSeenOnboard) {
       return AUTH_SCREENS.filter(s => s.name === PATHS.Onboard);
-      // return AUTH_SCREENS
     }
     if (token) {
       return APP_SCREENS;
     }
-    // return AUTH_SCREENS
     return AUTH_SCREENS.filter(s => s.name !== PATHS.Onboard);
   };
   const activeScreens = renderScreens();

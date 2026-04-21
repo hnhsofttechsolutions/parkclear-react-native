@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
 import BackArrowIcon from '../assets/images/back_arrow.svg';
 import CancelIcon from '../assets/images/cancel_circle.svg';
@@ -19,18 +20,18 @@ import MyProfileIcon from '../assets/images/my_profile.svg';
 import RemoveAdsIcon from '../assets/images/remove_ads.svg';
 import SettingsIcon from '../assets/images/settings.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
+import { usePaywall } from '../hooks/use-paywall';
 import { PATHS } from '../navigation/paths';
+import { baseApi } from '../store/api/baseApi';
+import { useLazyGetProfileQuery } from '../store/api/settingApi';
+import { useCancelRemindMutation } from '../store/api/uploadApi';
 import { logout } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
 import { Colors } from '../utils/colors';
-import {
-  handlePaywallResult,
-  initRevenueCat,
-  showPaywall,
-} from '../utils/revenuecat-service';
 import DeleteModal from './modals/delete-modal';
 import DrawerRow from './settings/drawer-row';
 import AppText from './ui/app-text';
+import PageLoader from './ui/page-loader';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
@@ -42,6 +43,16 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const [modalVisible, setModalVisible] = useState(drawer);
   const [isLogoutModal, setIsLogoutModal] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
+  const [triggerGetProfile, { isLoading }] = useLazyGetProfileQuery();
+  const [cancelRemind, { isLoading: cancelRemindLoading }] = useCancelRemindMutation();
+  const isPaid = user?.is_paid;
+
+  const onClose = () => setDrawer(false);
+
+  const { openPaywall } = usePaywall({
+    onClose,
+    triggerGetProfile,
+  });
 
   useEffect(() => {
     if (drawer) {
@@ -78,37 +89,52 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
 
   if (!modalVisible) return null;
 
-  const closeDrawer = () => setDrawer(false);
-
   const navigateTo = (path: string) => {
-    closeDrawer();
+    onClose();
     navigation.navigate(path);
   };
 
-  const handlerLogout = () => {
+  const handlerLogout = async () => {
     dispatch(logout());
-    navigation.reset({
-      index: 0,
-      routes: [{ name: PATHS.LoginRegister }],
-    });
+    dispatch(baseApi.util.resetApiState());
   };
 
-  const handleShowPaywall = async () => {
+  const handleGallery = () => {
+    if (isPaid) {
+      navigateTo(PATHS.Gallery);
+    } else {
+      openPaywall();
+    }
+  };
+
+  const handleCancelRemind = async () => {
     try {
-      await initRevenueCat(user?.id);
-      const result = await showPaywall();
-      handlePaywallResult(result);
-    } catch (error) {
+      const response = await cancelRemind({}).unwrap();
+      if (response?.status) {
+        Toast.show({
+          type: 'success',
+          text1: 'Remind Cancelled',
+          text2: response?.message,
+        });
+        setDrawer(false);
+      }
+    } catch (error: any) {
       console.log(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Remind Cancelled Failed',
+        text2: error?.data?.message,
+      });
     }
   };
 
   return (
     <>
+      <PageLoader visible={isLoading || cancelRemindLoading} />
       <Modal
         transparent
         visible={modalVisible}
-        onRequestClose={closeDrawer}
+        onRequestClose={onClose}
         animationType="none"
         statusBarTranslucent
         navigationBarTranslucent
@@ -120,7 +146,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
             <TouchableOpacity
               style={styles.fullFlex}
               activeOpacity={1}
-              onPress={closeDrawer}
+              onPress={onClose}
             />
           </Animated.View>
           <Animated.View
@@ -133,22 +159,19 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
               style={styles.fullFlex}
             >
               <View style={styles.drawerPad}>
-                <TouchableOpacity
-                  onPress={closeDrawer}
-                  style={styles.drawerClose}
-                >
+                <TouchableOpacity onPress={onClose} style={styles.drawerClose}>
                   <BackArrowIcon width={40} height={40} />
                 </TouchableOpacity>
                 <View style={{ height: 20 }} />
                 <DrawerRow
                   icon={<HomeIcon color="white" size={25} />}
                   label="Home"
-                  onPress={closeDrawer}
+                  onPress={onClose}
                 />
                 <DrawerRow
                   icon={<GalleryIcon width={25} height={25} />}
                   label={FlutterStrings.gallery}
-                  onPress={() => navigateTo(PATHS.Gallery)}
+                  onPress={handleGallery}
                 />
                 <DrawerRow
                   icon={<MyProfileIcon width={25} height={25} />}
@@ -157,7 +180,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 />
                 <TouchableOpacity
                   style={styles.removeAdsRow}
-                  onPress={handleShowPaywall}
+                  onPress={openPaywall}
                 >
                   <RemoveAdsIcon width={20} height={20} color="white" />
                   <AppText size={17} color="#FFFFFF" style={styles.rowText}>
@@ -178,11 +201,13 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                   label={FlutterStrings.settings}
                   onPress={() => navigateTo(PATHS.Settings)}
                 />
-                <DrawerRow
-                  icon={<CancelIcon width={25} height={25} />}
-                  label="Cancel Alerts"
-                  onPress={closeDrawer}
-                />
+                {isPaid && (
+                  <DrawerRow
+                    icon={<CancelIcon width={25} height={25} />}
+                    label="Cancel Alerts"
+                    onPress={handleCancelRemind}
+                  />
+                )}
                 <View style={{ flex: 1 }} />
                 <DrawerRow
                   icon={<LogoutIcon width={25} height={25} />}
@@ -242,9 +267,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     marginVertical: 4,
+    marginLeft: 4,
   },
   rowText: {
-    marginLeft: 15,
+    marginLeft: 18,
     fontWeight: '400',
     letterSpacing: 0.3,
   },

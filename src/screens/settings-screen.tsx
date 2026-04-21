@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react-native';
+import { ChevronRight, KeyRound } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import AboutUsImg from '../assets/images/about_us.svg';
@@ -107,10 +107,10 @@ const SettingsScreen = ({ navigation }: any) => {
           />
           <View style={{ height: 20 }} />
           <SettingsBoxRow
-            icon={<RestoreImg width={20} height={20} />}
-            title={FlutterStrings.restorePurchase}
+            icon={<KeyRound width={20} height={20} />}
+            title={FlutterStrings.resetPassword}
             suffix={chevron}
-            onPress={() => {}}
+            onPress={() => navigation.navigate(PATHS.ChangePassword)}
           />
           <View style={{ height: 20 }} />
           <SettingsBoxRow

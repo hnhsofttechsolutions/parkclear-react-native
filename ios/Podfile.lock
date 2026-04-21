@@ -72,6 +72,9 @@ PODS:
   - PromisesObjC (2.4.0)
   - PurchasesHybridCommon (18.1.0):
     - RevenueCat (= 5.68.0)
+  - PurchasesHybridCommonUI (18.1.0):
+    - PurchasesHybridCommon (= 18.1.0)
+    - RevenueCatUI (= 5.68.0)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -2714,6 +2717,8 @@ PODS:
     - React-utils (= 0.83.1)
     - SocketRocket
   - RevenueCat (5.68.0)
+  - RevenueCatUI (5.68.0):
+    - RevenueCat (= 5.68.0)
   - RNBootSplash (7.3.1):
     - boost
     - DoubleConversion
@@ -2918,6 +2923,9 @@ PODS:
     - React-Core
     - RNNotifee/NotifeeCore (= 9.1.8)
   - RNNotifee/NotifeeCore (9.1.8):
+    - React-Core
+  - RNPaywalls (10.0.1):
+    - PurchasesHybridCommonUI (= 18.1.0)
     - React-Core
   - RNPermissions (5.5.1):
     - boost
@@ -3188,6 +3196,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNNotifee (from `../node_modules/@notifee/react-native`)"
+  - RNPaywalls (from `../node_modules/react-native-purchases-ui`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNPurchases (from `../node_modules/react-native-purchases`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -3209,7 +3218,9 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - PurchasesHybridCommon
+    - PurchasesHybridCommonUI
     - RevenueCat
+    - RevenueCatUI
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -3392,6 +3403,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNNotifee:
     :path: "../node_modules/@notifee/react-native"
+  RNPaywalls:
+    :path: "../node_modules/react-native-purchases-ui"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNPurchases:
@@ -3425,6 +3438,7 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PurchasesHybridCommon: 32902b8fad349cf549f096183926ee33af00e36a
+  PurchasesHybridCommonUI: 658bc5ca18c14a4bcc543740a3acc092cd0064f6
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: a41bbdd9af30bf2e5715796b313e44ec43eefff1
   RCTRequired: 7be34aabb0b77c3cefe644528df0fa0afad4e4d0
@@ -3499,6 +3513,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 3d48510bcef445f6403c0004047d4d9cbb915435
   ReactCommon: ac934cb340aee91282ecd6f273a26d24d4c55cae
   RevenueCat: c535d3739d51163f6d9d5dbd01c7b5d93b718ff5
+  RevenueCatUI: fb23ded3007789db7a240f05c35c2237a197d629
   RNBootSplash: 0be0994fa7c528ed5f03b6f2803d7e86aa18170f
   RNCAsyncStorage: 6161dbb167973ab36a7800c5deb506ed854f2c33
   RNCMaskedView: 5ef8c95cbab95334a32763b72896a7b7d07e6299
@@ -3507,6 +3522,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 10993e6962a474152e3bf5871c39b1a9b2432caa
   RNGestureHandler: 713ad51725fe889ff3869d68b577a450605edda2
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
+  RNPaywalls: 051e2576b934bd1accdab123ebccc04c1e658a0d
   RNPermissions: 3fbf78c73d546b5578f17581b5fd45a1176cd085
   RNPurchases: ef34b2c0c1fcdab1df209fde0d95b026f90ae329
   RNScreens: 714e10b6b554f7dc7ad9f78dcf36dc8e3fc73415

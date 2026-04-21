@@ -21,6 +21,7 @@ export const FlutterStrings = {
   forgotPasswordDescription:
     "Enter the email address linked with your account and we'll send a confirmation to reset your password.",
   resetPassword: 'Reset Password',
+  changePassword: 'Change Password',
   orSignInWith: 'Or Sign in With',
   signInWithGoogle: 'Sign in with Google',
   firstName: 'First Name',

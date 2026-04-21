@@ -5,6 +5,7 @@ export const PATHS = {
   Splash: 'Splash',
   Onboard: 'Onboard',
   LoginRegister: 'LoginRegister',
+  ChangePassword: 'ChangePassword',
   Trial: 'Trial',
   OtpRegister: 'OtpRegister',
   OtpForgot: 'OtpForgot',

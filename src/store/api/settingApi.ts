@@ -22,6 +22,9 @@ export const settingApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    getProfile: builder.query<any, void>({
+      query: () => 'user/v1/contact-message/user_status_check/',
+    }),
   }),
   overrideExisting: true,
 });
@@ -30,4 +33,5 @@ export const {
   useDeleteAccountMutation,
   useContactMutation,
   useFeedbackMutation,
+  useLazyGetProfileQuery,
 } = settingApi;

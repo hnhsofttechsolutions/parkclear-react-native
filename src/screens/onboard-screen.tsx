@@ -23,18 +23,16 @@ const OnboardScreen = ({ navigation }: any) => {
     }
     isNavigatingRef.current = true;
     dispatch(setHasSeenOnboard());
-    navigation.replace(PATHS.Trial);
+    navigation.replace(PATHS.LoginRegister);
   }, [dispatch, navigation]);
 
-  const handleAdvance = useCallback(() => {
-    setStep(currentStep => {
-      if (currentStep >= 3) {
-        handleSkip();
-        return currentStep;
-      }
-      return currentStep + 1;
-    });
-  }, [handleSkip]);
+  const handleAdvance = () => {
+    if (step >= 3) {
+      handleSkip();
+    } else {
+      setStep(prev => prev + 1);
+    }
+  };
 
   if (step === 0) {
     return (
@@ -100,10 +98,7 @@ const OnboardScreen = ({ navigation }: any) => {
             {FlutterStrings.skip}
           </AppText>
         </TouchableOpacity>
-        <StepBody
-          step={phase}
-          onAdvance={handleAdvance}
-        />
+        <StepBody step={phase} onAdvance={handleAdvance} />
       </View>
     </SafeAreaWrapper>
   );

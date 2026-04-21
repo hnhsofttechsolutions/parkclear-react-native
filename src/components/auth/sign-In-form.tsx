@@ -6,7 +6,6 @@ import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 import GoogleLogo from '../../assets/images/google_logo.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
-import { PATHS } from '../../navigation/paths';
 import { loginSchema } from '../../schema/authSchema';
 import { useLoginMutation } from '../../store/api/authApi';
 import { setCredentials } from '../../store/slices/authSlice';
@@ -43,7 +42,6 @@ function SignInForm({ navigation }: any) {
           text1: 'Login Successful!',
           text2: response?.message,
         });
-        navigation.navigate(PATHS.Dashboard);
       }
     } catch (error: any) {
       Toast.show({
@@ -183,3 +181,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+
