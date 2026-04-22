@@ -34,6 +34,7 @@ import { useUploadCustomImageMutation } from '../../store/api/uploadApi';
 import { Colors, Gradient } from '../../utils/colors';
 import {
   formatDateToYYYYMMDD,
+  formatDateToMMDDYYYY,
   formatTimeToAMPM,
   pickerOptions,
   uriFromResponse,
@@ -164,12 +165,14 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
           <View style={styles.headerSpacer} />
         </View>
         <View style={styles.scroll}>
-          <AppText font="bold" size={32} align="center" color={Colors.white}>
-            Park Clear
-          </AppText>
-          <AppText align="center" color={Colors.white}>
-            Snap a photo of any parking sign. Our AI will analyze it instantly.
-          </AppText>
+          <View>
+            <AppText font="bold" size={32} align="center" color={Colors.white}>
+              Park Clear
+            </AppText>
+            <AppText align="center" color={Colors.white}>
+              Snap a photo of any parking sign. Our AI will analyze it instantly.
+            </AppText>
+          </View>
           <View style={styles.dateTimePickerContainer}>
             <TouchableOpacity
               style={styles.pickerButton}
@@ -177,7 +180,7 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
             >
               <Calendar size={20} color={Gradient.colors[0]} />
               <AppText color={Colors.header}>
-                {formatDateToYYYYMMDD(selectedDate)}
+                {formatDateToMMDDYYYY(selectedDate)}
               </AppText>
             </TouchableOpacity>
             <TouchableOpacity

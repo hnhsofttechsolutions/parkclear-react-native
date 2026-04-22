@@ -195,11 +195,13 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                   <AppText size={17} color="#FFFFFF" style={styles.rowText}>
                     {FlutterStrings.removeAds}
                   </AppText>
-                  <View style={styles.trialBadge}>
-                    <AppText size={12} color="#FFFFFF">
-                      TRIAL
-                    </AppText>
-                  </View>
+                  {!isPaid && (
+                    <View style={styles.trialBadge}>
+                      <AppText size={12} color="#FFFFFF">
+                        TRIAL
+                      </AppText>
+                    </View>
+                  )}
                 </TouchableOpacity>
                 <DrawerRow
                   icon={<SettingsIcon width={25} height={25} />}
@@ -208,7 +210,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 />
                 {isPaid && (
                   <DrawerRow
-                    icon={<CancelIcon width={25} height={25} />}
+                    icon={<CancelIcon width={30} height={30} />}
                     label="Cancel Alerts"
                     onPress={handleCancelRemind}
                   />

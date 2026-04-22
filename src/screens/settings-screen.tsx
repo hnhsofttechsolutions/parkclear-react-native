@@ -1,35 +1,35 @@
 import { ChevronRight, KeyRound } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Switch } from 'react-native';
+import Toast from 'react-native-toast-message';
+import { useDispatch } from 'react-redux';
 import AboutUsImg from '../assets/images/about_us.svg';
 import ContactUsImg from '../assets/images/contact_us.svg';
 import DeleteImg from '../assets/images/delete.svg';
 import FeedbackImg from '../assets/images/feedback.svg';
 import PrivacyPolicyImg from '../assets/images/privacy_policy.svg';
-import RestoreImg from '../assets/images/restore.svg';
+import RemoveAdsIcon from '../assets/images/remove_ads_black.svg';
 import TermsImg from '../assets/images/terms_and_condition.svg';
 import FeedBackForm from '../components/feedback/feedback-from';
+import DeleteModal from '../components/modals/delete-modal';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import SettingRow from '../components/settings/setting-row';
 import SettingsBoxRow from '../components/settings/settings-box-row';
 import { AppBar } from '../components/ui/app-bar';
 import AppText from '../components/ui/app-text';
+import PageLoader from '../components/ui/page-loader';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
-import { Colors } from '../utils/colors';
-import DeleteModal from '../components/modals/delete-modal';
 import { useDeleteAccountMutation } from '../store/api/settingApi';
-import PageLoader from '../components/ui/page-loader';
-import { useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
-import Toast from 'react-native-toast-message';
-
+import { Colors } from '../utils/colors';
 const chevron = <ChevronRight size={15} color={Colors.primary} />;
 
 const SettingsScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
   const [isDeletetModal, setIsDeletetModal] = useState(false);
+  const [isAdsRemoved, setIsAdsRemoved] = useState(false);
   const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
 
   const handleDeleteAccount = async () => {
@@ -94,6 +94,20 @@ const SettingsScreen = ({ navigation }: any) => {
               showDivider={false}
             />
           </View>
+          <View style={{ height: 20 }} />
+          <SettingsBoxRow
+            icon={<RemoveAdsIcon width={20} height={20} color={Colors.black} />}
+            title={FlutterStrings.removeAds}
+            suffix={
+              <Switch
+                value={isAdsRemoved}
+                onValueChange={setIsAdsRemoved}
+                trackColor={{ false: Colors.textFieldBorder, true: Colors.gradientEnd }}
+                thumbColor={Colors.white}
+              />
+            }
+            onPress={() => setIsAdsRemoved(!isAdsRemoved)}
+          />
           <View style={{ height: 20 }} />
           <SettingsBoxRow
             icon={<FeedbackImg width={20} height={20} />}

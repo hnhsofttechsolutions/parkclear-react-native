@@ -3,11 +3,11 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
-  Image,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import { AppBar } from '../components/ui/app-bar';
 import AppText from '../components/ui/app-text';
@@ -17,7 +17,6 @@ import { PATHS } from '../navigation/paths';
 import { baseURL } from '../store/api/baseApi';
 import { useGetUploadImageQuery } from '../store/api/uploadApi';
 import { Colors } from '../utils/colors';
-
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 50) / 2;
 
@@ -42,6 +41,7 @@ const GalleryScreen = ({ navigation }: any) => {
           </View>
         ) : (
           <FlatList
+            style={{ flex: 1 }}
             data={data?.data}
             keyExtractor={item => item?.id?.toString()}
             numColumns={2}
@@ -57,10 +57,13 @@ const GalleryScreen = ({ navigation }: any) => {
                   })
                 }
               >
-                <Image
-                  source={{ uri: `${baseURL}${item?.image}` }}
+                <FastImage
                   style={styles.thumb}
-                  resizeMode="cover"
+                  source={{
+                    uri: `${baseURL}${item?.image}`,
+                    priority: FastImage.priority.high,
+                  }}
+                  resizeMode={FastImage.resizeMode.cover}
                 />
               </TouchableOpacity>
             )}
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.white },
   flex: { flex: 1 },
   padH: { paddingHorizontal: 20 },
-  grid: { paddingHorizontal: 20, paddingVertical: 10, paddingBottom: 110 },
+  grid: { paddingHorizontal: 20, paddingVertical: 10, paddingBottom: 20 },
   row: { justifyContent: 'flex-start', gap: 10, marginBottom: 10 },
   cell: { width: COLUMN_WIDTH, height: COLUMN_WIDTH },
   thumb: {
@@ -115,9 +118,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bottomButtonWrap: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
-    bottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
+    backgroundColor: Colors.white,
   },
 });

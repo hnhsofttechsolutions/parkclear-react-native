@@ -35,6 +35,14 @@ export const formatDateToYYYYMMDD = (date: Date | null) => {
   return `${year}-${month}-${dayOfMonth}`;
 };
 
+export const formatDateToMMDDYYYY = (date: Date | null) => {
+  if (!date) return 'Select Date';
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const dayOfMonth = String(date.getDate()).padStart(2, '0');
+  return `${month}/${dayOfMonth}/${year}`;
+};
+
 export const shareApp = async () => {
   const shareOptions = {
     title: 'ParkClear App',

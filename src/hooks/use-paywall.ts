@@ -20,6 +20,8 @@ export const usePaywall = ({ onClose, triggerGetProfile }: UsePaywallProps) => {
   const openPaywall = async () => {
     try {
       await initRevenueCat(user?.id);
+
+      console.log('openPaywall', user?.id);
       const result = await showPaywall();
       if (
         result === PAYWALL_RESULT.PURCHASED ||
@@ -31,7 +33,7 @@ export const usePaywall = ({ onClose, triggerGetProfile }: UsePaywallProps) => {
       }
       handlePaywallResult(result);
     } catch (error) {
-      console.log(error);
+      console.log(error, 'error');
     }
   };
   return { openPaywall };

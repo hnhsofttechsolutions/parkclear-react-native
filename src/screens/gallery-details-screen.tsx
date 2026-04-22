@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Markdown from 'react-native-markdown-display';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import { AppBar } from '../components/ui/app-bar';
@@ -21,10 +22,13 @@ const GalleryDetailsScreen = ({ navigation, route }: any) => {
           />
         </View>
         <ScrollView contentContainerStyle={styles.content}>
-          <Image
-            source={{ uri: `${baseURL}${item?.image}` }}
+          <FastImage
             style={styles.image}
-            resizeMode="cover"
+            source={{
+              uri: `${baseURL}${item?.image}`,
+              priority: FastImage.priority.high,
+            }}
+            resizeMode={FastImage.resizeMode.cover}
           />
           <Markdown style={markdownStyles}>{item?.summarize_message}</Markdown>
         </ScrollView>

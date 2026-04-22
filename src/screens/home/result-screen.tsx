@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft, MessageSquare } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
@@ -78,13 +78,22 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
       statusBarStyle="light-content"
       style={styles.container}
     >
-      <TouchableOpacity
-        style={styles.menuBtn}
-        onPress={handleReset}
-        activeOpacity={0.85}
-      >
-        <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.menuBtn}
+          onPress={handleReset}
+          activeOpacity={0.85}
+        >
+          <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.feedbackIconBtn}
+          onPress={() => setIsFeedVisible(true)}
+          activeOpacity={0.85}
+        >
+          <MessageSquare size={24} color={Colors.white} strokeWidth={2.5} />
+        </TouchableOpacity>
+      </View>
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingBottom: 20 }]}
         showsVerticalScrollIndicator={false}
@@ -133,21 +142,6 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
               styles.overBtn,
               isResolve ? styles.overBtnResolve : styles.overBtnDefault,
             ]}
-            onPress={() => setIsFeedVisible(true)}
-          >
-            <AppText
-              font="medium"
-              size={16}
-              color={isResolve ? Colors.white : Colors.redDark}
-            >
-              FEEDBACK
-            </AppText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.overBtn,
-              isResolve ? styles.overBtnResolve : styles.overBtnDefault,
-            ]}
             onPress={handleReset}
           >
             <AppText
@@ -190,12 +184,26 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'space-between',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
   menuBtn: {
     width: 48,
     height: 48,
-    marginTop: 10,
     borderRadius: 24,
     backgroundColor: Colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  feedbackIconBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
