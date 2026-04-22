@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   },
   sheetDescription: {
     lineHeight: 26,
-    fontWeight: '400',
   },
   modalConfirmBtn: {
     minHeight: 52,

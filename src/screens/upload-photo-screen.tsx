@@ -17,22 +17,12 @@ const UploadPhotoScreen = ({ navigation }: any) => {
         />
       </View>
       <View style={styles.pad}>
-        <AppText
-          align="center"
-          size={17}
-          color={Colors.primary}
-          style={{ fontWeight: '400' }}
-        >
+        <AppText align="center" size={17} color={Colors.primary}>
           You’ll need photos to get started. You can add more or make changes
           later.
         </AppText>
         <TouchableOpacity style={styles.dotted} activeOpacity={0.85}>
-          <AppText
-            font="medium"
-            size={16}
-            color={Colors.primary}
-            style={{ fontWeight: '500' }}
-          >
+          <AppText font="medium" size={16} color={Colors.primary}>
             + Add Photos
           </AppText>
         </TouchableOpacity>

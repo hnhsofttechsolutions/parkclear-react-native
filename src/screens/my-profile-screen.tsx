@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   body: { padding: 20, paddingBottom: 40, alignItems: 'center' },
   imageContainer: { marginTop: 10, marginBottom: 15 },
   profileImage: { width: 110, height: 110, borderRadius: 60 },
-  name: { fontSize: 22, fontWeight: '700', color: Colors.primary },
+  name: { fontSize: 22, color: Colors.primary },
   email: { fontSize: 14, color: Colors.grey, marginBottom: 20 },
   card: {
     width: '100%',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   label: { color: Colors.grey, fontSize: 14 },
-  value: { fontSize: 14, fontWeight: '500', color: Colors.black },
+  value: { fontSize: 14, color: Colors.black },
   starRow: {
     flexDirection: 'row',
     alignItems: 'center',

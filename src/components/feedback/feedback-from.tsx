@@ -64,7 +64,6 @@ function FeedBackForm({ isVisible, setIsVisible }: Props) {
                 size={20}
                 color={Colors.primary}
                 align="center"
-                style={{ fontWeight: '600' }}
               >
                 {FlutterStrings.feedback}
               </AppText>
@@ -106,6 +105,5 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 24,
     lineHeight: 26,
-    fontWeight: '400',
   },
 });

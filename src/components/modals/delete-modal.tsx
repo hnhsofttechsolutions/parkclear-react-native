@@ -24,6 +24,7 @@ const DeleteModal = ({
       animationType="fade"
       onRequestClose={onClose}
       statusBarTranslucent
+      presentationStyle="overFullScreen"
     >
       <View style={styles.overlay}>
         <View style={styles.modalCard}>

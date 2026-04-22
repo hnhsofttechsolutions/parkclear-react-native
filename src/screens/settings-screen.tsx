@@ -65,11 +65,7 @@ const SettingsScreen = ({ navigation }: any) => {
           onBack={() => navigation.goBack()}
         />
         <ScrollView>
-          <AppText
-            size={14}
-            color={Colors.grey}
-            style={{ marginBottom: 10, fontWeight: '400' }}
-          >
+          <AppText size={14} color={Colors.grey} style={{ marginBottom: 10 }}>
             {FlutterStrings.supportAbout}
           </AppText>
           <View style={styles.card}>
@@ -107,7 +103,7 @@ const SettingsScreen = ({ navigation }: any) => {
           />
           <View style={{ height: 20 }} />
           <SettingsBoxRow
-            icon={<KeyRound width={20} height={20} />}
+            icon={<KeyRound color={Colors.black} width={20} height={20} />}
             title={FlutterStrings.resetPassword}
             suffix={chevron}
             onPress={() => navigation.navigate(PATHS.ChangePassword)}

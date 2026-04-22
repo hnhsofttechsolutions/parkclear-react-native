@@ -25,7 +25,6 @@ const AppText = ({
         {
           fontSize: size,
           textAlign: align,
-          lineHeight: size + 6,
           color: color || Colors.primary,
           fontFamily: FontFamily[font],
         },

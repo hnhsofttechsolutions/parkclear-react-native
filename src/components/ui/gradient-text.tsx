@@ -21,7 +21,6 @@ export function GradientText({
 
   const textStyle = {
     fontSize,
-    fontWeight: '600' as const,
     lineHeight: fontSize + 6,
     fontFamily: FontFamily.semiBold,
     includeFontPadding: false,

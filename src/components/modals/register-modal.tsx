@@ -16,6 +16,12 @@ interface Props {
 
 function RegisterModal({ isVisible, setIsVisible, email }: Props) {
   const navigation = useNavigation<any>();
+  
+  const handlerVerify = () => {
+    setIsVisible(false);
+    navigation.navigate(PATHS.OtpRegister, { email });
+  };
+
   return (
     <>
       <BottomSheetModal
@@ -31,7 +37,6 @@ function RegisterModal({ isVisible, setIsVisible, email }: Props) {
           size={20}
           color={Colors.primary}
           align="center"
-          style={{ fontWeight: '600' }}
         >
           Register Successfully
         </AppText>
@@ -43,10 +48,7 @@ function RegisterModal({ isVisible, setIsVisible, email }: Props) {
         >
           Check your email to confirm account.
         </AppText>
-        <GradientButton
-          label="Verify Account"
-          onPress={() => navigation.navigate(PATHS.OtpRegister, { email })}
-        />
+        <GradientButton label="Verify Account" onPress={handlerVerify} />
       </BottomSheetModal>
     </>
   );
@@ -63,6 +65,5 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 24,
     lineHeight: 26,
-    fontWeight: '400',
   },
 });

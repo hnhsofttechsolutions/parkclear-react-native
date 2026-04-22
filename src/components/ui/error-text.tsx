@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
   error: {
     marginTop: 4,
     marginLeft: 5,
-    fontWeight: '400',
   },
 });
 

@@ -63,12 +63,7 @@ const OtpRegisterScreen = ({ navigation, route }: any) => {
   return (
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.pad}>
-        <AppText
-          font="semiBold"
-          size={24}
-          color={Colors.primary}
-          style={{ fontWeight: '700' }}
-        >
+        <AppText font="semiBold" size={24} color={Colors.primary}>
           {FlutterStrings.pleaseCheckYourMsg}
         </AppText>
         <AppText

@@ -42,9 +42,11 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const anim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(drawer);
   const [isLogoutModal, setIsLogoutModal] = useState(false);
+  const [pendingLogoutModal, setPendingLogoutModal] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
   const [triggerGetProfile, { isLoading }] = useLazyGetProfileQuery();
-  const [cancelRemind, { isLoading: cancelRemindLoading }] = useCancelRemindMutation();
+  const [cancelRemind, { isLoading: cancelRemindLoading }] =
+    useCancelRemindMutation();
   const isPaid = user?.is_paid;
 
   const onClose = () => setDrawer(false);
@@ -72,10 +74,17 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
         useNativeDriver: true,
       }).start(({ finished }) => {
-        if (finished) setModalVisible(false);
+        if (finished) {
+          setModalVisible(false);
+          // iOS par "modal over modal" se bachne ke liye, pehle drawer close karo phir logout confirm show karo
+          if (pendingLogoutModal) {
+            setPendingLogoutModal(false);
+            setIsLogoutModal(true);
+          }
+        }
       });
     }
-  }, [drawer, anim]);
+  }, [drawer, anim, pendingLogoutModal]);
 
   const translateX = anim.interpolate({
     inputRange: [0, 1],
@@ -87,7 +96,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
     outputRange: [0, 1],
   });
 
-  if (!modalVisible) return null;
+  if (!modalVisible && !isLogoutModal && !pendingLogoutModal) return null;
 
   const navigateTo = (path: string) => {
     onClose();
@@ -187,11 +196,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                     {FlutterStrings.removeAds}
                   </AppText>
                   <View style={styles.trialBadge}>
-                    <AppText
-                      size={12}
-                      color="#FFFFFF"
-                      style={{ fontWeight: '700' }}
-                    >
+                    <AppText size={12} color="#FFFFFF">
                       TRIAL
                     </AppText>
                   </View>
@@ -212,7 +217,10 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 <DrawerRow
                   icon={<LogoutIcon width={25} height={25} />}
                   label="Logout"
-                  onPress={() => setIsLogoutModal(true)}
+                  onPress={() => {
+                    setPendingLogoutModal(true);
+                    setDrawer(false);
+                  }}
                 />
                 <View style={{ height: 40 }} />
               </View>
@@ -223,7 +231,10 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
       <DeleteModal
         title="Are you sure want to log out of this account?"
         visible={isLogoutModal}
-        onClose={() => setIsLogoutModal(false)}
+        onClose={() => {
+          setIsLogoutModal(false);
+          setPendingLogoutModal(false);
+        }}
         onDelete={handlerLogout}
       />
     </>
@@ -271,7 +282,6 @@ const styles = StyleSheet.create({
   },
   rowText: {
     marginLeft: 18,
-    fontWeight: '400',
     letterSpacing: 0.3,
   },
   trialBadge: {

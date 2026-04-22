@@ -36,7 +36,7 @@ const TrialScreen = ({ navigation }: any) => {
             <AppText
               color={Colors.primary}
               align="center"
-              style={{ paddingHorizontal: 8, fontWeight: '400', marginTop: 10 }}
+              style={{ paddingHorizontal: 8, marginTop: 10 }}
             >
               {FlutterStrings.subscriptionDesc}
             </AppText>
@@ -52,12 +52,7 @@ const TrialScreen = ({ navigation }: any) => {
             onPress={handlerReset}
           />
           <GreyPillButton onPress={handlerReset}>
-            <AppText
-              font="medium"
-              size={18}
-              color={Colors.primary}
-              style={{ fontWeight: '500' }}
-            >
+            <AppText font="medium" size={18} color={Colors.primary}>
               {FlutterStrings.cancelAnytime}
             </AppText>
           </GreyPillButton>

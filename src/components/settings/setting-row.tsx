@@ -21,7 +21,7 @@ function SettingRow({
         <AppText
           size={17}
           color={Colors.primary}
-          style={{ marginLeft: 15, flex: 1, fontWeight: '400' }}
+          style={{ marginLeft: 15, flex: 1 }}
         >
           {title}
         </AppText>

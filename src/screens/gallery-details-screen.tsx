@@ -54,9 +54,6 @@ const markdownStyles = {
     fontSize: 18,
     lineHeight: 26,
   },
-  strong: {
-    fontWeight: 'bold' as const,
-  },
   paragraph: {
     marginTop: 0,
     marginBottom: 20,

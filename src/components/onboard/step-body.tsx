@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: 10,
-    fontWeight: '400',
     paddingHorizontal: 8,
     lineHeight: 24,
   },

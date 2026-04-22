@@ -58,18 +58,10 @@ const CreateNewPasswordScreen = ({ navigation, route }: any) => {
         contentContainerStyle={styles.pad}
         keyboardShouldPersistTaps="handled"
       >
-        <AppText
-          font="semiBold"
-          size={20}
-          color={Colors.primary}
-          style={{ fontWeight: '600' }}
-        >
+        <AppText font="semiBold" size={20} color={Colors.primary}>
           {FlutterStrings.createNewPassword}
         </AppText>
-        <AppText
-          color={Colors.grey}
-          style={{ marginTop: 5, fontWeight: '400' }}
-        >
+        <AppText color={Colors.grey} style={{ marginTop: 5 }}>
           {FlutterStrings.passDescription}
         </AppText>
         <Formik
@@ -91,7 +83,7 @@ const CreateNewPasswordScreen = ({ navigation, route }: any) => {
                 font="medium"
                 size={16}
                 color={Colors.primary}
-                style={{ marginBottom: 10, fontWeight: '500' }}
+                style={{ marginBottom: 10 }}
               >
                 {FlutterStrings.newPassword}
               </AppText>
@@ -123,7 +115,7 @@ const CreateNewPasswordScreen = ({ navigation, route }: any) => {
                 font="medium"
                 size={16}
                 color={Colors.primary}
-                style={{ marginBottom: 10, fontWeight: '500' }}
+                style={{ marginBottom: 10 }}
               >
                 {FlutterStrings.confirmYourNewPassword}
               </AppText>

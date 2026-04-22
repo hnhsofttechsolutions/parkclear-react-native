@@ -27,18 +27,10 @@ const LoginRegisterScreen = ({ navigation }: any) => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scroll}
         >
-          <AppText
-            font="semiBold"
-            size={20}
-            color={Colors.primary}
-            style={{ fontWeight: '600' }}
-          >
+          <AppText font="semiBold" size={20} color={Colors.primary}>
             {FlutterStrings.parkingMadeSimpleAndClear}
           </AppText>
-          <AppText
-            color={Colors.grey}
-            style={{ marginTop: 5, fontWeight: '400' }}
-          >
+          <AppText color={Colors.grey} style={{ marginTop: 5 }}>
             {FlutterStrings.getGreatExperienceWithParkClear}
           </AppText>
           <View style={styles.tabBar}>
@@ -51,7 +43,6 @@ const LoginRegisterScreen = ({ navigation }: any) => {
                 font="medium"
                 size={14}
                 color={tab === 'in' ? Colors.primary : Colors.grey}
-                style={{ fontWeight: '500' }}
               >
                 {FlutterStrings.signIn}
               </AppText>
@@ -65,7 +56,6 @@ const LoginRegisterScreen = ({ navigation }: any) => {
                 font="medium"
                 size={14}
                 color={tab === 'up' ? Colors.primary : Colors.grey}
-                style={{ fontWeight: '500' }}
               >
                 {FlutterStrings.signUp}
               </AppText>

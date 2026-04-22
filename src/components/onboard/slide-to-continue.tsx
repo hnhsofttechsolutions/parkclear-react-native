@@ -119,7 +119,6 @@ const slideStyles = StyleSheet.create({
   slideLabelText: {
     color: Colors.white,
     fontSize: 18,
-    fontWeight: '700',
     fontFamily: FontFamily.medium,
     textAlign: 'center',
     includeFontPadding: false,

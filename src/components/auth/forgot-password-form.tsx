@@ -80,7 +80,6 @@ function ForgotPasswordForm({ isForgotVisible, setIsForgotVisible }: Props) {
                 size={20}
                 color={Colors.primary}
                 align="center"
-                style={{ fontWeight: '600' }}
               >
                 {FlutterStrings.forgotPassword}
               </AppText>
@@ -127,6 +126,5 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 24,
     lineHeight: 26,
-    fontWeight: '400',
   },
 });

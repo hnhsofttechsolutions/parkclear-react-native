@@ -38,6 +38,7 @@ function ReminderModal({
           text1: 'Remind Successful!',
           text2: response?.message,
         });
+        setShowReminderModal(false);
         navigation.navigate(PATHS.ReminderSet, { reminderMinutes });
       }
     } catch (error: any) {
@@ -131,7 +132,6 @@ const styles = StyleSheet.create({
   },
   sheetDescription: {
     lineHeight: 26,
-    fontWeight: '400',
   },
   modalConfirmBtn: {
     minHeight: 52,

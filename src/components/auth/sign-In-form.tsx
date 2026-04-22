@@ -110,12 +110,7 @@ function SignInForm({ navigation }: any) {
               onPress={() => setIsForgotVisible(true)}
               style={styles.forgotButton}
             >
-              <AppText
-                font="medium"
-                size={14}
-                color={Colors.primary}
-                style={{ fontWeight: '500' }}
-              >
+              <AppText font="medium" size={14} color={Colors.primary}>
                 {FlutterStrings.forgotPassword}
               </AppText>
             </TouchableOpacity>
@@ -126,23 +121,13 @@ function SignInForm({ navigation }: any) {
               isLoading={isLoading}
             />
             <View style={{ height: 35 }} />
-            <AppText
-              size={14}
-              color={Colors.grey}
-              align="center"
-              style={{ fontWeight: '400' }}
-            >
+            <AppText size={14} color={Colors.grey} align="center">
               {FlutterStrings.orSignInWith}
             </AppText>
             <View style={{ height: 15 }} />
             <GreyPillButton>
               <GoogleLogo width={24} height={24} />
-              <AppText
-                font="medium"
-                size={18}
-                color={Colors.primary}
-                style={{ fontWeight: '500' }}
-              >
+              <AppText font="medium" color={Colors.primary}>
                 {FlutterStrings.signInWithGoogle}
               </AppText>
             </GreyPillButton>
@@ -150,12 +135,7 @@ function SignInForm({ navigation }: any) {
               <View style={{ marginTop: 15 }}>
                 <GreyPillButton onPress={() => {}}>
                   <Apple size={32} color={Colors.primary} />
-                  <AppText
-                    font="medium"
-                    size={18}
-                    color={Colors.primary}
-                    style={{ fontWeight: '500' }}
-                  >
+                  <AppText font="medium" color={Colors.primary}>
                     {FlutterStrings.signInWithApple}
                   </AppText>
                 </GreyPillButton>
@@ -181,4 +161,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-

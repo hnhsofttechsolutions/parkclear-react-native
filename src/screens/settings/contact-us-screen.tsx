@@ -1,5 +1,11 @@
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import CallIcon from '../../assets/images/call.svg';
@@ -69,24 +75,16 @@ const ContactUsScreen = ({ navigation }: any) => {
           colors={[...Gradient.colors]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={styles.hero}
+          style={[styles.hero, Platform.OS === 'ios' && styles.heroIOS]}
         >
           <MailLogo width={48} height={48} />
           <TouchableOpacity activeOpacity={0.85}>
-            <AppText
-              size={17}
-              color={Colors.white}
-              style={{ marginTop: 5, fontWeight: '400' }}
-            >
+            <AppText size={17} color={Colors.white} style={{ marginTop: 5 }}>
               contact@parkclear.co
             </AppText>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.85}>
-            <AppText
-              size={17}
-              color={Colors.white}
-              style={{ fontWeight: '400' }}
-            >
+            <AppText size={17} color={Colors.white}>
               www.parkclear.co
             </AppText>
           </TouchableOpacity>
@@ -202,5 +200,12 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
     paddingHorizontal: 50,
     alignItems: 'center',
+  },
+  heroIOS: {
+    width: '100%',
+    minHeight: 200,
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
 });

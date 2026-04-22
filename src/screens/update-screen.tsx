@@ -33,7 +33,7 @@ const UpdateScreen = ({ navigation }: any) => {
           size={32}
           color={Colors.primary}
           align="center"
-          style={{ marginTop: 20, fontWeight: '600' }}
+          style={{ marginTop: 20 }}
         >
           We Updated{' '}
         </AppText>
@@ -44,7 +44,7 @@ const UpdateScreen = ({ navigation }: any) => {
           size={17}
           color={Colors.grey}
           align="center"
-          style={{ marginTop: 16, paddingHorizontal: 12, fontWeight: '400' }}
+          style={{ marginTop: 16, paddingHorizontal: 12 }}
         >
           Please update to the latest version for the best experience.
         </AppText>

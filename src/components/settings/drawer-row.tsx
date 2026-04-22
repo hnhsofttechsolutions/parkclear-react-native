@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
   },
   rowText: {
     marginLeft: 15,
-    fontWeight: '400',
     letterSpacing: 0.3,
   },
 });

@@ -39,12 +39,7 @@ const OnboardScreen = ({ navigation }: any) => {
       <SafeAreaWrapper style={styles.safe}>
         <View style={styles.pad}>
           <TouchableOpacity style={styles.skip} onPress={handleSkip}>
-            <AppText
-              font="medium"
-              size={16}
-              color={Colors.darkBlue}
-              style={{ fontWeight: '500' }}
-            >
+            <AppText font="medium" size={16} color={Colors.darkBlue}>
               {FlutterStrings.skip}
             </AppText>
           </TouchableOpacity>
@@ -70,7 +65,7 @@ const OnboardScreen = ({ navigation }: any) => {
               size={16}
               color={Colors.primary}
               align="center"
-              style={{ marginTop: 10, paddingHorizontal: 8, fontWeight: '400' }}
+              style={{ marginTop: 10, paddingHorizontal: 8 }}
             >
               {FlutterStrings.onboardSubTitle}
             </AppText>
@@ -89,12 +84,7 @@ const OnboardScreen = ({ navigation }: any) => {
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.pad}>
         <TouchableOpacity style={styles.skip} onPress={handleSkip}>
-          <AppText
-            font="medium"
-            size={16}
-            color={Colors.darkBlue}
-            style={{ fontWeight: '500' }}
-          >
+          <AppText font="medium" size={16} color={Colors.darkBlue}>
             {FlutterStrings.skip}
           </AppText>
         </TouchableOpacity>

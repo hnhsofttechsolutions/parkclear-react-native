@@ -27,6 +27,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderSubcriptionModal, setReminderSubcriptionModal] =
     useState(false);
+  const [hasShownReminder, setHasShownReminder] = useState(false);
   const [isFeedVisible, setIsFeedVisible] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
   const isPaid = user?.is_paid;
@@ -62,12 +63,14 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   }, [isResolve]);
 
   useEffect(() => {
-    if (!isPaid) {
-      setTimeout(() => {
+    if (!isPaid && !hasShownReminder) {
+      const timer = setTimeout(() => {
         setReminderSubcriptionModal(true);
+        setHasShownReminder(true);
       }, 5000);
+      return () => clearTimeout(timer);
     }
-  });
+  }, [isPaid, hasShownReminder]);
 
   return (
     <SafeAreaWrapper
@@ -238,9 +241,6 @@ const markdownStyles = {
     color: Colors.white,
     fontSize: 18,
     lineHeight: 26,
-  },
-  strong: {
-    fontWeight: 'bold' as const,
   },
   paragraph: {
     marginTop: 0,

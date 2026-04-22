@@ -7,9 +7,9 @@ import {
   ViewStyle,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import AppText from './app-text';
 import { Colors, Gradient } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
+import AppText from './app-text';
 
 interface Props {
   title: string;
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   solidGradient: {
     minHeight: 60,
     borderRadius: 40,
-    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
