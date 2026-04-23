@@ -51,12 +51,28 @@ export const authApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    googleLogin: builder.mutation<any, any>({
+      query: ({ formData }: any) => ({
+        url: 'authentication/v1/google-login/',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
+    appleLogin: builder.mutation<any, any>({
+      query: ({ formData }: any) => ({
+        url: 'authentication/v1/apple-login/',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
   useLoginMutation,
+  useGoogleLoginMutation,
+  useAppleLoginMutation,
   useSignupMutation,
   useOtpRegisterMutation,
   useOtpForgotMutation,

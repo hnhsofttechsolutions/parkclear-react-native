@@ -1,5 +1,6 @@
 import { PAYWALL_RESULT } from 'react-native-purchases-ui';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLazyGetProfileQuery } from '../store/api/settingApi';
 import { setCredentials } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
 import {
@@ -9,19 +10,18 @@ import {
 } from '../utils/revenuecat-service';
 
 interface UsePaywallProps {
-  triggerGetProfile: () => any;
   onClose: () => any;
 }
 
-export const usePaywall = ({ onClose, triggerGetProfile }: UsePaywallProps) => {
+export const usePaywall = ({ onClose }: UsePaywallProps) => {
   const dispatch = useDispatch();
   const { user, token } = useSelector((state: RootState) => state.auth);
+  const [triggerGetProfile, { isLoading: isProfileLoading }] =
+    useLazyGetProfileQuery();
 
   const openPaywall = async () => {
     try {
       await initRevenueCat(user?.id);
-
-      console.log('openPaywall', user?.id);
       const result = await showPaywall();
       if (
         result === PAYWALL_RESULT.PURCHASED ||
@@ -36,5 +36,5 @@ export const usePaywall = ({ onClose, triggerGetProfile }: UsePaywallProps) => {
       console.log(error, 'error');
     }
   };
-  return { openPaywall };
+  return { openPaywall, isProfileLoading };
 };

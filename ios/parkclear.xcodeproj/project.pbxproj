@@ -25,7 +25,8 @@
 		A1DA48FA61C74D45884550DD /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DA31AA9EA424887886D952F /* Poppins-ExtraLightItalic.ttf */; };
 		AF6468FEF0B5492698A589C1 /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 910679043CCF4599BB26C818 /* Poppins-MediumItalic.ttf */; };
 		B9F86B02950D4765AB212506 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09D4DA9E44C1471C916F04B3 /* Poppins-ExtraBold.ttf */; };
-		BA09E9432F93D10A00BA845E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA09E9422F93D10A00BA845E /* GoogleService-Info.plist */; };
+		BA5BAD302F9A535A007E4A4B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA5BAD2F2F9A535A007E4A4B /* GoogleService-Info.plist */; };
+		BA5E9D7B2F9A4E7F00A86AC9 /* powerupsuccess.wav in Resources */ = {isa = PBXBuildFile; fileRef = BA5E9D7A2F9A4E7F00A86AC9 /* powerupsuccess.wav */; };
 		BC8D11A210FE45E8B126C3F1 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95FC2459567A4B7288EE5AF2 /* Poppins-Light.ttf */; };
 		C8CB95A9AA9D459BADA1DECF /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68260BEF932B4B2588232631 /* Poppins-Black.ttf */; };
 		D6422A621A9144ACA12D9A87 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 07DD47EB167A4B7F89D83A5F /* Poppins-Medium.ttf */; };
@@ -57,8 +58,9 @@
 		91B2D1234BD14194A0C59140 /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		95F40F69477D1AB19834E0E6 /* Pods-parkclear.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-parkclear.debug.xcconfig"; path = "Target Support Files/Pods-parkclear/Pods-parkclear.debug.xcconfig"; sourceTree = "<group>"; };
 		95FC2459567A4B7288EE5AF2 /* Poppins-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Light.ttf"; path = "../src/assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
-		BA09E9422F93D10A00BA845E /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BA09E9442F93D1A200BA845E /* parkclear.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = parkclear.entitlements; path = parkclear/parkclear.entitlements; sourceTree = "<group>"; };
+		BA5BAD2F2F9A535A007E4A4B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BA5E9D7A2F9A4E7F00A86AC9 /* powerupsuccess.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = powerupsuccess.wav; sourceTree = "<group>"; };
 		BBA3F75B5F1BD28BD3FDB9BD /* Pods-parkclear.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-parkclear.release.xcconfig"; path = "Target Support Files/Pods-parkclear/Pods-parkclear.release.xcconfig"; sourceTree = "<group>"; };
 		BF297E099AA645709CA4F694 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		C1C2F24EE79F4A0DB241B594 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
@@ -144,7 +146,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				BA09E9422F93D10A00BA845E /* GoogleService-Info.plist */,
+				BA5BAD2F2F9A535A007E4A4B /* GoogleService-Info.plist */,
+				BA5E9D7A2F9A4E7F00A86AC9 /* powerupsuccess.wav */,
 				13B07FAE1A68108700A75B9A /* parkclear */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -237,7 +240,6 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				BA09E9432F93D10A00BA845E /* GoogleService-Info.plist in Resources */,
 				5FB6DACB325E419F96255FC8 /* Poppins-ExtraLight.ttf in Resources */,
 				D9A7A99A0C2D40E8855156B4 /* Poppins-ThinItalic.ttf in Resources */,
 				A1DA48FA61C74D45884550DD /* Poppins-ExtraLightItalic.ttf in Resources */,
@@ -248,6 +250,8 @@
 				148573F5F5C646328840F119 /* Poppins-ExtraBoldItalic.ttf in Resources */,
 				B9F86B02950D4765AB212506 /* Poppins-ExtraBold.ttf in Resources */,
 				42C44F18690345C8B38581F4 /* Poppins-BlackItalic.ttf in Resources */,
+				BA5E9D7B2F9A4E7F00A86AC9 /* powerupsuccess.wav in Resources */,
+				BA5BAD302F9A535A007E4A4B /* GoogleService-Info.plist in Resources */,
 				95CAF850D9C4489882C22CF0 /* Poppins-Regular.ttf in Resources */,
 				033C07DF00E140BDA941615A /* Poppins-LightItalic.ttf in Resources */,
 				E6FBAB9C5974431E849287EE /* Poppins-Bold.ttf in Resources */,
@@ -384,7 +388,7 @@
 				CODE_SIGN_ENTITLEMENTS = parkclear/parkclear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ULZX555Y8J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = parkclear/Info.plist;
@@ -418,7 +422,7 @@
 				CODE_SIGN_ENTITLEMENTS = parkclear/parkclear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ULZX555Y8J;
 				INFOPLIST_FILE = parkclear/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "ParkClear - Smart Parking App";

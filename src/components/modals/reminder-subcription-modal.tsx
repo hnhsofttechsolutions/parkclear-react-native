@@ -1,6 +1,6 @@
+import { X } from 'lucide-react-native';
 import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { usePaywall } from '../../hooks/use-paywall';
-import { useLazyGetProfileQuery } from '../../store/api/settingApi';
 import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
 import PageLoader from '../ui/page-loader';
@@ -14,20 +14,15 @@ function ReminderSubcriptionModal({
   showReminderModal,
   setShowReminderModal,
 }: Props) {
-  const [triggerGetProfile, { isLoading }] = useLazyGetProfileQuery();
-
   const onClose = () => {
     setShowReminderModal(false);
   };
 
-  const { openPaywall } = usePaywall({
-    onClose,
-    triggerGetProfile,
-  });
+  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
 
   return (
     <>
-      <PageLoader visible={isLoading} />
+      <PageLoader visible={isProfileLoading} />
       <Modal
         animationType="fade"
         transparent
@@ -37,6 +32,13 @@ function ReminderSubcriptionModal({
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
+            <TouchableOpacity
+              style={styles.closeBtn}
+              onPress={() => setShowReminderModal(false)}
+              hitSlop={10}
+            >
+              <X size={22} color={Colors.grey} />
+            </TouchableOpacity>
             <Image
               source={require('../../assets/images/alarm-outline.png')}
               width={40}
@@ -98,6 +100,14 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingHorizontal: 22,
     gap: 16,
+    width: '100%',
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 1,
+    padding: 4,
   },
   modalSubtitle: {
     marginBottom: 26,

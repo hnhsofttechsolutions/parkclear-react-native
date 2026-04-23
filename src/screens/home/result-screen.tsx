@@ -63,6 +63,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   }, [isResolve]);
 
   useEffect(() => {
+    if (!isResolve) return;
     if (!isPaid && !hasShownReminder) {
       const timer = setTimeout(() => {
         setReminderSubcriptionModal(true);

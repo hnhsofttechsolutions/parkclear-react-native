@@ -7,16 +7,16 @@ import GalleryDetailsScreen from '../../screens/gallery-details-screen';
 import GalleryScreen from '../../screens/gallery-screen';
 import CameraScreen from '../../screens/home/camera-screen';
 import DashboardScreen from '../../screens/home/dashboard-screen';
+import CaptureInstructionScreen from '../../screens/home/capture-instruction-screen';
 import ReminderSetScreen from '../../screens/home/reminder-set-screen';
 import ResultScreen from '../../screens/home/result-screen';
 import MyProfileScreen from '../../screens/my-profile-screen';
-import OnboardScreen from '../../screens/onboard-screen';
+import OnboardScreen from '../../screens/start/onboard-screen';
 import SettingsScreen from '../../screens/settings-screen';
 import AboutUsScreen from '../../screens/settings/about-us-screen';
 import ContactUsScreen from '../../screens/settings/contact-us-screen';
 import PrivacyPolicyScreen from '../../screens/settings/privacy-policy-screen';
 import TermsScreen from '../../screens/settings/terms-screen';
-import SplashScreen from '../../screens/splash-screen';
 import SubscriptionPackagesScreen from '../../screens/subcription/subscription-packages-screen';
 import SubscriptionScreen from '../../screens/subcription/subscription-screen';
 import TrialScreen from '../../screens/trial-screen';
@@ -39,9 +39,11 @@ export const APP_SCREENS = [
   { name: PATHS.SubscriptionPackages, component: SubscriptionPackagesScreen },
   { name: PATHS.Update, component: UpdateScreen },
   { name: PATHS.Camera, component: CameraScreen },
+  { name: PATHS.CaptureInstruction, component: CaptureInstructionScreen },
   { name: PATHS.ChangePassword, component: ChangePasswordScreen },
   { name: PATHS.ReminderSet, component: ReminderSetScreen },
   { name: PATHS.Result, component: ResultScreen },
+  { name: PATHS.Trial, component: TrialScreen },
 ];
 
 export const AUTH_SCREENS = [
@@ -50,6 +52,4 @@ export const AUTH_SCREENS = [
   { name: PATHS.OtpRegister, component: OtpRegisterScreen },
   { name: PATHS.OtpForgot, component: OtpForgotScreen },
   { name: PATHS.CreateNewPassword, component: CreateNewPasswordScreen },
-  { name: PATHS.Splash, component: SplashScreen },
-  { name: PATHS.Trial, component: TrialScreen },
 ];

@@ -1,10 +1,9 @@
 import { Formik } from 'formik';
-import { Apple, Eye, EyeOff, LockKeyhole } from 'lucide-react-native';
+import { Eye, EyeOff, LockKeyhole } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import EmailImg from '../../assets/images/email.svg';
-import GoogleLogo from '../../assets/images/google_logo.svg';
 import UserImg from '../../assets/images/user_img.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
 import { useFirebase } from '../../hooks/use-firebase';
@@ -15,8 +14,9 @@ import RegisterModal from '../modals/register-modal';
 import AppText from '../ui/app-text';
 import { AppTextField } from '../ui/app-text-field';
 import ErrorText from '../ui/error-text';
-import { GradientButton, GreyPillButton } from '../ui/gradient-button';
+import { GradientButton } from '../ui/gradient-button';
 import PhonePrefix from '../ui/phone-prefix';
+import SocialButtons from './social-button';
 
 function SignUpForm({ navigation }: any) {
   const { fcmToken } = useFirebase();
@@ -152,22 +152,7 @@ function SignUpForm({ navigation }: any) {
                 {FlutterStrings.orSignInWith}
               </AppText>
               <View style={{ height: 15 }} />
-              <GreyPillButton>
-                <GoogleLogo width={24} height={24} />
-                <AppText font="medium" color={Colors.primary}>
-                  {FlutterStrings.signInWithGoogle}
-                </AppText>
-              </GreyPillButton>
-              {Platform.OS === 'ios' && (
-                <View style={{ marginTop: 15 }}>
-                  <GreyPillButton onPress={() => {}}>
-                    <Apple size={32} color={Colors.primary} />
-                    <AppText font="medium" color={Colors.primary}>
-                      {FlutterStrings.signInWithApple}
-                    </AppText>
-                  </GreyPillButton>
-                </View>
-              )}
+              <SocialButtons />
             </View>
             <RegisterModal
               isVisible={isRegisterVisible}

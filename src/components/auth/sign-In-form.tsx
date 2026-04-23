@@ -1,10 +1,9 @@
 import { Formik } from 'formik';
-import { Apple, Eye, EyeOff, LockKeyhole } from 'lucide-react-native';
+import { Eye, EyeOff, LockKeyhole } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
-import GoogleLogo from '../../assets/images/google_logo.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
 import { loginSchema } from '../../schema/authSchema';
 import { useLoginMutation } from '../../store/api/authApi';
@@ -13,9 +12,10 @@ import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
 import { AppTextField } from '../ui/app-text-field';
 import ErrorText from '../ui/error-text';
-import { GradientButton, GreyPillButton } from '../ui/gradient-button';
+import { GradientButton } from '../ui/gradient-button';
 import PhonePrefix from '../ui/phone-prefix';
 import ForgotPasswordForm from './forgot-password-form';
+import SocialButtons from './social-button';
 
 function SignInForm({ navigation }: any) {
   const dispatch = useDispatch();
@@ -125,26 +125,10 @@ function SignInForm({ navigation }: any) {
               {FlutterStrings.orSignInWith}
             </AppText>
             <View style={{ height: 15 }} />
-            <GreyPillButton>
-              <GoogleLogo width={24} height={24} />
-              <AppText font="medium" color={Colors.primary}>
-                {FlutterStrings.signInWithGoogle}
-              </AppText>
-            </GreyPillButton>
-            {Platform.OS === 'ios' ? (
-              <View style={{ marginTop: 15 }}>
-                <GreyPillButton onPress={() => {}}>
-                  <Apple size={32} color={Colors.primary} />
-                  <AppText font="medium" color={Colors.primary}>
-                    {FlutterStrings.signInWithApple}
-                  </AppText>
-                </GreyPillButton>
-              </View>
-            ) : null}
+            <SocialButtons />
           </View>
         )}
       </Formik>
-
       <ForgotPasswordForm
         isForgotVisible={isForgotVisible}
         setIsForgotVisible={setIsForgotVisible}

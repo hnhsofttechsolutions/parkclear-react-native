@@ -1,15 +1,15 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
-import OnboardHero from '../assets/images/onboard.svg';
-import SlideToContinue from '../components/onboard/slide-to-continue';
-import StepBody from '../components/onboard/step-body';
-import SafeAreaWrapper from '../components/safe-area-wrapper';
-import { GradientText } from '../components/ui/gradient-text';
-import AppText from '../components/ui/app-text';
-import { FlutterStrings } from '../constants/flutterStrings';
-import { PATHS } from '../navigation/paths';
-import { Colors } from '../utils/colors';
-import { setHasSeenOnboard } from '../store/slices/authSlice';
+import OnboardHero from '../../assets/images/onboard.svg';
+import SlideToContinue from '../../components/onboard/slide-to-continue';
+import StepBody from '../../components/onboard/step-body';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import { GradientText } from '../../components/ui/gradient-text';
+import AppText from '../../components/ui/app-text';
+import { FlutterStrings } from '../../constants/flutterStrings';
+import { PATHS } from '../../navigation/paths';
+import { Colors } from '../../utils/colors';
+import { setHasSeenOnboard } from '../../store/slices/authSlice';
 import { useDispatch } from 'react-redux';
 
 const OnboardScreen = ({ navigation }: any) => {

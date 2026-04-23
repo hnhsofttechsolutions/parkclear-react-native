@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
-  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
-import Toast from 'react-native-toast-message';
+import { useSelector } from 'react-redux';
 import CameraIcon from '../../assets/images/camera.svg';
 import GalleryFabIcon from '../../assets/images/gallery_circle.svg';
 import HamburgerIcon from '../../assets/images/hamburger_menu.svg';
@@ -22,84 +19,29 @@ import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import SideDrawer from '../../components/side-drawer';
 import { GradientButton } from '../../components/ui/gradient-button';
 import PageLoader from '../../components/ui/page-loader';
-import { useCameraPermission } from '../../hooks/use-camera-permission';
-import { PATHS } from '../../navigation/paths';
-import { useUploadImageMutation } from '../../store/api/uploadApi';
-import { Colors } from '../../utils/colors';
-import { pickerOptions, shareApp, uriFromResponse } from '../../utils/helpers';
-import { RootState } from '../../store/store';
-import { useSelector } from 'react-redux';
-import { useLazyGetProfileQuery } from '../../store/api/settingApi';
 import { usePaywall } from '../../hooks/use-paywall';
+import { PATHS } from '../../navigation/paths';
+import { RootState } from '../../store/store';
+import { Colors } from '../../utils/colors';
+import { shareApp } from '../../utils/helpers';
+import Sound from 'react-native-sound';
 
 const { height } = Dimensions.get('window');
+Sound.setCategory('Playback');
 
 const DashboardScreen = ({ navigation }: any) => {
   const [drawer, setDrawer] = useState(false);
   const carSource = require('../../assets/images/car.png');
-  const [uploadImage, { isLoading }] = useUploadImageMutation();
-  const { requestCameraPermission } = useCameraPermission();
   const { user } = useSelector((state: RootState) => state.auth);
   const isPaid = user?.is_paid;
-  const [triggerGetProfile, { isLoading: isProfileLoading }] =
-    useLazyGetProfileQuery();
-
-  const openCamera = async () => {
-    // navigation.navigate(PATHS.Result, {
-    //   variant: 'resolve',
-    //   summarize_message:
-    //     'Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps Simulate a full red team engagement against your application -- probe for exploitable vulnerabilities across authentication, database, edge functions, and client-side code, then deliver a security score with prioritized remediation steps',
-    // });
-    const ok = await requestCameraPermission();
-    if (!ok) return;
-    launchCamera(
-      { ...pickerOptions, saveToPhotos: Platform.OS === 'ios' },
-      async res => {
-        if (res.didCancel) return;
-        if (res.errorCode) {
-          Alert.alert('Camera Error', res.errorMessage || res.errorCode);
-          return;
-        }
-        const uri = uriFromResponse(res);
-        if (!uri) {
-          return;
-        }
-        const formData = new FormData();
-        const fileOBJ = {
-          uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
-          type: 'image/jpeg',
-          name: 'parking_sign.jpg',
-        };
-        formData.append('file', fileOBJ);
-        formData.append('timezone', 'PST');
-        const result = await uploadImage({ formData }).unwrap();
-        if (result?.status === true) {
-          navigation.navigate(PATHS.Result, {
-            id: result?.id,
-            variant: result?.park_status ? 'resolve' : 'reject',
-            summarize_message: result?.summarize_message,
-          });
-        } else {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: result?.message || 'Invalid image.',
-          });
-        }
-      },
-    );
-  };
 
   const onClose = () => setDrawer(false);
 
-  const { openPaywall } = usePaywall({
-    onClose,
-    triggerGetProfile,
-  });
+  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
 
   return (
     <View style={styles.root}>
-      <PageLoader visible={isLoading || isProfileLoading} />
+      <PageLoader visible={isProfileLoading} />
       <LinearGradient
         colors={[Colors.gradientStart, Colors.darkBlue]}
         style={StyleSheet.absoluteFill}
@@ -142,7 +84,10 @@ const DashboardScreen = ({ navigation }: any) => {
           <CurrentTime />
         </ScrollView>
         <View style={styles.bottomCard}>
-          <GradientButton label="Can I Park Here?" onPress={openCamera} />
+          <GradientButton
+            label="Can I Park Here?"
+            onPress={() => navigation.navigate(PATHS.CaptureInstruction)}
+          />
           <View style={styles.profileBtnContainer}>
             <TouchableOpacity
               style={styles.btnWhiteBg}

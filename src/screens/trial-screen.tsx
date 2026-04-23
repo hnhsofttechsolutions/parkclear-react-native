@@ -1,28 +1,36 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import SafeAreaWrapper from '../components/safe-area-wrapper';
 import SubscriptionArt from '../assets/images/ic_subscription.svg';
+import SafeAreaWrapper from '../components/safe-area-wrapper';
 import AppText from '../components/ui/app-text';
-import { FlutterStrings } from '../constants/flutterStrings';
-import { PATHS } from '../navigation/paths';
-import { Colors } from '../utils/colors';
 import {
   GradientButton,
-  GreyPillButton,
-  OutlineButton,
+  OutlineButton
 } from '../components/ui/gradient-button';
 import { GradientText } from '../components/ui/gradient-text';
+import PageLoader from '../components/ui/page-loader';
+import { FlutterStrings } from '../constants/flutterStrings';
+import { usePaywall } from '../hooks/use-paywall';
+import { PATHS } from '../navigation/paths';
+import { Colors } from '../utils/colors';
 
 const TrialScreen = ({ navigation }: any) => {
+
   const handlerReset = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: PATHS.LoginRegister }],
+      routes: [{ name: PATHS.Dashboard }],
     });
   };
 
+  const onClose = () => navigation.goBack();
+
+  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
+
+
   return (
     <SafeAreaWrapper style={styles.safe}>
+      <PageLoader visible={isProfileLoading} />
       <View style={styles.pad}>
         <View style={styles.flex}>
           <View style={styles.center}>
@@ -49,13 +57,16 @@ const TrialScreen = ({ navigation }: any) => {
           />
           <GradientButton
             label={FlutterStrings.startSubscription}
-            onPress={handlerReset}
+            onPress={openPaywall}
           />
-          <GreyPillButton onPress={handlerReset}>
-            <AppText font="medium" size={18} color={Colors.primary}>
-              {FlutterStrings.cancelAnytime}
-            </AppText>
-          </GreyPillButton>
+          <AppText
+            font="medium"
+            size={18}
+            color={Colors.primary}
+            align='center'
+            onPress={handlerReset}>
+            {FlutterStrings.cancelAnytime}
+          </AppText>
         </View>
         <View style={{ height: 30 }} />
       </View>

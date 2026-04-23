@@ -8,10 +8,16 @@ import { useFirebase } from './src/hooks/use-firebase';
 import StackNavigation from './src/navigation/stack-navigation';
 import { persistor, store } from './src/store/store';
 import { MyDarkTheme, MyLightTheme } from './src/utils/colors';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
 
 function App() {
   const isDark = useColorScheme() === 'dark';
-  const {} = useFirebase();
+  const { } = useFirebase();
+
+  GoogleSignin.configure({
+    webClientId: '429728101706-pa4t6569okuiqtj5eond0n77a48t7rba.apps.googleusercontent.com',
+  });
 
   return (
     <Provider store={store}>

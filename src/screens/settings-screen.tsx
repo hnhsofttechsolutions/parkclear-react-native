@@ -2,7 +2,7 @@ import { ChevronRight, KeyRound } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Switch } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AboutUsImg from '../assets/images/about_us.svg';
 import ContactUsImg from '../assets/images/contact_us.svg';
 import DeleteImg from '../assets/images/delete.svg';
@@ -23,6 +23,8 @@ import { PATHS } from '../navigation/paths';
 import { useDeleteAccountMutation } from '../store/api/settingApi';
 import { logout } from '../store/slices/authSlice';
 import { Colors } from '../utils/colors';
+import { usePaywall } from '../hooks/use-paywall';
+import { RootState } from '../store/store';
 const chevron = <ChevronRight size={15} color={Colors.primary} />;
 
 const SettingsScreen = ({ navigation }: any) => {
@@ -31,6 +33,8 @@ const SettingsScreen = ({ navigation }: any) => {
   const [isDeletetModal, setIsDeletetModal] = useState(false);
   const [isAdsRemoved, setIsAdsRemoved] = useState(false);
   const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const isPaid = user?.is_paid;
 
   const handleDeleteAccount = async () => {
     try {
@@ -56,9 +60,12 @@ const SettingsScreen = ({ navigation }: any) => {
     }
   };
 
+  const onClose = () => setIsAdsRemoved(false);
+  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
+
   return (
     <SafeAreaWrapper style={styles.safe}>
-      <PageLoader visible={isLoading} />
+      <PageLoader visible={isLoading || isProfileLoading} />
       <View style={styles.hPad}>
         <AppBar
           title={FlutterStrings.settings}
@@ -94,20 +101,29 @@ const SettingsScreen = ({ navigation }: any) => {
               showDivider={false}
             />
           </View>
-          <View style={{ height: 20 }} />
-          <SettingsBoxRow
-            icon={<RemoveAdsIcon width={20} height={20} color={Colors.black} />}
-            title={FlutterStrings.removeAds}
-            suffix={
-              <Switch
-                value={isAdsRemoved}
-                onValueChange={setIsAdsRemoved}
-                trackColor={{ false: Colors.textFieldBorder, true: Colors.gradientEnd }}
-                thumbColor={Colors.white}
+          {!isPaid && (
+            <>
+              <View style={{ height: 20 }} />
+              <SettingsBoxRow
+                icon={<RemoveAdsIcon width={20} height={20} color={Colors.black} />}
+                title={FlutterStrings.removeAds}
+                suffix={
+                  <Switch
+                    value={isAdsRemoved}
+                    onValueChange={(val) => {
+                      setIsAdsRemoved(val);
+                      if (val) {
+                        openPaywall();
+                      }
+                    }}
+                    trackColor={{ false: Colors.textFieldBorder, true: Colors.gradientEnd }}
+                    thumbColor={Colors.white}
+                  />
+                }
+                onPress={() => { }}
               />
-            }
-            onPress={() => setIsAdsRemoved(!isAdsRemoved)}
-          />
+            </>
+          )}
           <View style={{ height: 20 }} />
           <SettingsBoxRow
             icon={<FeedbackImg width={20} height={20} />}

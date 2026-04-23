@@ -23,7 +23,7 @@ import { FlutterStrings } from '../constants/flutterStrings';
 import { usePaywall } from '../hooks/use-paywall';
 import { PATHS } from '../navigation/paths';
 import { baseApi } from '../store/api/baseApi';
-import { useLazyGetProfileQuery } from '../store/api/settingApi';
+
 import { useCancelRemindMutation } from '../store/api/uploadApi';
 import { logout } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
@@ -32,6 +32,7 @@ import DeleteModal from './modals/delete-modal';
 import DrawerRow from './settings/drawer-row';
 import AppText from './ui/app-text';
 import PageLoader from './ui/page-loader';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
@@ -44,17 +45,13 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const [isLogoutModal, setIsLogoutModal] = useState(false);
   const [pendingLogoutModal, setPendingLogoutModal] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
-  const [triggerGetProfile, { isLoading }] = useLazyGetProfileQuery();
   const [cancelRemind, { isLoading: cancelRemindLoading }] =
     useCancelRemindMutation();
   const isPaid = user?.is_paid;
 
   const onClose = () => setDrawer(false);
 
-  const { openPaywall } = usePaywall({
-    onClose,
-    triggerGetProfile,
-  });
+  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
 
   useEffect(() => {
     if (drawer) {
@@ -76,7 +73,6 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
       }).start(({ finished }) => {
         if (finished) {
           setModalVisible(false);
-          // iOS par "modal over modal" se bachne ke liye, pehle drawer close karo phir logout confirm show karo
           if (pendingLogoutModal) {
             setPendingLogoutModal(false);
             setIsLogoutModal(true);
@@ -104,6 +100,12 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   };
 
   const handlerLogout = async () => {
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+    } catch (e) {
+      console.log('Google logout error', e);
+    }
     dispatch(logout());
     dispatch(baseApi.util.resetApiState());
   };
@@ -139,7 +141,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
 
   return (
     <>
-      <PageLoader visible={isLoading || cancelRemindLoading} />
+      <PageLoader visible={isProfileLoading || cancelRemindLoading} />
       <Modal
         transparent
         visible={modalVisible}
@@ -187,22 +189,22 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                   label={FlutterStrings.myProfile}
                   onPress={() => navigateTo(PATHS.MyProfile)}
                 />
-                <TouchableOpacity
-                  style={styles.removeAdsRow}
-                  onPress={openPaywall}
-                >
-                  <RemoveAdsIcon width={20} height={20} color="white" />
-                  <AppText size={17} color="#FFFFFF" style={styles.rowText}>
-                    {FlutterStrings.removeAds}
-                  </AppText>
-                  {!isPaid && (
+                {!isPaid && (
+                  <TouchableOpacity
+                    style={styles.removeAdsRow}
+                    onPress={openPaywall}
+                  >
+                    <RemoveAdsIcon width={20} height={20} color="white" />
+                    <AppText size={17} color="#FFFFFF" style={styles.rowText}>
+                      {FlutterStrings.removeAds}
+                    </AppText>
                     <View style={styles.trialBadge}>
                       <AppText size={12} color="#FFFFFF">
                         TRIAL
                       </AppText>
                     </View>
-                  )}
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                )}
                 <DrawerRow
                   icon={<SettingsIcon width={25} height={25} />}
                   label={FlutterStrings.settings}

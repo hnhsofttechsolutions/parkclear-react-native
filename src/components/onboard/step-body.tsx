@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Animated,
   Easing,
@@ -6,15 +6,21 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { FlutterStrings } from '../../constants/flutterStrings';
-import StepTitle from './step-title';
-import AppText from '../ui/app-text';
-import { Colors } from '../../utils/colors';
-import StepDots from './step-dots';
-import { StepProgressButton } from '../ui/gradient-button';
 import Step1 from '../../assets/images/step1_image.svg';
 import Step2 from '../../assets/images/step2_image.svg';
-import Step3 from '../../assets/images/Untitled.svg';
+import Step3 from '../../assets/images/step3_image.svg';
+import { FlutterStrings } from '../../constants/flutterStrings';
+import { Colors } from '../../utils/colors';
+import AppText from '../ui/app-text';
+import { StepProgressButton } from '../ui/gradient-button';
+import StepDots from './step-dots';
+import StepTitle from './step-title';
+
+const ILLUSTRATIONS: Record<1 | 2 | 3, React.ComponentType<any>> = {
+  1: Step1,
+  2: Step2,
+  3: Step3,
+};
 
 function StepBody({
   step,
@@ -27,8 +33,8 @@ function StepBody({
     step === 1
       ? FlutterStrings.step1Subtitle
       : step === 2
-      ? FlutterStrings.step2Subtitle
-      : FlutterStrings.step3Subtitle;
+        ? FlutterStrings.step2Subtitle
+        : FlutterStrings.step3Subtitle;
 
   const { width, height } = useWindowDimensions();
   const fade = useRef(new Animated.Value(1)).current;
@@ -36,18 +42,17 @@ function StepBody({
 
   useEffect(() => {
     fade.setValue(0);
-    translateY.setValue(18);
-
+    translateY.setValue(12);
     Animated.parallel([
       Animated.timing(fade, {
         toValue: 1,
-        duration: 280,
+        duration: 180,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(translateY, {
         toValue: 0,
-        duration: 320,
+        duration: 200,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
@@ -59,6 +64,8 @@ function StepBody({
     height * 0.34,
     step === 3 ? 280 : 320,
   );
+
+  const Illustration = ILLUSTRATIONS[step];
 
   return (
     <View style={styles.stepFlex}>
@@ -72,13 +79,7 @@ function StepBody({
         ]}
       >
         <View style={styles.illustrationWrap}>
-          {step === 3 ? (
-            <Step3 width={illustrationSize} height={illustrationSize} />
-          ) : step === 1 ? (
-            <Step1 width={illustrationSize} height={illustrationSize} />
-          ) : (
-            <Step2 width={illustrationSize} height={illustrationSize} />
-          )}
+          <Illustration width={illustrationSize} height={illustrationSize} />
         </View>
         <View style={styles.titleWrap}>
           <StepTitle step={step} />

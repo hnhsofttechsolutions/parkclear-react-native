@@ -10,13 +10,29 @@ import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { RootState } from '../store/store';
 import { Colors, Gradient } from '../utils/colors';
+import { usePaywall } from '../hooks/use-paywall';
+import PageLoader from '../components/ui/page-loader';
 
 const MyProfileScreen = ({ navigation }: any) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const fullName = `${user?.first_name || ''} ${user?.last_name || ''}`;
+  const isPaid = user?.is_paid;
+
+  const onClose = () => navigation.goBack();
+
+  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
+
+  const handlerPaywall = () => {
+    if (isPaid) {
+      navigation.navigate(PATHS.Dashboard);
+    } else {
+      openPaywall();
+    }
+  }
 
   return (
     <SafeAreaWrapper style={styles.safe}>
+      <PageLoader visible={isProfileLoading} />
       <View style={styles.appBarPad}>
         <AppBar
           title={FlutterStrings.myProfile}
@@ -44,7 +60,7 @@ const MyProfileScreen = ({ navigation }: any) => {
         </AppText>
         <GradientButton
           label="Add To Gallery"
-          onPress={() => navigation.navigate(PATHS.Dashboard)}
+          onPress={handlerPaywall}
         />
       </View>
     </SafeAreaWrapper>
