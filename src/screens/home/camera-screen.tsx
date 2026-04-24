@@ -133,7 +133,8 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
           text2: result?.message || 'Invalid image.',
         });
       }
-    } catch {
+    } catch (error) {
+      console.log('error upload -----', error);
       Toast.show({
         type: 'error',
         text1: 'Upload Failed',

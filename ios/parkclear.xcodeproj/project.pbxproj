@@ -388,7 +388,7 @@
 				CODE_SIGN_ENTITLEMENTS = parkclear/parkclear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = ULZX555Y8J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = parkclear/Info.plist;
@@ -422,7 +422,7 @@
 				CODE_SIGN_ENTITLEMENTS = parkclear/parkclear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = ULZX555Y8J;
 				INFOPLIST_FILE = parkclear/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "ParkClear - Smart Parking App";

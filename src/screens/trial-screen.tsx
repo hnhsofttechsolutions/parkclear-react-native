@@ -13,19 +13,29 @@ import { FlutterStrings } from '../constants/flutterStrings';
 import { usePaywall } from '../hooks/use-paywall';
 import { PATHS } from '../navigation/paths';
 import { Colors } from '../utils/colors';
+import { CommonActions } from '@react-navigation/native';
 
 const TrialScreen = ({ navigation }: any) => {
 
   const handlerReset = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: PATHS.Dashboard }],
-    });
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: PATHS.Dashboard }],
+      })
+    )
   };
 
-  const onClose = () => navigation.goBack();
-
-  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
+  const { openPaywall, isProfileLoading } = usePaywall({
+    onClose: () => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: PATHS.Dashboard }],
+        })
+      )
+    }
+  });
 
 
   return (

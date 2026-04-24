@@ -1,4 +1,4 @@
-import { ArrowLeft, MessageSquare } from 'lucide-react-native';
+import { ArrowLeft, MessageCircleWarning, Flag } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
@@ -92,7 +92,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
           onPress={() => setIsFeedVisible(true)}
           activeOpacity={0.85}
         >
-          <MessageSquare size={24} color={Colors.white} strokeWidth={2.5} />
+          <MessageCircleWarning size={24} color={Colors.white} strokeWidth={2.5} />
         </TouchableOpacity>
       </View>
       <ScrollView

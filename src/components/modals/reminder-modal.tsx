@@ -12,6 +12,7 @@ import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
 import { useNavigation } from '@react-navigation/native';
 import { PATHS } from '../../navigation/paths';
+import { Cross, X } from 'lucide-react-native';
 
 interface Props {
   showReminderModal: boolean;
@@ -60,6 +61,9 @@ function ReminderModal({
     >
       <View style={styles.modalBackdrop}>
         <View style={styles.modalCard}>
+          <TouchableOpacity onPress={() => setShowReminderModal(false)} style={{ height: 35, width: 35, justifyContent: 'center', alignItems: 'center', alignSelf: "flex-end" }}>
+            <X size={24} color={Colors.primary} />
+          </TouchableOpacity>
           <Image
             source={require('../../assets/images/bell.png')}
             width={40}

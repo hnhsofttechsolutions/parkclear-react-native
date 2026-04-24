@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import { AppBar } from '../components/ui/app-bar';
 import AppText from '../components/ui/app-text';
@@ -12,19 +12,50 @@ import { RootState } from '../store/store';
 import { Colors, Gradient } from '../utils/colors';
 import { usePaywall } from '../hooks/use-paywall';
 import PageLoader from '../components/ui/page-loader';
+import { CommonActions } from '@react-navigation/native';
+import { useLazyGetProfileQuery } from '../store/api/settingApi';
+import { setCredentials } from '../store/slices/authSlice';
 
 const MyProfileScreen = ({ navigation }: any) => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, token } = useSelector((state: RootState) => state.auth);
   const fullName = `${user?.first_name || ''} ${user?.last_name || ''}`;
   const isPaid = user?.is_paid;
+  const [triggerGetProfile, { isLoading }] =
+    useLazyGetProfileQuery();
+  const dispatch = useDispatch()
 
-  const onClose = () => navigation.goBack();
+  useEffect(() => {
+    getUserProfile()
+  }, [])
 
-  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
+  const getUserProfile = async () => {
+    try {
+      const profileR = await triggerGetProfile().unwrap();
+      dispatch(setCredentials({ token, user: profileR?.data }));
+    } catch (error) {
+      console.log('error ----- ', error);
+    }
+  }
+
+  const { openPaywall, isProfileLoading } = usePaywall({
+    onClose: () => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: PATHS.Dashboard }],
+        })
+      );
+    }
+  });
 
   const handlerPaywall = () => {
     if (isPaid) {
-      navigation.navigate(PATHS.Dashboard);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: PATHS.Dashboard }],
+        })
+      );
     } else {
       openPaywall();
     }
@@ -32,7 +63,7 @@ const MyProfileScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaWrapper style={styles.safe}>
-      <PageLoader visible={isProfileLoading} />
+      <PageLoader visible={isProfileLoading || isLoading} />
       <View style={styles.appBarPad}>
         <AppBar
           title={FlutterStrings.myProfile}

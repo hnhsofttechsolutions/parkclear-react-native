@@ -1,3 +1,4 @@
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { NavigationContainer } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,8 +9,6 @@ import { useFirebase } from './src/hooks/use-firebase';
 import StackNavigation from './src/navigation/stack-navigation';
 import { persistor, store } from './src/store/store';
 import { MyDarkTheme, MyLightTheme } from './src/utils/colors';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
 
 function App() {
   const isDark = useColorScheme() === 'dark';
