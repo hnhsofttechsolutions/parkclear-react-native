@@ -13,6 +13,7 @@ import AppText from '../ui/app-text';
 import { useNavigation } from '@react-navigation/native';
 import { PATHS } from '../../navigation/paths';
 import { Cross, X } from 'lucide-react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
   showReminderModal: boolean;
@@ -84,20 +85,28 @@ function ReminderModal({
             align="center"
             style={styles.sheetDescription}
           >
-            You will be notified {reminderMinutes} minutes before your parking
-            time expires.
+            You will be notified{' '}
+            <AppText size={16} color={Colors.greenDark}>
+              {reminderMinutes} minutes
+            </AppText>{' '}
+            before your parking time expires.
           </AppText>
-          <TouchableOpacity
-            style={styles.modalConfirmBtn}
-            onPress={handlerConfirm}
-          >
-            {isLoading ? (
-              <ActivityIndicator color={Colors.white} size="small" />
-            ) : (
-              <AppText font="medium" size={16} color={Colors.white}>
-                Confirm
-              </AppText>
-            )}
+
+          <TouchableOpacity onPress={handlerConfirm}>
+            <LinearGradient
+              colors={['#9AEF8B', '#41B540']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.modalConfirmBtn}
+            >
+              {isLoading ? (
+                <ActivityIndicator color={Colors.white} size="small" />
+              ) : (
+                <AppText font="medium" size={16} color={Colors.white}>
+                  Confirm
+                </AppText>
+              )}
+            </LinearGradient>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.modalCancelBtn}

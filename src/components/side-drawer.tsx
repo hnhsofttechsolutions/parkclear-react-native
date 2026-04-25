@@ -33,6 +33,7 @@ import DrawerRow from './settings/drawer-row';
 import AppText from './ui/app-text';
 import PageLoader from './ui/page-loader';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
@@ -105,6 +106,15 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
       await GoogleSignin.signOut();
     } catch (e) {
       console.log('Google logout error', e);
+    }
+    try {
+      if (appleAuth.isSupported) {
+        await appleAuth.performRequest({
+          requestedOperation: appleAuth.Operation.LOGOUT,
+        });
+      }
+    } catch (e) {
+      console.log('Apple logout error', e);
     }
     dispatch(logout());
     dispatch(baseApi.util.resetApiState());

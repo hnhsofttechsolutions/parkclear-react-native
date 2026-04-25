@@ -4,12 +4,14 @@ interface AuthState {
   token: string | null;
   user: any | null;
   hasSeenOnboard: boolean;
+  hasSeenTrial: boolean;
 }
 
 const initialState: AuthState = {
   token: null,
   user: null,
   hasSeenOnboard: false,
+  hasSeenTrial: false,
 };
 
 const authSlice = createSlice({
@@ -26,6 +28,9 @@ const authSlice = createSlice({
     setHasSeenOnboard: state => {
       state.hasSeenOnboard = true;
     },
+    setHasSeenTrial: state => {
+      state.hasSeenTrial = true;
+    },
     logout: state => {
       state.token = null;
       state.user = null;
@@ -33,5 +38,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setHasSeenOnboard, logout } = authSlice.actions;
+export const { setCredentials, setHasSeenOnboard, setHasSeenTrial, logout } = authSlice.actions;
 export default authSlice.reducer;

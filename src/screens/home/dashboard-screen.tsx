@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -8,6 +8,7 @@ import {
   View
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Sound from 'react-native-sound';
 import { useSelector } from 'react-redux';
 import CameraIcon from '../../assets/images/camera.svg';
 import GalleryFabIcon from '../../assets/images/gallery_circle.svg';
@@ -19,17 +20,18 @@ import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import SideDrawer from '../../components/side-drawer';
 import { GradientButton } from '../../components/ui/gradient-button';
 import PageLoader from '../../components/ui/page-loader';
+import { useLocationPermission } from '../../hooks/use-location-permission';
 import { usePaywall } from '../../hooks/use-paywall';
 import { PATHS } from '../../navigation/paths';
 import { RootState } from '../../store/store';
 import { Colors } from '../../utils/colors';
 import { shareApp } from '../../utils/helpers';
-import Sound from 'react-native-sound';
 
 const { height } = Dimensions.get('window');
 Sound.setCategory('Playback');
 
 const DashboardScreen = ({ navigation }: any) => {
+  const { hasPermission } = useLocationPermission();
   const [drawer, setDrawer] = useState(false);
   const carSource = require('../../assets/images/car.png');
   const { user } = useSelector((state: RootState) => state.auth);

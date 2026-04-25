@@ -49,7 +49,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to take photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>This app needs location access to determine your current location for parking.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app needs permission to save photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

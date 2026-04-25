@@ -10,7 +10,7 @@ import { RootStackParamList } from './types';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const StackNavigation = () => {
-  const { token, hasSeenOnboard, user } = useSelector(
+  const { user, token, hasSeenOnboard, hasSeenTrial } = useSelector(
     (state: RootState) => state.auth,
   );
   const [splashDone, setSplashDone] = useState(false);
@@ -21,12 +21,12 @@ const StackNavigation = () => {
 
   const getScreens = () => {
     if (token) {
-      if (!user?.is_paid) {
+      if (!user?.is_paid && !hasSeenTrial) {
         const trialScreen = APP_SCREENS.find(s => s.name === PATHS.Trial);
         const rest = APP_SCREENS.filter(s => s.name !== PATHS.Trial);
         return trialScreen ? [trialScreen, ...rest] : APP_SCREENS;
       }
-      return APP_SCREENS;
+      return APP_SCREENS.filter(s => s.name !== PATHS.Trial);
     }
     if (!hasSeenOnboard) {
       return AUTH_SCREENS;

@@ -10,6 +10,7 @@ export type RootStackParamList = {
   };
   [PATHS.ReminderSet]: {
     reminderMinutes: number;
+    expiryTime?: string;
   };
 
   [PATHS.Splash]: undefined;

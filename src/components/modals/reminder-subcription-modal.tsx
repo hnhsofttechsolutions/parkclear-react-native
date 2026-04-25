@@ -1,5 +1,6 @@
 import { X } from 'lucide-react-native';
 import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { usePaywall } from '../../hooks/use-paywall';
 import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
@@ -61,13 +62,17 @@ function ReminderSubcriptionModal({
             >
               Unlock full access and Additional Features
             </AppText>
-            <TouchableOpacity
-              style={styles.modalConfirmBtn}
-              onPress={openPaywall}
-            >
-              <AppText font="medium" size={16} color={Colors.white}>
-                Subscribe for $4.99 Monthly
-              </AppText>
+            <TouchableOpacity onPress={openPaywall}>
+              <LinearGradient
+                colors={['#9AEF8B', '#41B540']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.modalConfirmBtn}
+              >
+                <AppText font="medium" size={16} color={Colors.white}>
+                  Subscribe for $4.99 Monthly
+                </AppText>
+              </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.modalCancelBtn}
@@ -119,7 +124,6 @@ const styles = StyleSheet.create({
   modalConfirmBtn: {
     minHeight: 52,
     borderRadius: 28,
-    backgroundColor: Colors.greenDark,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -25,6 +25,8 @@ import { logout } from '../store/slices/authSlice';
 import { Colors } from '../utils/colors';
 import { usePaywall } from '../hooks/use-paywall';
 import { RootState } from '../store/store';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 const chevron = <ChevronRight size={15} color={Colors.primary} />;
 
 const SettingsScreen = ({ navigation }: any) => {
@@ -45,6 +47,21 @@ const SettingsScreen = ({ navigation }: any) => {
           text1: 'Account Deleted',
           text2: response?.message,
         });
+        try {
+          await GoogleSignin.revokeAccess();
+          await GoogleSignin.signOut();
+        } catch (e) {
+          console.log('Google logout error', e);
+        }
+        try {
+          if (appleAuth.isSupported) {
+            await appleAuth.performRequest({
+              requestedOperation: appleAuth.Operation.LOGOUT,
+            });
+          }
+        } catch (e) {
+          console.log('Apple logout error', e);
+        }
         dispatch(logout());
         navigation.reset({
           index: 0,
