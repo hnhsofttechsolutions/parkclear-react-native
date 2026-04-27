@@ -17,23 +17,22 @@ import CancelIcon from '../assets/images/cancel_circle.svg';
 import GalleryIcon from '../assets/images/gallery.svg';
 import LogoutIcon from '../assets/images/logout.svg';
 import MyProfileIcon from '../assets/images/my_profile.svg';
-import RemoveAdsIcon from '../assets/images/remove_ads.svg';
 import SettingsIcon from '../assets/images/settings.svg';
+import UpgradeIcon from '../assets/images/upgrade.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { usePaywall } from '../hooks/use-paywall';
 import { PATHS } from '../navigation/paths';
 import { baseApi } from '../store/api/baseApi';
 
+import { appleAuth } from '@invertase/react-native-apple-authentication';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useCancelRemindMutation } from '../store/api/uploadApi';
 import { logout } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
 import { Colors } from '../utils/colors';
 import DeleteModal from './modals/delete-modal';
 import DrawerRow from './settings/drawer-row';
-import AppText from './ui/app-text';
 import PageLoader from './ui/page-loader';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
@@ -200,20 +199,11 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                   onPress={() => navigateTo(PATHS.MyProfile)}
                 />
                 {!isPaid && (
-                  <TouchableOpacity
-                    style={styles.removeAdsRow}
+                  <DrawerRow
+                    icon={<UpgradeIcon width={25} height={25} />}
+                    label="Upgrade"
                     onPress={openPaywall}
-                  >
-                    <RemoveAdsIcon width={20} height={20} color="white" />
-                    <AppText size={17} color="#FFFFFF" style={styles.rowText}>
-                      {FlutterStrings.removeAds}
-                    </AppText>
-                    <View style={styles.trialBadge}>
-                      <AppText size={12} color="#FFFFFF">
-                        TRIAL
-                      </AppText>
-                    </View>
-                  </TouchableOpacity>
+                  />
                 )}
                 <DrawerRow
                   icon={<SettingsIcon width={25} height={25} />}
@@ -286,23 +276,5 @@ const styles = StyleSheet.create({
   drawerClose: {
     alignSelf: 'flex-start',
     marginTop: 10,
-  },
-  removeAdsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    marginVertical: 4,
-    marginLeft: 4,
-  },
-  rowText: {
-    marginLeft: 18,
-    letterSpacing: 0.3,
-  },
-  trialBadge: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    marginLeft: 20,
   },
 });

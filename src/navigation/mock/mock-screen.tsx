@@ -8,6 +8,7 @@ import GalleryScreen from '../../screens/gallery-screen';
 import CameraScreen from '../../screens/home/camera-screen';
 import DashboardScreen from '../../screens/home/dashboard-screen';
 import CaptureInstructionScreen from '../../screens/home/capture-instruction-screen';
+import FutureParkingScreen from '../../screens/home/future-parking-screen';
 import ReminderSetScreen from '../../screens/home/reminder-set-screen';
 import ResultScreen from '../../screens/home/result-screen';
 import MyProfileScreen from '../../screens/my-profile-screen';
@@ -17,8 +18,8 @@ import AboutUsScreen from '../../screens/settings/about-us-screen';
 import ContactUsScreen from '../../screens/settings/contact-us-screen';
 import PrivacyPolicyScreen from '../../screens/settings/privacy-policy-screen';
 import TermsScreen from '../../screens/settings/terms-screen';
-import SubscriptionPackagesScreen from '../../screens/subcription/subscription-packages-screen';
 import SubscriptionScreen from '../../screens/subcription/subscription-screen';
+import SubscriptionFeatureScreen from '../../screens/subcription/subscription-feature-screen';
 import TrialScreen from '../../screens/trial-screen';
 import UpdateScreen from '../../screens/update-screen';
 import UploadPhotoScreen from '../../screens/upload-photo-screen';
@@ -36,9 +37,10 @@ export const APP_SCREENS = [
   { name: PATHS.GalleryDetails, component: GalleryDetailsScreen },
   { name: PATHS.UploadPhoto, component: UploadPhotoScreen },
   { name: PATHS.Subscription, component: SubscriptionScreen },
-  { name: PATHS.SubscriptionPackages, component: SubscriptionPackagesScreen },
+  { name: PATHS.SubscriptionFeature, component: SubscriptionFeatureScreen },
   { name: PATHS.Update, component: UpdateScreen },
   { name: PATHS.Camera, component: CameraScreen },
+  { name: PATHS.FutureParking, component: FutureParkingScreen },
   { name: PATHS.CaptureInstruction, component: CaptureInstructionScreen },
   { name: PATHS.ChangePassword, component: ChangePasswordScreen },
   { name: PATHS.ReminderSet, component: ReminderSetScreen },

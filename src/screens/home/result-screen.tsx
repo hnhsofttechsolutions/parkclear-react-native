@@ -1,6 +1,7 @@
-import { ArrowLeft, MessageCircleWarning, Flag } from 'lucide-react-native';
+import { ArrowLeft } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Markdown from 'react-native-markdown-display';
 
 import NoParkingIcon from '../../assets/images/no_parking.svg';
@@ -12,16 +13,16 @@ import Sound from 'react-native-sound';
 import { useSelector } from 'react-redux';
 import RemindCard from '../../components/card/remind-card';
 import ReminderModal from '../../components/modals/reminder-modal';
+import ReminderSubcriptionModal from '../../components/modals/reminder-subcription-modal';
 import ResultFeedBack from '../../components/result/result-feedback';
 import { PATHS } from '../../navigation/paths';
 import { ResultScreenProps } from '../../navigation/types';
 import { RootState } from '../../store/store';
 import { Colors, Gradient } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
-import ReminderSubcriptionModal from '../../components/modals/reminder-subcription-modal';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
-  const { id, variant, summarize_message } = route.params;
+  const { id, variant, summarize_message, endTime, endTimeIso } = route.params;
   const isResolve = variant === 'resolve';
   const [reminderMinutes, setReminderMinutes] = useState(15);
   const [showReminderModal, setShowReminderModal] = useState(false);
@@ -74,103 +75,113 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   }, [isPaid, hasShownReminder]);
 
   return (
-    <SafeAreaWrapper
-      backgroundColor={isResolve ? Colors.greenDark : Colors.redDark}
-      statusBarStyle="light-content"
-      style={styles.container}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.menuBtn}
-          onPress={handleReset}
-          activeOpacity={0.85}
-        >
-          <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.feedbackIconBtn}
-          onPress={() => setIsFeedVisible(true)}
-          activeOpacity={0.85}
-        >
-          <MessageCircleWarning size={24} color={Colors.white} strokeWidth={2.5} />
-        </TouchableOpacity>
-      </View>
-      <ScrollView
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: 20 }]}
-        showsVerticalScrollIndicator={false}
+    <View style={{ flex: 1 }}>
+      <LinearGradient
+        colors={isResolve ? ['#9AEF8B', '#41B540'] : ['#FF6B6D', '#F62C30']}
+        style={StyleSheet.absoluteFill}
+      />
+      <SafeAreaWrapper
+        backgroundColor="transparent"
+        statusBarStyle="dark-content"
+        style={styles.container}
       >
-        <View>
-          <View style={styles.iconWrapper}>
-            {isResolve ? (
-              <YesParkingIcon width={320} height={320} />
-            ) : (
-              <NoParkingIcon width={320} height={320} />
-            )}
-          </View>
-
-          <AppText
-            font="bold"
-            size={20}
-            align="center"
-            color={Colors.white}
-            style={styles.title}
-          >
-            {isResolve ? 'Permitted Parking' : 'Prohibited Parking'}
-          </AppText>
-
-          <Markdown style={markdownStyles}>{summarize_message}</Markdown>
-
-          {isResolve && isPaid && (
-            <RemindCard
-              reminderMinutes={reminderMinutes}
-              setReminderMinutes={setReminderMinutes}
-            />
-          )}
-        </View>
-        <View style={styles.actionsWrapper}>
-          {isResolve && isPaid && (
-            <TouchableOpacity
-              style={styles.confirmBtn}
-              onPress={handleConfirmReminder}
-            >
-              <AppText font="medium" size={16} color={Colors.greenDark}>
-                CONFIRM
-              </AppText>
-            </TouchableOpacity>
-          )}
+        <View style={styles.header}>
           <TouchableOpacity
-            style={[
-              styles.overBtn,
-              isResolve ? styles.overBtnResolve : styles.overBtnDefault,
-            ]}
+            style={styles.menuBtn}
             onPress={handleReset}
+            activeOpacity={0.85}
           >
-            <AppText
-              font="medium"
-              size={16}
-              color={isResolve ? Colors.white : Colors.redDark}
-            >
-              START OVER
-            </AppText>
+            <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.feedbackIconBtn}
+            onPress={() => setIsFeedVisible(true)}
+            activeOpacity={0.85}
+          >
+            <Image
+              source={require("../../assets/images/report.png")}
+              style={{ width: 30, height: 30 }}
+            />
           </TouchableOpacity>
         </View>
-      </ScrollView>
+        <ScrollView
+          contentContainerStyle={[styles.scrollContent, { paddingBottom: 20 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View>
+            <View style={styles.iconWrapper}>
+              {isResolve ? (
+                <YesParkingIcon width={320} height={320} />
+              ) : (
+                <NoParkingIcon width={320} height={320} />
+              )}
+            </View>
 
-      <ResultFeedBack
-        id={id}
-        isVisible={isFeedVisible}
-        setIsVisible={setIsFeedVisible}
-      />
-      <ReminderModal
-        reminderMinutes={reminderMinutes}
-        showReminderModal={showReminderModal}
-        setShowReminderModal={setShowReminderModal}
-      />
-      <ReminderSubcriptionModal
-        showReminderModal={reminderSubcriptionModal}
-        setShowReminderModal={setReminderSubcriptionModal}
-      />
-    </SafeAreaWrapper>
+            <AppText
+              font="bold"
+              size={20}
+              align="center"
+              color={Colors.white}
+              style={styles.title}
+            >
+              {isResolve ? 'Permitted Parking' : 'Prohibited Parking'}
+            </AppText>
+
+            <Markdown style={markdownStyles}>{summarize_message}</Markdown>
+
+            {isResolve && isPaid && (
+              <RemindCard
+                reminderMinutes={reminderMinutes}
+                setReminderMinutes={setReminderMinutes}
+              />
+            )}
+          </View>
+          <View style={styles.actionsWrapper}>
+            {isResolve && isPaid && (
+              <TouchableOpacity
+                style={styles.confirmBtn}
+                onPress={handleConfirmReminder}
+              >
+                <AppText font="medium" size={16} color={Colors.greenDark}>
+                  CONFIRM
+                </AppText>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={[
+                styles.overBtn,
+                isResolve ? styles.overBtnResolve : styles.overBtnDefault,
+              ]}
+              onPress={handleReset}
+            >
+              <AppText
+                font="medium"
+                size={16}
+                color={isResolve ? Colors.white : Colors.redDark}
+              >
+                START OVER
+              </AppText>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+
+        <ResultFeedBack
+          id={id}
+          isVisible={isFeedVisible}
+          setIsVisible={setIsFeedVisible}
+        />
+        <ReminderModal
+          endTimeIso={endTimeIso}
+          reminderMinutes={reminderMinutes}
+          showReminderModal={showReminderModal}
+          setShowReminderModal={setShowReminderModal}
+        />
+        <ReminderSubcriptionModal
+          showReminderModal={reminderSubcriptionModal}
+          setShowReminderModal={setReminderSubcriptionModal}
+        />
+      </SafeAreaWrapper>
+    </View>
   );
 };
 

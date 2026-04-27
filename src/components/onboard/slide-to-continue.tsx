@@ -1,6 +1,6 @@
 import { StyleSheet, Text } from 'react-native';
 
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   Animated,
   Easing,
@@ -17,7 +17,7 @@ import { FontFamily } from '../../utils/fonts';
 
 const SWIPE_LABEL_INSET = 56;
 
-function SlideToContinue({ onComplete }: { onComplete: () => void }) {
+const SlideToContinue = React.memo(({ onComplete }: { onComplete: () => void }) => {
   const trackWRef = useRef(0);
   const thumb = 50;
   const pad = 5;
@@ -58,12 +58,7 @@ function SlideToContinue({ onComplete }: { onComplete: () => void }) {
           x.setValue(0);
           return;
         }
-        Animated.timing(x, {
-          toValue: 0,
-          duration: 320,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }).start();
+        x.setValue(0);
       },
     }),
   ).current;
@@ -98,7 +93,7 @@ function SlideToContinue({ onComplete }: { onComplete: () => void }) {
       </Animated.View>
     </View>
   );
-}
+});
 
 export default SlideToContinue;
 

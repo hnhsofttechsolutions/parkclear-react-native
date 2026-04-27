@@ -7,10 +7,13 @@ export type RootStackParamList = {
     id: string;
     variant: 'resolve' | 'reject';
     summarize_message: string;
+    endTime: string;
+    endTimeIso: string;
   };
   [PATHS.ReminderSet]: {
     reminderMinutes: number;
-    expiryTime?: string;
+    parking_end_time_iso: string;
+    reminder_time_iso: string;
   };
 
   [PATHS.Splash]: undefined;

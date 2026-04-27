@@ -15,13 +15,11 @@ import { PATHS } from '../navigation/paths';
 import { Colors } from '../utils/colors';
 import { CommonActions } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { setHasSeenTrial } from '../store/slices/authSlice';
 
 const TrialScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
 
   const handlerReset = () => {
-    dispatch(setHasSeenTrial());
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -32,7 +30,6 @@ const TrialScreen = ({ navigation }: any) => {
 
   const { openPaywall, isProfileLoading } = usePaywall({
     onClose: () => {
-      dispatch(setHasSeenTrial());
       navigation.dispatch(
         CommonActions.reset({
           index: 0,

@@ -32,7 +32,7 @@ export const uploadApi = baseApi.injectEndpoints({
       }),
     }),
     cancelRemind: builder.mutation<any, any>({
-      query: ({}: any) => ({
+      query: ({ }: any) => ({
         url: 'authentication/v1/user/cancel_parking_reminder/',
         method: 'POST',
       }),
@@ -44,6 +44,12 @@ export const uploadApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    screenStatus: builder.mutation<any, any>({
+      query: ({ }: any) => ({
+        url: 'authentication/v1/user/update_screen_status/',
+        method: 'POST',
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -53,6 +59,7 @@ export const {
   useUploadCustomImageMutation,
   useGetUploadImageQuery,
   useCancelRemindMutation,
+  useScreenStatusMutation,
   useResultRemindMutation,
   useResultFeedbackMutation,
 } = uploadApi;

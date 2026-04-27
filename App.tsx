@@ -14,6 +14,9 @@ function App() {
   const isDark = useColorScheme() === 'dark';
   const { } = useFirebase();
 
+  // Initialize Unity LevelPlay Ads
+  // AdService.init();
+
   GoogleSignin.configure({
     webClientId: '429728101706-pa4t6569okuiqtj5eond0n77a48t7rba.apps.googleusercontent.com',
   });

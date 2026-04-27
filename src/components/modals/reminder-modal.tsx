@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import moment from "moment-timezone";
 import {
   ActivityIndicator,
   Image,
@@ -6,33 +8,37 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
+import { PATHS } from '../../navigation/paths';
 import { useResultRemindMutation } from '../../store/api/uploadApi';
 import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
-import { useNavigation } from '@react-navigation/native';
-import { PATHS } from '../../navigation/paths';
-import { Cross, X } from 'lucide-react-native';
-import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
+  endTimeIso?: string;
+  reminderMinutes: number;
   showReminderModal: boolean;
   setShowReminderModal: (value: boolean) => void;
-  reminderMinutes: number;
 }
 
 function ReminderModal({
+  endTimeIso,
+  reminderMinutes,
   showReminderModal,
   setShowReminderModal,
-  reminderMinutes,
 }: Props) {
   const navigation = useNavigation<any>();
   const [remindApi, { isLoading }] = useResultRemindMutation();
 
   const handlerConfirm = async () => {
     try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const shortTZ = moment().tz(timezone).format("z");
       const formData = new FormData();
       formData.append('minutes', reminderMinutes);
+      formData.append('end_time_iso', endTimeIso);
+      formData.append('timezone', shortTZ);
       const response = await remindApi({ formData }).unwrap();
       if (response?.status) {
         Toast.show({
@@ -41,9 +47,15 @@ function ReminderModal({
           text2: response?.message,
         });
         setShowReminderModal(false);
-        navigation.navigate(PATHS.ReminderSet, { reminderMinutes });
+        navigation.navigate(PATHS.ReminderSet,
+          {
+            reminderMinutes,
+            parking_end_time_iso: response?.parking_end_time_iso,
+            reminder_time_iso: response?.reminder_time_iso
+          });
       }
     } catch (error: any) {
+      setShowReminderModal(false);
       Toast.show({
         type: 'error',
         text1: 'Remind Failed',
@@ -62,9 +74,6 @@ function ReminderModal({
     >
       <View style={styles.modalBackdrop}>
         <View style={styles.modalCard}>
-          <TouchableOpacity onPress={() => setShowReminderModal(false)} style={{ height: 35, width: 35, justifyContent: 'center', alignItems: 'center', alignSelf: "flex-end" }}>
-            <X size={24} color={Colors.primary} />
-          </TouchableOpacity>
           <Image
             source={require('../../assets/images/bell.png')}
             width={40}

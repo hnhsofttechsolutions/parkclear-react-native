@@ -1,55 +1,42 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
-import CancelCircle from '../assets/images/cancel_circle.svg';
-import UpdateArt from '../assets/images/ic_subscription.svg';
 import AppText from '../components/ui/app-text';
-import { FlutterStrings } from '../constants/flutterStrings';
-import { Colors, Gradient } from '../utils/colors';
+import { CloseButton } from '../components/ui/close-button';
 import { GradientButton } from '../components/ui/gradient-button';
 import { GradientText } from '../components/ui/gradient-text';
+import { Colors } from '../utils/colors';
 
 const UpdateScreen = ({ navigation }: any) => {
   return (
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.pad}>
-        <TouchableOpacity
-          style={styles.close}
-          onPress={() => navigation.goBack()}
-        >
-          <LinearGradient
-            colors={[...Gradient.colors]}
-            style={styles.closeInner}
-          >
-            <CancelCircle width={28} height={28} />
-          </LinearGradient>
-        </TouchableOpacity>
-        <View style={styles.illus}>
-          <UpdateArt width={220} height={220} />
+        <CloseButton onPress={() => navigation.goBack()} />
+
+        <View style={styles.center}>
+          <Image
+            source={require('../assets/images/calendar.png')}
+            style={styles.illustration}
+          />
+          <View style={styles.textWrap}>
+            <View style={styles.headingRow}>
+              <AppText font="semiBold" size={26} align="center">We Updated </AppText>
+              <GradientText fontSize={26}>ParkClear</GradientText>
+              <AppText font="semiBold" size={26} align="center">!</AppText>
+            </View>
+            <AppText size={18} color={Colors.primary} align="center" style={styles.mt10}>
+              Please download the latest version.
+            </AppText>
+          </View>
         </View>
-        <AppText
-          font="semiBold"
-          size={32}
-          color={Colors.primary}
-          align="center"
-          style={{ marginTop: 20 }}
-        >
-          We Updated{' '}
-        </AppText>
-        <View style={{ alignSelf: 'center', marginTop: 4 }}>
-          <GradientText fontSize={32}>ParkClear</GradientText>
+        <View style={styles.actions}>
+          <GradientButton label="Download Now" onPress={() => { }} />
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.mt20}>
+            <AppText font="medium" size={18} color={Colors.blue} align="center">
+              No Thanks
+            </AppText>
+          </TouchableOpacity>
         </View>
-        <AppText
-          size={17}
-          color={Colors.grey}
-          align="center"
-          style={{ marginTop: 16, paddingHorizontal: 12 }}
-        >
-          Please update to the latest version for the best experience.
-        </AppText>
-        <View style={{ flex: 1 }} />
-        <GradientButton label={FlutterStrings.downloadNow} onPress={() => {}} />
       </View>
     </SafeAreaWrapper>
   );
@@ -59,18 +46,25 @@ export default UpdateScreen;
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.white },
-  pad: { flex: 1, paddingHorizontal: 20, paddingBottom: 28 },
-  close: { alignSelf: 'flex-end' },
-  closeInner: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  pad: { flex: 1, paddingHorizontal: 20, paddingBottom: 40 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  illustration: {
+    width: 320,
+    height: 320,
+    resizeMode: 'contain',
+  },
+  textWrap: {
+    alignItems: 'center',
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  headingRow: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    flexWrap: 'wrap',
   },
-  illus: {
-    marginTop: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  mt10: { marginTop: 10 },
+  mt20: { marginTop: 20 },
+  actions: { marginTop: 20 },
 });

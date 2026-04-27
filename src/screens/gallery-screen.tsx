@@ -84,7 +84,7 @@ const GalleryScreen = ({ navigation }: any) => {
         <View style={styles.bottomButtonWrap}>
           <GradientButton
             label="Add New Image"
-            onPress={() => navigation.navigate(PATHS.Dashboard)}
+            onPress={() => navigation.navigate(PATHS.CaptureInstruction, { from: 'Dashboard' })}
           />
         </View>
       </View>

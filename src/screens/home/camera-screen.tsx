@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
   RefreshCcw,
 } from 'lucide-react-native';
+import moment from "moment-timezone";
 import React, { useState } from 'react';
 import {
   Alert,
@@ -16,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Toast from 'react-native-toast-message';
@@ -26,15 +27,13 @@ import {
   GradientButton,
   OutlineButton,
 } from '../../components/ui/gradient-button';
-import { useCameraPermission } from '../../hooks/use-camera-permission';
 import { useGalleryPermission } from '../../hooks/use-gallery-permission';
 import { PATHS } from '../../navigation/paths';
-import { HomeScreenProps } from '../../navigation/types';
 import { useUploadCustomImageMutation } from '../../store/api/uploadApi';
 import { Colors, Gradient } from '../../utils/colors';
 import {
-  formatDateToYYYYMMDD,
   formatDateToMMDDYYYY,
+  formatDateToYYYYMMDD,
   formatTimeToAMPM,
   pickerOptions,
   uriFromResponse,
@@ -42,9 +41,8 @@ import {
 
 const { height } = Dimensions.get('window');
 
-const CameraScreen = ({ navigation }: HomeScreenProps) => {
+const CameraScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadCustomImageMutation();
-  const { requestCameraPermission } = useCameraPermission();
   const { requestGalleryPermission } = useGalleryPermission();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -53,25 +51,15 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
+  React.useEffect(() => {
+    if (route.params?.capturedImageUri) {
+      setSelectedImage(route.params.capturedImageUri);
+      navigation.setParams({ capturedImageUri: undefined });
+    }
+  }, [route.params?.capturedImageUri, navigation]);
+
   const onSelectImage = (uri: string) => {
     setSelectedImage(uri);
-  };
-
-  const openCamera = async () => {
-    const ok = await requestCameraPermission();
-    if (!ok) return;
-    launchCamera(
-      { ...pickerOptions, saveToPhotos: Platform.OS === 'ios' },
-      res => {
-        if (res.didCancel) return;
-        if (res.errorCode) {
-          Alert.alert('Camera Error', res.errorMessage || res.errorCode);
-          return;
-        }
-        const uri = uriFromResponse(res);
-        if (uri) onSelectImage(uri);
-      },
-    );
   };
 
   const openGallery = async () => {
@@ -102,6 +90,8 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
       weekday: 'long',
     });
     try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const shortTZ = moment().tz(timezone).format("z");
       const formData = new FormData();
       const fileOBJ = {
         uri:
@@ -112,7 +102,7 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
         name: 'parking_sign.jpg',
       };
       formData.append('file', fileOBJ);
-      formData.append('timezone', 'PST');
+      formData.append('timezone', shortTZ);
       formData.append('day', dayFromDate);
       formData.append('date', formatDateToYYYYMMDD(selectedDate));
       formData.append('time', formatTimeToAMPM(time));
@@ -122,6 +112,8 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
           id: result?.id,
           variant: result?.park_status ? 'resolve' : 'reject',
           summarize_message: result?.summarize_message,
+          endTime: result?.end_time,
+          endTimeIso: result?.end_time_iso,
         });
         setSelectedImage(null);
         setSelectedDate(null);
@@ -133,12 +125,12 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
           text2: result?.message || 'Invalid image.',
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log('error upload -----', error);
       Toast.show({
         type: 'error',
         text1: 'Upload Failed',
-        text2: 'There was an issue uploading your image. Please try again.',
+        text2: error?.data?.message || 'There was an issue uploading your image. Please try again.',
       });
     }
   };
@@ -206,7 +198,7 @@ const CameraScreen = ({ navigation }: HomeScreenProps) => {
               <>
                 <GradientButton
                   label="Open Camera"
-                  onPress={openCamera}
+                  onPress={() => navigation.navigate(PATHS.CaptureInstruction, { from: 'Camera' })}
                   leftIcon={<Camera size={20} color={Colors.white} />}
                 />
                 <OutlineButton

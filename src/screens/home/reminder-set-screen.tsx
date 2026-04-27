@@ -9,7 +9,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
-
+import moment from "moment-timezone";
 import Toast from 'react-native-toast-message';
 import { PATHS } from '../../navigation/paths';
 import { ReminderSetScreenProps } from '../../navigation/types';
@@ -17,28 +17,10 @@ import { useCancelRemindMutation } from '../../store/api/uploadApi';
 import { Colors } from '../../utils/colors';
 
 const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
-  const { reminderMinutes, expiryTime } = route.params;
+  const { reminderMinutes, parking_end_time_iso, reminder_time_iso } = route.params;
   const [cancelRemind, { isLoading: cancelRemindLoading }] = useCancelRemindMutation();
-
-  const getParkingUntil = () => {
-    if (expiryTime) return expiryTime;
-    const now = new Date();
-    now.setHours(now.getHours() + 1);
-    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const getReminderAt = () => {
-    const until = getParkingUntil();
-    const [time, period] = until.split(' ');
-    const [hours, minutes] = time.split(':').map(Number);
-    const date = new Date();
-    date.setHours(period === 'PM' && hours !== 12 ? hours + 12 : (period === 'AM' && hours === 12 ? 0 : hours));
-    date.setMinutes(minutes - reminderMinutes);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const parkingUntil = getParkingUntil();
-  const reminderAt = getReminderAt();
+  const end_time = moment(parking_end_time_iso).format("hh:mm A");
+  const reminder_time = moment(reminder_time_iso).format("hh:mm A");
 
   const handleReset = () => {
     navigation.reset({
@@ -106,11 +88,11 @@ const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
             </AppText>
             <View style={styles.timePill}>
               <AppText font="medium" size={42} color={Colors.white}>
-                {parkingUntil}
+                {end_time}
               </AppText>
             </View>
             <AppText font="medium" size={16} color={Colors.white} align="center">
-              🔔 Reminder at {reminderAt}
+              🔔 Reminder at {reminder_time}
             </AppText>
           </View>
 

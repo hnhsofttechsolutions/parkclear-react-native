@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { CloseButton } from '../../components/ui/close-button';
 import { PATHS } from '../../navigation/paths';
 import { Colors } from '../../utils/colors';
@@ -8,47 +8,41 @@ import AppText from '../../components/ui/app-text';
 import { GradientText } from '../../components/ui/gradient-text';
 import { GradientButton } from '../../components/ui/gradient-button';
 import { FlutterStrings } from '../../constants/flutterStrings';
-import SubscriptionArt from '../../assets/images/ic_subscription.svg';
 
-const SubscriptionScreen = ({ navigation }: any) => {
+const SubscriptionFeatureScreen = ({ navigation }: any) => {
   return (
     <SafeAreaWrapper style={styles.safe}>
       <View style={styles.pad}>
         <CloseButton onPress={() => navigation.goBack()} />
-        <View style={styles.flex}>
-          <View style={styles.center}>
-            <SubscriptionArt width={300} height={300} />
-            <View style={styles.textWrap}>
-              <View style={styles.headingRow}>
-                <AppText font="semiBold" size={26}>
-                  Join {' '}
-                </AppText>
-                <GradientText fontSize={26}>ParkClear</GradientText>
-              </View>
-              <AppText font="semiBold" size={26} align="center">
-                for only $4.99
-              </AppText>
-              <AppText
-                color={Colors.primary}
-                align="center"
-                style={styles.mt10}
-              >
-                Confident parking begins here. Unlock full access to ParkClear’s AI-powered features no guesswork, no stress.
-              </AppText>
-              <AppText
-                color={Colors.primary}
-                align="center"
-                style={styles.mt10}
-              >
-                Enjoying parking support for just
-                $4.99/month. (auto-renewing monthly plan)
-              </AppText>
+        <View style={styles.center}>
+          <View style={styles.headingRow}>
+            <AppText font="semiBold" size={26} align="center">Can I </AppText>
+            <GradientText fontSize={26}>Park</GradientText>
+            <AppText font="semiBold" size={26} align="center"> here next week?</AppText>
+          </View>
+          <AppText size={16} align="center">
+            Choose any Day and Time!
+          </AppText>
+          <Image
+            source={require('../../assets/images/step/step2.png')}
+            style={{ width: 340, height: 340, resizeMode: 'contain' }}
+          />
+          <View style={styles.textWrap}>
+            <View style={styles.headingRow}>
+              <AppText font="semiBold" size={26}>Get Expiration </AppText>
+              <GradientText fontSize={26}>Alerts!</GradientText>
             </View>
+            <AppText size={16} align="center" style={styles.mt20}>
+              Enjoying parking support for just
+            </AppText>
+            <AppText size={16} align="center">
+              $4.99/month. (auto-renewing monthly plan)
+            </AppText>
           </View>
         </View>
         <View style={styles.actions}>
           <GradientButton
-            label={FlutterStrings.startSubscription}
+            label="Start Subscription For $4.99 Monthly"
             onPress={() => navigation.navigate(PATHS.SubscriptionPackages)}
           />
           <AppText
@@ -56,7 +50,9 @@ const SubscriptionScreen = ({ navigation }: any) => {
             size={18}
             color={Colors.primary}
             align='center'
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.goBack()}
+            style={styles.mt10}
+          >
             {FlutterStrings.cancelAnytime}
           </AppText>
           <View style={styles.policyRow}>
@@ -78,17 +74,17 @@ const SubscriptionScreen = ({ navigation }: any) => {
   );
 };
 
-export default SubscriptionScreen;
+export default SubscriptionFeatureScreen;
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.white },
-  pad: { flex: 1, paddingHorizontal: 20, paddingBottom: 28 },
-  flex: { flex: 1 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  textWrap: { alignItems: 'center' },
-  headingRow: { flexDirection: 'row', alignItems: 'center' },
+  pad: { flex: 1, paddingHorizontal: 20, paddingBottom: 20 },
+  center: { alignItems: 'center', marginTop: 5 },
+  textWrap: { alignItems: 'center', marginTop: 30 },
+  headingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+  mt20: { marginTop: 20 },
   mt10: { marginTop: 10 },
-  actions: { gap: 10 },
+  actions: { gap: 8, marginTop: 10 },
   policyRow: {
     flexDirection: 'row',
     justifyContent: 'center',

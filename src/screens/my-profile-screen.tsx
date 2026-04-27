@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
+import { CommonActions } from '@react-navigation/native';
+import React, { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,15 +7,14 @@ import SafeAreaWrapper from '../components/safe-area-wrapper';
 import { AppBar } from '../components/ui/app-bar';
 import AppText from '../components/ui/app-text';
 import { GradientButton } from '../components/ui/gradient-button';
-import { FlutterStrings } from '../constants/flutterStrings';
-import { PATHS } from '../navigation/paths';
-import { RootState } from '../store/store';
-import { Colors, Gradient } from '../utils/colors';
-import { usePaywall } from '../hooks/use-paywall';
 import PageLoader from '../components/ui/page-loader';
-import { CommonActions } from '@react-navigation/native';
+import { FlutterStrings } from '../constants/flutterStrings';
+import { usePaywall } from '../hooks/use-paywall';
+import { PATHS } from '../navigation/paths';
 import { useLazyGetProfileQuery } from '../store/api/settingApi';
 import { setCredentials } from '../store/slices/authSlice';
+import { RootState } from '../store/store';
+import { Colors, Gradient } from '../utils/colors';
 
 const MyProfileScreen = ({ navigation }: any) => {
   const { user, token } = useSelector((state: RootState) => state.auth);
@@ -50,12 +50,7 @@ const MyProfileScreen = ({ navigation }: any) => {
 
   const handlerPaywall = () => {
     if (isPaid) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: PATHS.Dashboard }],
-        })
-      );
+      navigation.navigate(PATHS.Gallery)
     } else {
       openPaywall();
     }
@@ -93,6 +88,27 @@ const MyProfileScreen = ({ navigation }: any) => {
           label="Add To Gallery"
           onPress={handlerPaywall}
         />
+
+        <View style={styles.detailsContainer}>
+          <View style={styles.detailRow}>
+            <AppText color={Colors.grey} size={16}>First Name</AppText>
+            <AppText font="medium" size={16}>{user?.first_name || 'N/A'}</AppText>
+          </View>
+          <View style={styles.detailRow}>
+            <AppText color={Colors.grey} size={16}>Last Name</AppText>
+            <AppText font="medium" size={16}>{user?.last_name || 'N/A'}</AppText>
+          </View>
+          <View style={styles.detailRow}>
+            <AppText color={Colors.grey} size={16}>Email</AppText>
+            <AppText font="medium" size={16}>{user?.email || 'N/A'}</AppText>
+          </View>
+          <View style={styles.detailRow}>
+            <AppText color={Colors.grey} size={16}>Status</AppText>
+            <AppText font="medium" size={16} color={user?.is_active ? Colors.primary : Colors.grey}>
+              {user?.is_active ? 'Active' : 'Inactive'}
+            </AppText>
+          </View>
+        </View>
       </View>
     </SafeAreaWrapper>
   );
@@ -116,5 +132,15 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  detailsContainer: {
+    marginTop: 40,
+    gap: 15,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
   },
 });

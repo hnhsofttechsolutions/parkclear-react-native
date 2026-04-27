@@ -25,33 +25,6 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
 
   if (step === 1) {
     return (
-      <View style={{ alignItems: 'center', width: '100%' }}>
-        <AppText
-          font="semiBold"
-          size={TITLE_SIZE}
-          color={Colors.primary}
-          align="center"
-          numberOfLines={1}
-        >
-          Know if you can
-        </AppText>
-        <View style={rowStyle}>
-          <AppText
-            font="semiBold"
-            size={TITLE_SIZE}
-            color={Colors.primary}
-            numberOfLines={1}
-            style={{ flexShrink: 0 }}
-          >
-            Park
-          </AppText>
-          <GradientText fontSize={TITLE_SIZE}>Clear.</GradientText>
-        </View>
-      </View>
-    );
-  }
-  if (step === 2) {
-    return (
       <>
         <AppText
           font="semiBold"
@@ -65,6 +38,55 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
         <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
           Signs?
         </GradientText>
+        <AppText color={Colors.primary} align="center" style={{ marginTop: 10 }}>
+          No more wasted time and frustrations, we’re here to help you Park Clear!
+        </AppText>
+      </>
+    );
+  }
+  if (step === 2) {
+    return (
+      <>
+        <View style={rowStyle}>
+          <AppText
+            font="semiBold"
+            size={TITLE_SIZE}
+            color={Colors.primary}
+            {...fitTitle}
+            style={{ flexShrink: 0 }}
+          >
+            Can I{" "}
+          </AppText>
+          <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
+            Park
+          </GradientText>
+          <AppText
+            font="semiBold"
+            size={TITLE_SIZE}
+            color={Colors.primary}
+            {...fitTitle}
+            style={{ flexShrink: 0 }}
+          >
+            {" "}here next week?
+          </AppText>
+        </View>
+        <AppText color={Colors.primary} align="center">
+          Choose any Day and Time!
+        </AppText>
+        <View style={[rowStyle, { marginTop: 10 }]}>
+          <AppText
+            font="semiBold"
+            size={TITLE_SIZE}
+            color={Colors.primary}
+            {...fitTitle}
+            style={{ flexShrink: 0 }}
+          >
+            Get Expiration{" "}
+          </AppText>
+          <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
+            Alerts!
+          </GradientText>
+        </View>
       </>
     );
   }
@@ -82,6 +104,11 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
       <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
         Tickets!
       </GradientText>
+      <AppText color={Colors.primary} align="center" style={{ marginTop: 10 }}>
+        Get instant “Yes” or “No” answers with
+        AI-Powered Responses.
+      </AppText>
+
     </>
   );
 }

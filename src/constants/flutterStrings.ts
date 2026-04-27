@@ -3,7 +3,7 @@ export const FlutterStrings = {
     'Helping you save time and money on Confusing Street Parking.',
   swipeToContinue: 'Swipe To Continue',
   skip: 'Skip',
-  step1Subtitle: 'Get instant "Yes" or "No" answers',
+  step1Subtitle: 'No more wasted time and frustrations,\nwe’re here to help you Park Clear!',
   step2Subtitle:
     'No more wasted time and frustrations,\nwe’re here to help you Park Clear!',
   step3Subtitle:

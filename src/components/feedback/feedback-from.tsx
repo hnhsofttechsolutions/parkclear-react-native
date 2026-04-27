@@ -1,16 +1,17 @@
 import { Formik } from 'formik';
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import TickCircleIcon from '../../assets/images/tick-circle.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
 import { feedbackSchema } from '../../schema/contactSchema';
+import { useFeedbackMutation } from '../../store/api/settingApi';
 import { Colors } from '../../utils/colors';
 import BottomSheetModal from '../bottom-sheet-modal';
 import AppText from '../ui/app-text';
 import { AppTextField } from '../ui/app-text-field';
 import ErrorText from '../ui/error-text';
 import { GradientButton } from '../ui/gradient-button';
-import { useFeedbackMutation } from '../../store/api/settingApi';
 
 interface Props {
   isVisible: boolean;
@@ -19,6 +20,7 @@ interface Props {
 
 function FeedBackForm({ isVisible, setIsVisible }: Props) {
   const [feedbackApi, { isLoading }] = useFeedbackMutation();
+  const [isSuccessVisible, setIsSuccessVisible] = useState(false);
 
   const handleFeedback = async (values: any) => {
     try {
@@ -26,12 +28,8 @@ function FeedBackForm({ isVisible, setIsVisible }: Props) {
       formData.append('feedback_message', values.message);
       const response = await feedbackApi({ formData }).unwrap();
       if (response?.status) {
-        Toast.show({
-          type: 'success',
-          text1: 'Feedback Submitted!',
-          text2: response?.message,
-        });
         setIsVisible(false);
+        setIsSuccessVisible(true);
       }
     } catch (error: any) {
       Toast.show({
@@ -94,6 +92,33 @@ function FeedBackForm({ isVisible, setIsVisible }: Props) {
           )}
         </Formik>
       </BottomSheetModal>
+
+      <Modal
+        visible={isSuccessVisible}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        presentationStyle="overFullScreen"
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <View style={styles.iconContainer}>
+              <TickCircleIcon width={60} height={60} />
+            </View>
+            <AppText font="bold" size={24} color={Colors.primary} align="center">
+              Feedback Sent
+            </AppText>
+            <AppText size={16} color={Colors.grey} align="center" style={{ marginTop: 8 }}>
+              Thanks for your feedback.
+            </AppText>
+            <View style={{ height: 32 }} />
+            <GradientButton
+              label="Ok"
+              onPress={() => setIsSuccessVisible(false)}
+            />
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -105,5 +130,22 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 24,
     lineHeight: 26,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+  modalCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 24,
+    padding: 24,
+    width: '100%',
+  },
+  iconContainer: {
+    marginBottom: 20,
+    alignSelf: "center"
   },
 });

@@ -1,4 +1,5 @@
 import { ChevronLeft } from 'lucide-react-native';
+import moment from "moment-timezone";
 import React, { useState } from 'react';
 import {
   Alert,
@@ -22,7 +23,7 @@ import { pickerOptions, uriFromResponse } from '../../utils/helpers';
 
 const { height, width } = Dimensions.get('window');
 
-const CaptureInstructionScreen = ({ navigation }: any) => {
+const CaptureInstructionScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadImageMutation();
   const { requestCameraPermission } = useCameraPermission();
   const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
@@ -41,8 +42,17 @@ const CaptureInstructionScreen = ({ navigation }: any) => {
         const uri = uriFromResponse(res);
         if (!uri) return;
 
+        const from = route.params?.from;
+
+        if (from === 'Camera') {
+          navigation.navigate(PATHS.Camera, { capturedImageUri: uri });
+          return;
+        }
+
         setCapturedImageUri(uri);
 
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const shortTZ = moment().tz(timezone).format("z");
         const formData = new FormData();
         const fileOBJ = {
           uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
@@ -50,7 +60,7 @@ const CaptureInstructionScreen = ({ navigation }: any) => {
           name: 'parking_sign.jpg',
         };
         formData.append('file', fileOBJ);
-        formData.append('timezone', 'PST');
+        formData.append('timezone', shortTZ);
 
         try {
           const result = await uploadImage({ formData }).unwrap();
@@ -59,6 +69,8 @@ const CaptureInstructionScreen = ({ navigation }: any) => {
               id: result?.id,
               variant: result?.park_status ? 'resolve' : 'reject',
               summarize_message: result?.summarize_message,
+              endTime: result?.end_time,
+              endTimeIso: result?.end_time_iso,
             });
           } else {
             Toast.show({

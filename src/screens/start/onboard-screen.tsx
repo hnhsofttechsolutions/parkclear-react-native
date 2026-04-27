@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import OnboardHero from '../../assets/images/onboard.svg';
 import SlideToContinue from '../../components/onboard/slide-to-continue';
 import StepBody from '../../components/onboard/step-body';
@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 
 const OnboardScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
+  const { width } = useWindowDimensions();
   const [step, setStep] = useState(0);
   const isNavigatingRef = useRef(false);
 
@@ -26,27 +27,28 @@ const OnboardScreen = ({ navigation }: any) => {
     navigation.replace(PATHS.LoginRegister);
   }, [dispatch, navigation]);
 
-  const handleAdvance = () => {
+  const handleAdvance = useCallback(() => {
     if (step >= 3) {
       handleSkip();
     } else {
       setStep(prev => prev + 1);
     }
-  };
+  }, [step, handleSkip]);
 
-  if (step === 0) {
-    return (
-      <SafeAreaWrapper style={styles.safe}>
-        <View style={styles.pad}>
-          <TouchableOpacity style={styles.skip} onPress={handleSkip}>
-            <AppText font="medium" size={16} color={Colors.darkBlue}>
-              {FlutterStrings.skip}
-            </AppText>
-          </TouchableOpacity>
+  return (
+    <SafeAreaWrapper style={styles.safe}>
+      <View style={styles.pad}>
+        <TouchableOpacity style={styles.skip} onPress={handleSkip}>
+          <AppText font="medium" size={16} color={Colors.darkBlue}>
+            {FlutterStrings.skip}
+          </AppText>
+        </TouchableOpacity>
+
+        {step === 0 ? (
           <View style={styles.centerCol}>
-            <OnboardHero
-              width={Dimensions.get('window').width - 60}
-              height={300}
+            <Image
+              source={require("../../assets/images/step/welcome.png")}
+              style={{ width: 320, height: 320 }}
             />
             <View style={styles.welcomeHead}>
               <AppText
@@ -73,22 +75,9 @@ const OnboardScreen = ({ navigation }: any) => {
               <SlideToContinue onComplete={() => setStep(1)} />
             </View>
           </View>
-        </View>
-      </SafeAreaWrapper>
-    );
-  }
-
-  const phase = step as 1 | 2 | 3;
-
-  return (
-    <SafeAreaWrapper style={styles.safe}>
-      <View style={styles.pad}>
-        <TouchableOpacity style={styles.skip} onPress={handleSkip}>
-          <AppText font="medium" size={16} color={Colors.darkBlue}>
-            {FlutterStrings.skip}
-          </AppText>
-        </TouchableOpacity>
-        <StepBody step={phase} onAdvance={handleAdvance} />
+        ) : (
+          <StepBody step={step as 1 | 2 | 3} onAdvance={handleAdvance} />
+        )}
       </View>
     </SafeAreaWrapper>
   );
