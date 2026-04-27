@@ -12,9 +12,11 @@ import { Colors } from "../../utils/colors";
 import AppText from "../ui/app-text";
 import { GreyPillButton } from "../ui/gradient-button";
 import PageLoader from '../ui/page-loader';
+import { useFirebase } from '../../hooks/use-firebase';
 
 function SocialButtons() {
     const dispatch = useDispatch();
+    const { fcmToken } = useFirebase();
     const [googleLogin, { isLoading: isLoadingGoogle }] = useGoogleLoginMutation();
     const [appleLogin, { isLoading: isLoadingApple }] = useAppleLoginMutation();
 
@@ -24,6 +26,7 @@ function SocialButtons() {
             const result = await GoogleSignin.signIn() as any;
             const token = result?.data?.idToken;
             const formData = new FormData();
+            formData.append('fcm_token', fcmToken);
             formData.append('token', token)
             const response = await googleLogin({ formData }).unwrap();
             if (response?.status) {
@@ -58,6 +61,7 @@ function SocialButtons() {
             console.log('appleAuthRequestResponse---->', appleAuthRequestResponse);
 
             const formData = new FormData();
+            formData.append('fcm_token', fcmToken);
             formData.append('token', appleAuthRequestResponse?.identityToken);
             formData.append('first_name', appleAuthRequestResponse?.fullName?.givenName);
             formData.append('last_name', appleAuthRequestResponse?.fullName?.familyName);
