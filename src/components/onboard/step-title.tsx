@@ -1,9 +1,10 @@
-import { View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import AppText from '../ui/app-text';
 import { Colors } from '../../utils/colors';
 import { GradientText } from '../ui/gradient-text';
 
 const TITLE_SIZE = 26;
+const { width } = Dimensions.get('screen');
 
 function StepTitle({ step }: { step: 1 | 2 | 3 }) {
   const rowStyle = {
@@ -38,8 +39,13 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
         <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
           Signs?
         </GradientText>
-        <AppText color={Colors.primary} align="center" style={{ marginTop: 10 }}>
-          No more wasted time and frustrations, we’re here to help you Park Clear!
+        <AppText
+          color={Colors.primary}
+          align="center"
+          style={{ marginTop: 10 }}
+        >
+          No more wasted time and frustrations, we’re here to help you Park
+          Clear!
         </AppText>
       </>
     );
@@ -47,7 +53,7 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
   if (step === 2) {
     return (
       <>
-        <View style={rowStyle}>
+        <View style={{ ...rowStyle, marginTop: 20 }}>
           <AppText
             font="semiBold"
             size={TITLE_SIZE}
@@ -55,7 +61,7 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
             {...fitTitle}
             style={{ flexShrink: 0 }}
           >
-            Can I{" "}
+            Can I{' '}
           </AppText>
           <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
             Park
@@ -67,7 +73,8 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
             {...fitTitle}
             style={{ flexShrink: 0 }}
           >
-            {" "}here next week?
+            {' '}
+            here next week?
           </AppText>
         </View>
         <AppText color={Colors.primary} align="center">
@@ -81,7 +88,7 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
             {...fitTitle}
             style={{ flexShrink: 0 }}
           >
-            Get Expiration{" "}
+            Get Expiration{' '}
           </AppText>
           <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
             Alerts!
@@ -94,21 +101,27 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
     <>
       <AppText
         font="semiBold"
-        size={TITLE_SIZE}
+        size={34}
         color={Colors.primary}
         {...fitTitle}
         style={{ flexShrink: 0 }}
       >
         Avoid Parking
       </AppText>
-      <GradientText fontSize={TITLE_SIZE} style={{ flexShrink: 0 }}>
+      <GradientText fontSize={34} style={{ flexShrink: 0 }}>
         Tickets!
       </GradientText>
-      <AppText color={Colors.primary} align="center" style={{ marginTop: 10 }}>
-        Get instant “Yes” or “No” answers with
-        AI-Powered Responses.
+      <AppText
+        color={Colors.primary}
+        align="center"
+        style={{
+          width: width * 0.6,
+          alignSelf: 'center',
+          marginTop: 10,
+        }}
+      >
+        Get instant “Yes” or “No” answers with AI-Powered Responses.
       </AppText>
-
     </>
   );
 }

@@ -5,7 +5,7 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
@@ -19,6 +19,7 @@ import { useGetUploadImageQuery } from '../store/api/uploadApi';
 import { Colors } from '../utils/colors';
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 50) / 2;
+const COLUMN_HEIGHT = COLUMN_WIDTH * 1.5;
 
 const GalleryScreen = ({ navigation }: any) => {
   const { data, isLoading } = useGetUploadImageQuery();
@@ -84,7 +85,11 @@ const GalleryScreen = ({ navigation }: any) => {
         <View style={styles.bottomButtonWrap}>
           <GradientButton
             label="Add New Image"
-            onPress={() => navigation.navigate(PATHS.CaptureInstruction, { from: 'Dashboard' })}
+            onPress={() =>
+              navigation.navigate(PATHS.CaptureInstruction, {
+                from: 'Dashboard',
+              })
+            }
           />
         </View>
       </View>
@@ -100,7 +105,7 @@ const styles = StyleSheet.create({
   padH: { paddingHorizontal: 20 },
   grid: { paddingHorizontal: 20, paddingVertical: 10, paddingBottom: 20 },
   row: { justifyContent: 'flex-start', gap: 10, marginBottom: 10 },
-  cell: { width: COLUMN_WIDTH, height: COLUMN_WIDTH },
+  cell: { width: COLUMN_WIDTH, height: COLUMN_HEIGHT },
   thumb: {
     flex: 1,
     borderRadius: 12,

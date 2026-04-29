@@ -1,14 +1,18 @@
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft, MessageSquare, ScrollText } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Markdown from 'react-native-markdown-display';
-
 import NoParkingIcon from '../../assets/images/no_parking.svg';
 import YesParkingIcon from '../../assets/images/yes_parking.svg';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
-
 import Sound from 'react-native-sound';
 import { useSelector } from 'react-redux';
 import RemindCard from '../../components/card/remind-card';
@@ -18,6 +22,7 @@ import ResultFeedBack from '../../components/result/result-feedback';
 import { PATHS } from '../../navigation/paths';
 import { ResultScreenProps } from '../../navigation/types';
 import { RootState } from '../../store/store';
+import AdService from '../../services/ad-service';
 import { Colors, Gradient } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
 
@@ -34,6 +39,15 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const isPaid = user?.is_paid;
 
   const handleReset = () => {
+    if (!isPaid) {
+      void AdService.showInterstitial(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: PATHS.Dashboard }],
+        });
+      });
+      return;
+    }
     navigation.reset({
       index: 0,
       routes: [{ name: PATHS.Dashboard }],
@@ -94,14 +108,15 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
             <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.feedbackIconBtn}
+            style={styles.menuBtn}
             onPress={() => setIsFeedVisible(true)}
             activeOpacity={0.85}
           >
-            <Image
-              source={require("../../assets/images/report.png")}
+            {/* <Image
+              source={require('../../assets/images/report.png')}
               style={{ width: 30, height: 30 }}
-            />
+            /> */}
+            <MessageSquare size={20} color={Gradient.colors[0]} strokeWidth={2.5} />
           </TouchableOpacity>
         </View>
         <ScrollView

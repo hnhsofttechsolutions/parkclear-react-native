@@ -24,10 +24,14 @@ function SocialButtons() {
         try {
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const result = await GoogleSignin.signIn() as any;
+            console.log('result---->', result);
             const token = result?.data?.idToken;
             const formData = new FormData();
             formData.append('fcm_token', fcmToken);
             formData.append('token', token)
+            formData.append('given_name', result?.data?.user?.givenName);
+            formData.append('family_name', result?.data?.user?.familyName);
+            console.log('formData---->', formData);
             const response = await googleLogin({ formData }).unwrap();
             if (response?.status) {
                 dispatch(

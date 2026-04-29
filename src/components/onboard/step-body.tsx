@@ -1,49 +1,60 @@
 import React from 'react';
-import {
-  Image,
-  StyleSheet,
-  View
-} from 'react-native';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import { StepProgressButton } from '../ui/gradient-button';
 import StepDots from './step-dots';
 import StepTitle from './step-title';
 
+const { width, height } = Dimensions.get('screen');
 
-const StepBody = React.memo(({ step, onAdvance }: { step: 1 | 2 | 3; onAdvance: () => void; }) => {
-  return (
-    <View style={styles.stepFlex}>
-      <View style={styles.stepCenter}>
-        <View style={styles.illustrationWrap}>
-          {step === 1 && (
-            <Image
-              source={require("../../assets/images/step/step1.png")}
-              style={{ width: 320, height: 320 }}
-            />
-          )}
-          {step === 2 && (
-            <Image
-              source={require('../../assets/images/step/step2.png')}
-              style={{ width: 340, height: 340, resizeMode: 'contain' }}
-            />
-          )}
-          {step === 3 && (
-            <Image
-              source={require("../../assets/images/step/step3.png")}
-              style={{ width: 400, height: 400, resizeMode: 'contain' }}
-            />
-          )}
+const StepBody = React.memo(
+  ({ step, onAdvance }: { step: 1 | 2 | 3; onAdvance: () => void }) => {
+    return (
+      <View style={styles.stepFlex}>
+        <View style={styles.stepCenter}>
+          <View style={styles.illustrationWrap}>
+            {step === 1 && (
+              <Image
+                source={require('../../assets/images/step/step1.png')}
+                style={{
+                  width: width,
+                  height: height * 0.55,
+                }}
+                resizeMode="contain"
+              />
+            )}
+            {step === 2 && (
+              <Image
+                source={require('../../assets/images/step/step2.png')}
+                style={{
+                  width: width,
+                  height: height * 0.53,
+                }}
+                resizeMode="contain"
+              />
+            )}
+            {step === 3 && (
+              <Image
+                source={require('../../assets/images/step/step3.png')}
+                style={{
+                  width: width,
+                  height: height * 0.55,
+                }}
+                resizeMode="contain"
+              />
+            )}
+          </View>
+          <View style={styles.titleWrap}>
+            <StepTitle step={step} />
+          </View>
         </View>
-        <View style={styles.titleWrap}>
-          <StepTitle step={step} />
+        <View style={styles.stepFooter}>
+          <StepDots current={step} />
+          <StepProgressButton currentStep={step} onAdvance={onAdvance} />
         </View>
       </View>
-      <View style={styles.stepFooter}>
-        <StepDots current={step} />
-        <StepProgressButton currentStep={step} onAdvance={onAdvance} />
-      </View>
-    </View>
-  );
-});
+    );
+  },
+);
 
 export default StepBody;
 

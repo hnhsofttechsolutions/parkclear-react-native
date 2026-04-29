@@ -1,11 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import SplashScreen from '../screens/start/splash-screen';
 import { RootState } from '../store/store';
 import { APP_SCREENS, AUTH_SCREENS } from './mock/mock-screen';
 import { PATHS } from './paths';
 import { RootStackParamList } from './types';
+import { initRevenueCat } from '../utils/revenuecat-service';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -15,12 +16,21 @@ const StackNavigation = () => {
   );
   const [splashDone, setSplashDone] = useState(false);
 
+
+  useEffect(() => {
+    const oninitRevenueCat = async () => {
+      await initRevenueCat(user?.id);
+    };
+    oninitRevenueCat();
+  }, [user?.id]);
+
   if (!splashDone) {
     return <SplashScreen onComplete={() => setSplashDone(true)} />;
   }
 
   const getScreens = () => {
     if (token) {
+      // await initRevenueCat(user?.id);
       if (!user?.is_paid) {
         const trialScreen = APP_SCREENS.find(s => s.name === PATHS.Trial);
         const rest = APP_SCREENS.filter(s => s.name !== PATHS.Trial);

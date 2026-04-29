@@ -3619,7 +3619,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  hermes-engine: 8d6c8e8afc0ebae8a96e85dd641531e306e04c20
+  hermes-engine: 0e3449f1aec2a4417c89da155de8cd9c909f9497
   IronSourceAdQualitySDK: 7414cf810bdfbc67c3d58536469a923a3a452ac5
   IronSourceSDK: 8112211f22915d2633a2a152d327b184fe80bf05
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8

@@ -13,6 +13,7 @@ export function GradientButton({
   leftIcon,
   rightIcon,
   isLoading,
+  disabled = false,
 }: {
   label: string;
   onPress?: () => void;
@@ -20,6 +21,7 @@ export function GradientButton({
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   isLoading?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <AppButton
@@ -30,6 +32,7 @@ export function GradientButton({
       leftIcon={leftIcon}
       rightIcon={rightIcon}
       isLoading={isLoading}
+      disabled={disabled}
     />
   );
 }

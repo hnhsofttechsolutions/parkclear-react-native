@@ -1,12 +1,10 @@
 import {
-  Calendar,
   Camera,
   ChevronLeft,
-  Clock3,
   Image as ImageIcon,
   RefreshCcw,
 } from 'lucide-react-native';
-import moment from "moment-timezone";
+import moment from 'moment';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -19,8 +17,8 @@ import {
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Toast from 'react-native-toast-message';
+import CustomDatePicker from '../../components/modals/CustomDatePicker';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
 import {
@@ -32,7 +30,6 @@ import { PATHS } from '../../navigation/paths';
 import { useUploadCustomImageMutation } from '../../store/api/uploadApi';
 import { Colors, Gradient } from '../../utils/colors';
 import {
-  formatDateToMMDDYYYY,
   formatDateToYYYYMMDD,
   formatTimeToAMPM,
   pickerOptions,
@@ -45,11 +42,8 @@ const CameraScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadCustomImageMutation();
   const { requestGalleryPermission } = useGalleryPermission();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [time, setTime] = useState<Date | null>(null);
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
   React.useEffect(() => {
     if (route.params?.capturedImageUri) {
@@ -91,7 +85,7 @@ const CameraScreen = ({ navigation, route }: any) => {
     });
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const shortTZ = moment().tz(timezone).format("z");
+      const shortTZ = moment().tz(timezone).format('z');
       const formData = new FormData();
       const fileOBJ = {
         uri:
@@ -130,7 +124,9 @@ const CameraScreen = ({ navigation, route }: any) => {
       Toast.show({
         type: 'error',
         text1: 'Upload Failed',
-        text2: error?.data?.message || 'There was an issue uploading your image. Please try again.',
+        text2:
+          error?.data?.message ||
+          'There was an issue uploading your image. Please try again.',
       });
     }
   };
@@ -158,31 +154,48 @@ const CameraScreen = ({ navigation, route }: any) => {
           <View style={styles.headerSpacer} />
         </View>
         <View style={styles.scroll}>
-          <View>
+          <View
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
             <AppText font="bold" size={32} align="center" color={Colors.white}>
-              Park Clear
+              ParkClear
             </AppText>
-            <AppText align="center" color={Colors.white}>
-              Snap a photo of any parking sign. Our AI will analyze it instantly.
+            <AppText
+              style={{
+                fontSize: 15,
+                width: '80%',
+                alignSelf: 'center',
+              }}
+              align="center"
+              color={Colors.white}
+              font="regular"
+              adjustsFontSizeToFit={true}
+            >
+              Customize a time and date, Our AI will analyze parking rules
+              instantly.
             </AppText>
           </View>
           <View style={styles.dateTimePickerContainer}>
-            <TouchableOpacity
-              style={styles.pickerButton}
-              onPress={() => setDatePickerVisibility(true)}
-            >
-              <Calendar size={20} color={Gradient.colors[0]} />
-              <AppText color={Colors.header}>
-                {formatDateToMMDDYYYY(selectedDate)}
-              </AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.pickerButton}
-              onPress={() => setTimePickerVisibility(true)}
-            >
-              <Clock3 size={20} color={Gradient.colors[0]} />
-              <AppText color={Colors.header}>{formatTimeToAMPM(time)}</AppText>
-            </TouchableOpacity>
+            <CustomDatePicker
+              value={selectedDate?.toISOString()}
+              onDateChange={setSelectedDate}
+              mode="date"
+              placeholder="Select Date"
+              minimumDate={new Date()}
+              containerStyle={styles.datePickerContainer}
+            />
+            <CustomDatePicker
+              value={time?.toISOString()}
+              onDateChange={setTime}
+              mode="time"
+              placeholder="Select Time"
+              containerStyle={styles.datePickerContainer}
+            />
           </View>
           <View style={styles.imageCard}>
             <Image
@@ -198,7 +211,11 @@ const CameraScreen = ({ navigation, route }: any) => {
               <>
                 <GradientButton
                   label="Open Camera"
-                  onPress={() => navigation.navigate(PATHS.CaptureInstruction, { from: 'Camera' })}
+                  onPress={() =>
+                    navigation.navigate(PATHS.CaptureInstruction, {
+                      from: 'Camera',
+                    })
+                  }
                   leftIcon={<Camera size={20} color={Colors.white} />}
                 />
                 <OutlineButton
@@ -224,7 +241,7 @@ const CameraScreen = ({ navigation, route }: any) => {
           </View>
         </View>
       </SafeAreaWrapper>
-      <DateTimePickerModal
+      {/* <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
         display={Platform.OS === 'ios' ? 'spinner' : 'default'}
@@ -245,7 +262,20 @@ const CameraScreen = ({ navigation, route }: any) => {
           setTimePickerVisibility(false);
         }}
         onCancel={() => setTimePickerVisibility(false)}
-      />
+      /> */}
+      {/* {isDatePickerVisible && (
+        <CustomDatePicker
+          value={String(selectedDate)}
+          onDateChange={(date: Date) => {
+            setSelectedDate(date);
+            setDatePickerVisibility(false);
+          }}
+          mode="date"
+          placeholder="MM/DD/YYYY"
+          minimumDate={new Date()}
+          customStyle={styles.inputStyle}
+        />
+      )} */}
     </View>
   );
 };
@@ -256,6 +286,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   safe: { flex: 1 },
   dateTimePickerContainer: {
+    width: '100%',
     flexDirection: 'row',
     gap: 12,
   },
@@ -326,5 +357,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 10,
+  },
+  datePickerContainer: {
+    width: '48%',
+    backgroundColor: Colors.white,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
 });

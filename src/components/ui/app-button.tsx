@@ -19,6 +19,7 @@ interface Props {
   variant?: 'solid' | 'outline';
   style?: ViewStyle;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
 const AppButton = ({
@@ -29,6 +30,7 @@ const AppButton = ({
   variant = 'solid',
   style,
   isLoading,
+  disabled = false,
 }: Props) => {
   const isOutline = variant === 'outline';
   const accent = Gradient.colors[0];
@@ -39,13 +41,16 @@ const AppButton = ({
         style={[styles.outlineOuter, { borderColor: accent }, style]}
         onPress={onPress}
         activeOpacity={0.85}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
       >
         {leftIcon ? <View style={styles.icon}>{leftIcon}</View> : null}
         {isLoading ? (
           <ActivityIndicator color={accent} size="small" />
         ) : (
           <AppText
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.82}
             font="medium"
             size={16}
             color={Colors.primary}
@@ -79,10 +84,15 @@ const AppButton = ({
           <ActivityIndicator color={Colors.white} size="small" />
         ) : (
           <AppText
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
             font="medium"
-            size={16}
             color={Colors.white}
-            style={{ fontFamily: FontFamily.medium, lineHeight: 22 }}
+            style={{
+              fontFamily: FontFamily.medium,
+              lineHeight: 22,
+              textAlign: 'center',
+            }}
           >
             {title}
           </AppText>
@@ -100,7 +110,7 @@ export default AppButton;
 const styles = StyleSheet.create({
   solidTouch: {
     borderRadius: 40,
-    overflow: 'hidden',
+    paddingHorizontal: 10,
   },
   solidGradient: {
     minHeight: 60,

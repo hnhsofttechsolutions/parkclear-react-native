@@ -20,10 +20,8 @@ import MyProfileIcon from '../assets/images/my_profile.svg';
 import SettingsIcon from '../assets/images/settings.svg';
 import UpgradeIcon from '../assets/images/upgrade.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
-import { usePaywall } from '../hooks/use-paywall';
 import { PATHS } from '../navigation/paths';
 import { baseApi } from '../store/api/baseApi';
-
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useCancelRemindMutation } from '../store/api/uploadApi';
@@ -33,6 +31,7 @@ import { Colors } from '../utils/colors';
 import DeleteModal from './modals/delete-modal';
 import DrawerRow from './settings/drawer-row';
 import PageLoader from './ui/page-loader';
+import Purchases from 'react-native-purchases';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
@@ -48,10 +47,9 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const [cancelRemind, { isLoading: cancelRemindLoading }] =
     useCancelRemindMutation();
   const isPaid = user?.is_paid;
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const onClose = () => setDrawer(false);
-
-  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
 
   useEffect(() => {
     if (drawer) {
@@ -100,30 +98,31 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   };
 
   const handlerLogout = async () => {
+    setLogoutLoading(true);
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-    } catch (e) {
-      console.log('Google logout error', e);
-    }
-    try {
-      if (appleAuth.isSupported) {
-        await appleAuth.performRequest({
-          requestedOperation: appleAuth.Operation.LOGOUT,
-        });
+
+      if (!(await Purchases.isAnonymous())) {
+        await Purchases.logOut();
       }
+
+      dispatch(logout());
+      dispatch(baseApi.util.resetApiState());
+
+      console.log('Logged out successfully');
     } catch (e) {
-      console.log('Apple logout error', e);
+      console.log('Logout error', e);
+    } finally {
+      setLogoutLoading(false);
     }
-    dispatch(logout());
-    dispatch(baseApi.util.resetApiState());
   };
 
   const handleGallery = () => {
     if (isPaid) {
       navigateTo(PATHS.Gallery);
     } else {
-      openPaywall();
+      navigateTo(PATHS.Subscription);
     }
   };
 
@@ -150,7 +149,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
 
   return (
     <>
-      <PageLoader visible={isProfileLoading || cancelRemindLoading} />
+      <PageLoader visible={cancelRemindLoading} />
       <Modal
         transparent
         visible={modalVisible}
@@ -201,8 +200,8 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 {!isPaid && (
                   <DrawerRow
                     icon={<UpgradeIcon width={25} height={25} />}
-                    label="Upgrade"
-                    onPress={openPaywall}
+                    label="ParkClear Pro"
+                    onPress={() => navigateTo(PATHS.SubscriptionFeature)}
                   />
                 )}
                 <DrawerRow
@@ -240,6 +239,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
           setPendingLogoutModal(false);
         }}
         onDelete={handlerLogout}
+        isLoading={logoutLoading}
       />
     </>
   );

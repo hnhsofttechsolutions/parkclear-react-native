@@ -1,5 +1,11 @@
 import React from 'react';
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AppText from '../ui/app-text';
 
 interface DeleteModalProps {
@@ -8,6 +14,7 @@ interface DeleteModalProps {
   onDelete: () => void;
   title: string;
   description?: string;
+  isLoading?: boolean;
 }
 
 const DeleteModal = ({
@@ -16,6 +23,7 @@ const DeleteModal = ({
   onDelete,
   title,
   description,
+  isLoading,
 }: DeleteModalProps) => {
   return (
     <Modal
@@ -60,9 +68,13 @@ const DeleteModal = ({
               onPress={onDelete}
               activeOpacity={0.7}
             >
-              <AppText font="medium" size={16} color="#FF3B30">
-                Yes
-              </AppText>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#FF3B30" />
+              ) : (
+                <AppText font="medium" size={16} color="#FF3B30">
+                  Yes
+                </AppText>
+              )}
             </TouchableOpacity>
           </View>
         </View>

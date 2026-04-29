@@ -1,6 +1,8 @@
+import { appleAuth } from '@invertase/react-native-apple-authentication';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ChevronRight, KeyRound } from 'lucide-react-native';
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View, Switch } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
 import AboutUsImg from '../assets/images/about_us.svg';
@@ -20,13 +22,13 @@ import AppText from '../components/ui/app-text';
 import PageLoader from '../components/ui/page-loader';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
-import { useDeleteAccountMutation } from '../store/api/settingApi';
-import { logout } from '../store/slices/authSlice';
-import { Colors } from '../utils/colors';
-import { usePaywall } from '../hooks/use-paywall';
+import {
+  useDeleteAccountMutation,
+  useLazyGetProfileQuery,
+} from '../store/api/settingApi';
+import { logout, setCredentials } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { appleAuth } from '@invertase/react-native-apple-authentication';
+import { Colors } from '../utils/colors';
 const chevron = <ChevronRight size={15} color={Colors.primary} />;
 
 const SettingsScreen = ({ navigation }: any) => {
@@ -35,8 +37,19 @@ const SettingsScreen = ({ navigation }: any) => {
   const [isDeletetModal, setIsDeletetModal] = useState(false);
   const [isAdsRemoved, setIsAdsRemoved] = useState(false);
   const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
-  const { user } = useSelector((state: RootState) => state.auth);
-  const isPaid = user?.is_paid;
+  const { user, token } = useSelector((state: RootState) => state.auth);
+  const [isPaid, setIsPaid] = useState(user.is_paid);
+  const [triggerGetProfile, { isLoading: isProfileLoading }] =
+    useLazyGetProfileQuery();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profile = await triggerGetProfile().unwrap();
+      setIsPaid(profile?.data?.is_paid);
+      dispatch(setCredentials({ token, user: profile?.data }));
+    };
+    fetchProfile();
+  }, []);
 
   const handleDeleteAccount = async () => {
     try {
@@ -76,9 +89,6 @@ const SettingsScreen = ({ navigation }: any) => {
       });
     }
   };
-
-  const onClose = () => setIsAdsRemoved(false);
-  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
 
   return (
     <SafeAreaWrapper style={styles.safe}>
@@ -122,22 +132,27 @@ const SettingsScreen = ({ navigation }: any) => {
             <>
               <View style={{ height: 20 }} />
               <SettingsBoxRow
-                icon={<RemoveAdsIcon width={20} height={20} color={Colors.black} />}
+                icon={
+                  <RemoveAdsIcon width={20} height={20} color={Colors.black} />
+                }
                 title={FlutterStrings.removeAds}
                 suffix={
                   <Switch
-                    value={isAdsRemoved}
-                    onValueChange={(val) => {
+                    value={isPaid && isAdsRemoved}
+                    onValueChange={val => {
                       setIsAdsRemoved(val);
                       if (val) {
-                        openPaywall();
+                        navigation.navigate(PATHS.Subscription);
                       }
                     }}
-                    trackColor={{ false: Colors.textFieldBorder, true: Colors.gradientEnd }}
+                    trackColor={{
+                      false: Colors.textFieldBorder,
+                      true: Colors.gradientEnd,
+                    }}
                     thumbColor={Colors.white}
                   />
                 }
-                onPress={() => { }}
+                onPress={() => {}}
               />
             </>
           )}

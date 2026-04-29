@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   Animated,
+  KeyboardAvoidingView,
   Modal,
   PanResponder,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -84,20 +87,34 @@ const BottomSheetModal = ({
 
   return (
     <Modal transparent visible={visible} animationType="none">
-      <View style={styles.root}>
-        <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            onPress={disableBackdropClose ? undefined : close}
-          />
-        </Animated.View>
-        <Animated.View style={[styles.sheet, { transform: [{ translateY }] }]}>
-          <View {...panResponder.panHandlers}>
-            <View style={styles.handle} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.root}
+        >
+          <View style={styles.root}>
+            <Animated.View
+              style={[styles.backdrop, { opacity: backdropOpacity }]}
+            >
+              <Pressable
+                style={StyleSheet.absoluteFill}
+                onPress={disableBackdropClose ? undefined : close}
+              />
+            </Animated.View>
+            <Animated.View
+              style={[styles.sheet, { transform: [{ translateY }] }]}
+            >
+              <View {...panResponder.panHandlers}>
+                <View style={styles.handle} />
+              </View>
+              {children}
+            </Animated.View>
           </View>
-          {children}
-        </Animated.View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };

@@ -118,9 +118,10 @@ dependencies {
         implementation jscFlavor
     }
 
-    // Unity LevelPlay (ironSource) dependencies
+    // Unity LevelPlay — keep Ad Quality SDK on same minor line as unity-levelplay-mediation's mediation-sdk (9.4.x).
+    // Forcing 9.3.x alongside mediation-sdk 9.4.x can cause inconsistent SDK behaviour (including ad unit handling).
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'com.google.android.gms:play-services-basement:18.3.0'
     implementation 'com.google.android.gms:play-services-appset:16.0.2'
-    implementation 'com.unity3d.ads-mediation:adquality-sdk:9.3.1'
+    implementation 'com.unity3d.ads-mediation:adquality-sdk:9.4.0'
 }

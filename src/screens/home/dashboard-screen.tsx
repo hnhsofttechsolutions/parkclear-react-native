@@ -1,18 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   Image,
-  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  LevelPlayAdSize,
+  LevelPlayBannerAdView,
+  type LevelPlayBannerAdViewListener,
+  type LevelPlayBannerAdViewMethods,
+} from 'unity-levelplay-mediation';
+import { getBannerAdUnitId } from '../../constants/unityAds';
 import LinearGradient from 'react-native-linear-gradient';
 import Sound from 'react-native-sound';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
-import { LevelPlay, LevelPlayInitListener, LevelPlayInitRequest, LevelPlayInterstitialAd, LevelPlayInterstitialAdListener } from 'unity-levelplay-mediation';
 import CameraIcon from '../../assets/images/camera.svg';
 import GalleryFabIcon from '../../assets/images/gallery_circle.svg';
 import HamburgerIcon from '../../assets/images/hamburger_menu.svg';
@@ -23,7 +29,6 @@ import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import SideDrawer from '../../components/side-drawer';
 import { GradientButton } from '../../components/ui/gradient-button';
 import PageLoader from '../../components/ui/page-loader';
-import { usePaywall } from '../../hooks/use-paywall';
 import { PATHS } from '../../navigation/paths';
 import { useScreenStatusMutation } from '../../store/api/uploadApi';
 import { setCredentials } from '../../store/slices/authSlice';
@@ -34,77 +39,34 @@ import { shareApp } from '../../utils/helpers';
 const { height } = Dimensions.get('window');
 Sound.setCategory('Playback');
 
+const bannerAdSize = LevelPlayAdSize.BANNER;
+const bannerAdUnitId = getBannerAdUnitId();
+
 const DashboardScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
+  const bannerRef = useRef<LevelPlayBannerAdViewMethods>(null);
   const [drawer, setDrawer] = useState(false);
   const carSource = require('../../assets/images/car.png');
   const { user, token } = useSelector((state: RootState) => state.auth);
   const isPaid = user?.is_paid;
   const isScreen = user?.is_screen;
-  const [statusUpdate, { isLoading: isStatusLoading }] = useScreenStatusMutation();
+  const [statusUpdate, { isLoading: isStatusLoading }] =
+    useScreenStatusMutation();
 
-  const onClose = () => setDrawer(false);
+  const showAds = !isPaid;
+  const bottomChromeHeight = showAds ? bannerAdSize.height + insets.bottom : 0;
 
-  const { openPaywall, isProfileLoading } = usePaywall({ onClose });
+  const bannerListener = useMemo<LevelPlayBannerAdViewListener>(
+    () => ({
+      onAdLoaded: () => {},
+      onAdLoadFailed: () => {},
+    }),
+    [],
+  );
 
-  const INTERSTITIAL_AD_UNIT_ID = 'qk7mr064p5s687st';
-  const APP_KEY_ANDROID = '24f17192d'
-  const APP_KEY_IOS = '24f16a61d';
-  const appKey = Platform.select({
-    android: APP_KEY_ANDROID,
-    ios: APP_KEY_IOS,
-  });
-
-  const interstitialAd = useRef(
-    new LevelPlayInterstitialAd(INTERSTITIAL_AD_UNIT_ID)
-  ).current;
-
-  useEffect(() => {
-    // const adTimer = setTimeout(() => {
-    //   adService.showInterstitial();
-    // }, 1000);
-    // return () => {
-    //   clearTimeout(adTimer);
-    // };
-  }, []);
-
-  useEffect(() => {
-
-    const listener: LevelPlayInterstitialAdListener = {
-      onAdLoaded: () => {
-        console.log("Ad Loaded");
-        interstitialAd.showAd();
-      },
-      onAdLoadFailed: (error) => {
-        console.log("Ad Load Failed", error);
-      },
-      onAdDisplayed: () => {
-        console.log("Ad Displayed");
-      },
-      onAdDisplayFailed: (error) => {
-        console.log("Display Failed", error);
-      },
-      onAdClosed: () => {
-        console.log("Ad Closed");
-      }
-    };
-
-    interstitialAd.setListener(listener);
-
-    const initListener: LevelPlayInitListener = {
-      onInitFailed: (error) => {
-        console.log("Init failed", error);
-      },
-      onInitSuccess: () => {
-        console.log("Init success");
-        interstitialAd.loadAd();
-      }
-    };
-
-    const initRequest = LevelPlayInitRequest.builder(String(appKey)).build();
-
-    LevelPlay.init(initRequest, initListener);
-
+  const loadBannerAd = useCallback(() => {
+    bannerRef.current?.loadAd();
   }, []);
 
   const handlerCamera = async () => {
@@ -128,11 +90,11 @@ const DashboardScreen = ({ navigation }: any) => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <View style={styles.root}>
-      <PageLoader visible={isProfileLoading || isStatusLoading} />
+      <PageLoader visible={isStatusLoading} />
       <LinearGradient
         colors={[Colors.gradientStart, Colors.darkBlue]}
         style={StyleSheet.absoluteFill}
@@ -152,21 +114,24 @@ const DashboardScreen = ({ navigation }: any) => {
             <HamburgerIcon width={45} height={45} />
           </TouchableOpacity>
           {isPaid ? (
-            <TouchableOpacity
-              onPress={handlerCamera}
-              activeOpacity={0.85}
-            >
+            <TouchableOpacity onPress={handlerCamera} activeOpacity={0.85}>
               <CameraIcon width={45} height={45} />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={openPaywall} activeOpacity={0.85}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(PATHS.Subscription)}
+              activeOpacity={0.85}
+            >
               <GalleryFabIcon width={45} height={45} />
             </TouchableOpacity>
           )}
         </View>
 
         <ScrollView
-          contentContainerStyle={styles.scroll}
+          contentContainerStyle={[
+            styles.scroll,
+            { paddingBottom: height * 0.28 + bottomChromeHeight },
+          ]}
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.imageContainer}>
@@ -174,10 +139,14 @@ const DashboardScreen = ({ navigation }: any) => {
           </View>
           <CurrentTime />
         </ScrollView>
-        <View style={styles.bottomCard}>
+        <View style={[styles.bottomCard, { bottom: bottomChromeHeight }]}>
           <GradientButton
             label="Can I Park Here?"
-            onPress={() => navigation.navigate(PATHS.CaptureInstruction, { from: 'Dashboard' })}
+            onPress={() =>
+              navigation.navigate(PATHS.CaptureInstruction, {
+                from: 'Dashboard',
+              })
+            }
           />
           <View style={styles.profileBtnContainer}>
             <TouchableOpacity
@@ -203,6 +172,26 @@ const DashboardScreen = ({ navigation }: any) => {
         setDrawer={setDrawer}
         navigation={navigation}
       />
+      {showAds ? (
+        <View
+          style={[styles.bannerDock, { paddingBottom: insets.bottom }]}
+          pointerEvents="box-none"
+        >
+          <LevelPlayBannerAdView
+            ref={bannerRef}
+            adUnitId={bannerAdUnitId}
+            adSize={bannerAdSize}
+            placementName={null}
+            listener={bannerListener}
+            style={{
+              width: bannerAdSize.width,
+              height: bannerAdSize.height,
+              alignSelf: 'center',
+            }}
+            onLayout={loadBannerAd}
+          />
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -266,5 +255,13 @@ const styles = StyleSheet.create({
   btnWhiteBg: {
     backgroundColor: Colors.white,
     borderRadius: 50,
+  },
+  bannerDock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    backgroundColor: Colors.tabBg,
   },
 });

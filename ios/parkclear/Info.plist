@@ -39,13 +39,15 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- Unity LevelPlay (React Native plugin): ATS must follow https://docs.unity.com/grow/levelplay/sdk/react/plugin-integration — only NSAllowsArbitraryLoads here to avoid mediation conflicts. -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
 	</dict>
+	<!-- Universal SKAN reporting for LevelPlay / mediated networks (same doc Step 2). -->
+	<key>NSAdvertisingAttributionReportEndpoint</key>
+	<string>https://postbacks-is.com</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to take photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

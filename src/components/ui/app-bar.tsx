@@ -1,8 +1,8 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import AppText from './app-text';
+import { Pressable, StyleSheet, View } from 'react-native';
 import BackArrowIcon from '../../assets/images/back_arrow.svg';
 import { Colors } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
+import AppText from './app-text';
 
 export function AppBar({
   title,
@@ -14,7 +14,7 @@ export function AppBar({
   return (
     <View>
       <View style={appBarStyles.row}>
-        <TouchableOpacity
+        <Pressable
           onPress={onBack}
           style={appBarStyles.leadWrap}
           hitSlop={12}
@@ -22,12 +22,12 @@ export function AppBar({
         >
           {onBack ? (
             <View style={appBarStyles.leadCircle}>
-              <BackArrowIcon width={50} height={50} />
+              <BackArrowIcon width={40} height={40} />
             </View>
           ) : (
             <View style={{ width: 56 }} />
           )}
-        </TouchableOpacity>
+        </Pressable>
         <AppText
           font="semiBold"
           size={22}
@@ -52,6 +52,9 @@ const appBarStyles = StyleSheet.create({
   },
   leadWrap: { width: 70, alignItems: 'flex-start' },
   leadCircle: {
+    height: 40,
+    width: 40,
+    backgroundColor: Colors.white,
     borderRadius: 999,
     shadowColor: '#888',
     shadowOffset: { width: 0, height: 2 },
@@ -66,5 +69,3 @@ const appBarStyles = StyleSheet.create({
     marginBottom: 4,
   },
 });
-
-

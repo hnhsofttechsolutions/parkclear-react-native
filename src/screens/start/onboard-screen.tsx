@@ -1,20 +1,27 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Image, StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import OnboardHero from '../../assets/images/onboard.svg';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import { useDispatch } from 'react-redux';
 import SlideToContinue from '../../components/onboard/slide-to-continue';
 import StepBody from '../../components/onboard/step-body';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
-import { GradientText } from '../../components/ui/gradient-text';
 import AppText from '../../components/ui/app-text';
+import { GradientText } from '../../components/ui/gradient-text';
 import { FlutterStrings } from '../../constants/flutterStrings';
 import { PATHS } from '../../navigation/paths';
-import { Colors } from '../../utils/colors';
 import { setHasSeenOnboard } from '../../store/slices/authSlice';
-import { useDispatch } from 'react-redux';
+import { Colors } from '../../utils/colors';
+
+const { width, height } = Dimensions.get('screen');
 
 const OnboardScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
-  const { width } = useWindowDimensions();
+
   const [step, setStep] = useState(0);
   const isNavigatingRef = useRef(false);
 
@@ -47,13 +54,18 @@ const OnboardScreen = ({ navigation }: any) => {
         {step === 0 ? (
           <View style={styles.centerCol}>
             <Image
-              source={require("../../assets/images/step/welcome.png")}
-              style={{ width: 320, height: 320 }}
+              source={require('../../assets/images/step/welcome.png')}
+              style={{
+                width: width,
+                height: height * 0.5,
+                alignSelf: 'center',
+              }}
+              resizeMode="contain"
             />
             <View style={styles.welcomeHead}>
               <AppText
                 font="semiBold"
-                size={28}
+                size={34}
                 color={Colors.primary}
                 align="center"
                 numberOfLines={1}
@@ -61,7 +73,7 @@ const OnboardScreen = ({ navigation }: any) => {
               >
                 Welcome To
               </AppText>
-              <GradientText fontSize={28}>ParkClear!</GradientText>
+              <GradientText fontSize={34}>ParkClear!</GradientText>
             </View>
             <AppText
               size={16}

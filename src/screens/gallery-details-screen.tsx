@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Markdown from 'react-native-markdown-display';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
@@ -8,6 +8,8 @@ import { FlutterStrings } from '../constants/flutterStrings';
 import { baseURL } from '../store/api/baseApi';
 import { Colors } from '../utils/colors';
 import { FontFamily } from '../utils/fonts';
+
+const { height } = Dimensions.get('screen');
 
 const GalleryDetailsScreen = ({ navigation, route }: any) => {
   const { item } = route.params;
@@ -46,9 +48,10 @@ const styles = StyleSheet.create({
   content: { padding: 20, paddingBottom: 40 },
   image: {
     width: '100%',
-    aspectRatio: 1,
-    borderRadius: 12,
+    height: height * 0.6,
     backgroundColor: Colors.lightGrey,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
 });
 
