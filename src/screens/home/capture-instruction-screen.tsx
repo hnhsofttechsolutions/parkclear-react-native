@@ -1,5 +1,5 @@
 import { ChevronLeft } from 'lucide-react-native';
-import moment from "moment-timezone";
+import moment from 'moment-timezone';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -52,7 +52,7 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
         setCapturedImageUri(uri);
 
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const shortTZ = moment().tz(timezone).format("z");
+        const shortTZ = moment().tz(timezone).format('z');
         const formData = new FormData();
         const fileOBJ = {
           uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
@@ -64,12 +64,15 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
 
         try {
           const result = await uploadImage({ formData }).unwrap();
+
+          console.log('result capture---->', result);
+          console.log('formData---->', formData);
+
           if (result?.status === true) {
             navigation.navigate(PATHS.Result, {
               id: result?.id,
               variant: result?.park_status ? 'resolve' : 'reject',
               summarize_message: result?.summarize_message,
-              endTime: result?.end_time,
               endTimeIso: result?.end_time_iso,
             });
           } else {
@@ -119,7 +122,7 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
               : require('../../assets/images/camera_placeholder.png')
           }
           style={styles.previewImage}
-          resizeMode={capturedImageUri ? "cover" : "contain"}
+          resizeMode={capturedImageUri ? 'cover' : 'contain'}
         />
       </View>
 

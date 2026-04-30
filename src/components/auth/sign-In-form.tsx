@@ -30,6 +30,7 @@ function SignInForm({ navigation }: any) {
         formData.append(key, values[key]);
       });
       const response = await login({ formData }).unwrap();
+      console.log('response---->', response);
       if (response?.status) {
         dispatch(
           setCredentials({
@@ -44,10 +45,11 @@ function SignInForm({ navigation }: any) {
         });
       }
     } catch (error: any) {
+      console.log('error---->', error);
       Toast.show({
-        type: 'error',
+        type: 'info',
         text1: 'Login Failed',
-        text2: error?.data?.message || 'Invalid credentials, please try again.',
+        text2: 'New account, please Sign Up',
       });
     }
   };

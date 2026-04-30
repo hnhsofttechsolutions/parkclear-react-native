@@ -36,10 +36,15 @@ function SignUpForm({ navigation }: any) {
         setIsRegisterVisible(true);
       }
     } catch (error: any) {
+      // Toast.show({
+      //   type: 'error',
+      //   text1: 'Sign Up Failed',
+      //   text2: error?.data?.message,
+      // });
       Toast.show({
-        type: 'error',
+        type: 'info',
         text1: 'Sign Up Failed',
-        text2: error?.data?.message,
+        text2: 'Already a User, Please Login',
       });
     }
   };

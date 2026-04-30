@@ -3,6 +3,7 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -56,11 +57,18 @@ const DashboardScreen = ({ navigation }: any) => {
 
   const showAds = !isPaid;
   const bottomChromeHeight = showAds ? bannerAdSize.height + insets.bottom : 0;
+  const [isAdLoaded, setIsAdLoaded] = useState(false);
 
   const bannerListener = useMemo<LevelPlayBannerAdViewListener>(
     () => ({
-      onAdLoaded: () => {},
-      onAdLoadFailed: () => {},
+      onAdLoaded: () => {
+        console.log('Ad loaded');
+        setIsAdLoaded(true);
+      },
+      onAdLoadFailed: error => {
+        console.log('Ad load failed', error);
+        setIsAdLoaded(false);
+      },
     }),
     [],
   );
@@ -95,8 +103,9 @@ const DashboardScreen = ({ navigation }: any) => {
   return (
     <View style={styles.root}>
       <PageLoader visible={isStatusLoading} />
+      <StatusBar backgroundColor={Colors.gradientStart} />
       <LinearGradient
-        colors={[Colors.gradientStart, Colors.darkBlue]}
+        colors={[Colors.gradientStart, Colors.darkBlue, Colors.darkBlue]}
         style={StyleSheet.absoluteFill}
       />
       <SafeAreaWrapper
@@ -139,9 +148,15 @@ const DashboardScreen = ({ navigation }: any) => {
           </View>
           <CurrentTime />
         </ScrollView>
-        <View style={[styles.bottomCard, { bottom: bottomChromeHeight }]}>
+        <View
+          style={[
+            styles.bottomCard,
+            { bottom: showAds && isAdLoaded ? bottomChromeHeight : 0 },
+          ]}
+        >
           <GradientButton
             label="Can I Park Here?"
+            disabled={!isAdLoaded && showAds}
             onPress={() =>
               navigation.navigate(PATHS.CaptureInstruction, {
                 from: 'Dashboard',
@@ -172,7 +187,7 @@ const DashboardScreen = ({ navigation }: any) => {
         setDrawer={setDrawer}
         navigation={navigation}
       />
-      {showAds ? (
+      {showAds && isAdLoaded && (
         <View
           style={[styles.bannerDock, { paddingBottom: insets.bottom }]}
           pointerEvents="box-none"
@@ -191,7 +206,7 @@ const DashboardScreen = ({ navigation }: any) => {
             onLayout={loadBannerAd}
           />
         </View>
-      ) : null}
+      )}
     </View>
   );
 };
@@ -226,10 +241,12 @@ const styles = StyleSheet.create({
     marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    height: height * 0.4,
   },
   car: {
-    width: Dimensions.get('window').width * 0.8,
-    height: 250,
+    width: '100%',
+    height: '100%',
   },
   bottomCard: {
     backgroundColor: Colors.tabBg,

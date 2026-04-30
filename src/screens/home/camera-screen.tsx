@@ -101,6 +101,8 @@ const CameraScreen = ({ navigation, route }: any) => {
       formData.append('date', formatDateToYYYYMMDD(selectedDate));
       formData.append('time', formatTimeToAMPM(time));
       const result = await uploadImage({ formData }).unwrap();
+      console.log('formData---->', formData);
+      console.log('result capture---->', result);
       if (result?.status === true) {
         navigation.navigate(PATHS.Result, {
           id: result?.id,
@@ -241,41 +243,6 @@ const CameraScreen = ({ navigation, route }: any) => {
           </View>
         </View>
       </SafeAreaWrapper>
-      {/* <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-        modalStyleIOS={{ margin: 'auto' }}
-        onConfirm={(date: Date) => {
-          setSelectedDate(date);
-          setDatePickerVisibility(false);
-        }}
-        onCancel={() => setDatePickerVisibility(false)}
-      />
-      <DateTimePickerModal
-        isVisible={isTimePickerVisible}
-        mode="time"
-        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-        modalStyleIOS={{ margin: 'auto' }}
-        onConfirm={(selectedTime: Date) => {
-          setTime(selectedTime);
-          setTimePickerVisibility(false);
-        }}
-        onCancel={() => setTimePickerVisibility(false)}
-      /> */}
-      {/* {isDatePickerVisible && (
-        <CustomDatePicker
-          value={String(selectedDate)}
-          onDateChange={(date: Date) => {
-            setSelectedDate(date);
-            setDatePickerVisibility(false);
-          }}
-          mode="date"
-          placeholder="MM/DD/YYYY"
-          minimumDate={new Date()}
-          customStyle={styles.inputStyle}
-        />
-      )} */}
     </View>
   );
 };
@@ -307,7 +274,7 @@ const styles = StyleSheet.create({
     minHeight: 240,
     maxHeight: height * 0.4,
     borderRadius: 24,
-    backgroundColor: Colors.lightGrey,
+    backgroundColor: Colors.white,
     overflow: 'hidden',
     shadowRadius: 12,
   },

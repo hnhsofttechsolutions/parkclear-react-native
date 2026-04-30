@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import moment from "moment-timezone";
+import moment from 'moment-timezone';
 import {
   ActivityIndicator,
   Image,
@@ -30,11 +30,12 @@ function ReminderModal({
 }: Props) {
   const navigation = useNavigation<any>();
   const [remindApi, { isLoading }] = useResultRemindMutation();
+  console.log('endTimeIso', endTimeIso);
 
   const handlerConfirm = async () => {
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const shortTZ = moment().tz(timezone).format("z");
+      const shortTZ = moment().tz(timezone).format('z');
       const formData = new FormData();
       formData.append('minutes', reminderMinutes);
       formData.append('end_time_iso', endTimeIso);
@@ -47,12 +48,11 @@ function ReminderModal({
           text2: response?.message,
         });
         setShowReminderModal(false);
-        navigation.navigate(PATHS.ReminderSet,
-          {
-            reminderMinutes,
-            parking_end_time_iso: response?.parking_end_time_iso,
-            reminder_time_iso: response?.reminder_time_iso
-          });
+        navigation.navigate(PATHS.ReminderSet, {
+          reminderMinutes,
+          parking_end_time_iso: response?.parking_end_time_iso,
+          reminder_time_iso: response?.reminder_time_iso,
+        });
       }
     } catch (error: any) {
       setShowReminderModal(false);

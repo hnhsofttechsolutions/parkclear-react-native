@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Colors } from '../utils/colors';
 import AppText from './ui/app-text';
+import { Dimensions } from 'react-native';
 
 const CurrentTime = () => {
   const [time, setTime] = useState(new Date());
@@ -22,8 +23,8 @@ const CurrentTime = () => {
 
   return (
     <AppText
-      font="bold"
-      size={32}
+      font="regular"
+      size={Dimensions.get('screen').height * 0.05}
       color={Colors.white}
       align="center"
       style={{ marginTop: 20 }}

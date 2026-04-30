@@ -1,33 +1,27 @@
-import { ArrowLeft, MessageSquare, ScrollText } from 'lucide-react-native';
+import { ArrowLeft, MessageSquare } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Markdown from 'react-native-markdown-display';
-import NoParkingIcon from '../../assets/images/no_parking.svg';
-import YesParkingIcon from '../../assets/images/yes_parking.svg';
-import SafeAreaWrapper from '../../components/safe-area-wrapper';
-import AppText from '../../components/ui/app-text';
 import Sound from 'react-native-sound';
 import { useSelector } from 'react-redux';
+import NoParkingIcon from '../../assets/images/no_parking.svg';
+import YesParkingIcon from '../../assets/images/yes_parking.svg';
 import RemindCard from '../../components/card/remind-card';
 import ReminderModal from '../../components/modals/reminder-modal';
 import ReminderSubcriptionModal from '../../components/modals/reminder-subcription-modal';
 import ResultFeedBack from '../../components/result/result-feedback';
+import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import AppText from '../../components/ui/app-text';
 import { PATHS } from '../../navigation/paths';
 import { ResultScreenProps } from '../../navigation/types';
-import { RootState } from '../../store/store';
 import AdService from '../../services/ad-service';
+import { RootState } from '../../store/store';
 import { Colors, Gradient } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
-  const { id, variant, summarize_message, endTime, endTimeIso } = route.params;
+  const { id, variant, summarize_message, endTimeIso } = route.params;
   const isResolve = variant === 'resolve';
   const [reminderMinutes, setReminderMinutes] = useState(15);
   const [showReminderModal, setShowReminderModal] = useState(false);
@@ -108,7 +102,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
             <ArrowLeft size={24} color={Gradient.colors[0]} strokeWidth={2.5} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.menuBtn}
+            style={styles.feedbackIconBtn}
             onPress={() => setIsFeedVisible(true)}
             activeOpacity={0.85}
           >
@@ -116,7 +110,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
               source={require('../../assets/images/report.png')}
               style={{ width: 30, height: 30 }}
             /> */}
-            <MessageSquare size={20} color={Gradient.colors[0]} strokeWidth={2.5} />
+            <MessageSquare size={24} color={Colors.white} strokeWidth={2.5} />
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -230,7 +224,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
   },

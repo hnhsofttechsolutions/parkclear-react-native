@@ -60,7 +60,7 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Poppins-ExtraLight.ttf</string>
+		<!-- <string>Poppins-ExtraLight.ttf</string>
 		<string>Poppins-ThinItalic.ttf</string>
 		<string>Poppins-ExtraLightItalic.ttf</string>
 		<string>Poppins-BoldItalic.ttf</string>
@@ -77,7 +77,14 @@
 		<string>Poppins-Thin.ttf</string>
 		<string>Poppins-SemiBold.ttf</string>
 		<string>Poppins-Italic.ttf</string>
-		<string>Poppins-MediumItalic.ttf</string>
+		<string>Poppins-MediumItalic.ttf</string> -->
+		<string>Outfit-Thin.ttf</string>
+		<string>Outfit-Light.ttf</string>
+		<string>Outfit-Regular.ttf</string>
+		<string>Outfit-Medium.ttf</string>
+		<string>Outfit-SemiBold.ttf</string>
+		<string>Outfit-Bold.ttf</string>
+		<string>Outfit-ExtraBold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
