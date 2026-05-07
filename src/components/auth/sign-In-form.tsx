@@ -16,16 +16,20 @@ import { GradientButton } from '../ui/gradient-button';
 import PhonePrefix from '../ui/phone-prefix';
 import ForgotPasswordForm from './forgot-password-form';
 import SocialButtons from './social-button';
+import { useFirebase } from '../../hooks/use-firebase';
 
 function SignInForm({ navigation }: any) {
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const [securePassword, setSecurePassword] = useState(true);
   const [isForgotVisible, setIsForgotVisible] = useState(false);
+  const { fcmToken } = useFirebase();
 
   const handleLogin = async (values: any) => {
+    console.log('values login form---->', values);
     try {
       const formData = new FormData();
+      formData.append('fcm_token', fcmToken);
       Object.keys(values).forEach(key => {
         formData.append(key, values[key]);
       });
@@ -48,8 +52,7 @@ function SignInForm({ navigation }: any) {
       console.log('error---->', error);
       Toast.show({
         type: 'info',
-        text1: 'Login Failed',
-        text2: 'New account, please Sign Up',
+        text2: error?.data?.message || 'New account, please Sign Up',
       });
     }
   };

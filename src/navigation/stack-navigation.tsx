@@ -16,7 +16,6 @@ const StackNavigation = () => {
   );
   const [splashDone, setSplashDone] = useState(false);
 
-
   useEffect(() => {
     const oninitRevenueCat = async () => {
       await initRevenueCat(user?.id);

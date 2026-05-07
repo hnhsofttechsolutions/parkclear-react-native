@@ -100,7 +100,6 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const handlerLogout = async () => {
     setLogoutLoading(true);
     try {
-      await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
 
       if (!(await Purchases.isAnonymous())) {

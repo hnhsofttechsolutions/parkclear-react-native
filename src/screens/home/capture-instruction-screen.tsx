@@ -27,70 +27,72 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadImageMutation();
   const { requestCameraPermission } = useCameraPermission();
   const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
+  const { onCapture } = route.params;
 
   const openCamera = async () => {
     const ok = await requestCameraPermission();
     if (!ok) return;
-    launchCamera(
-      { ...pickerOptions, saveToPhotos: Platform.OS === 'ios' },
-      async res => {
-        if (res.didCancel) return;
-        if (res.errorCode) {
-          Alert.alert('Camera Error', res.errorMessage || res.errorCode);
-          return;
-        }
-        const uri = uriFromResponse(res);
-        if (!uri) return;
+    const res = await launchCamera({
+      ...pickerOptions,
+      saveToPhotos: true,
+    });
 
-        const from = route.params?.from;
+    if (res.didCancel) return;
+    if (res.errorCode) {
+      Alert.alert('Camera Error', res.errorMessage || res.errorCode);
+      return;
+    }
+    const uri = res.assets?.[0]?.uri;
+    if (!uri) return;
 
-        if (from === 'Camera') {
-          navigation.navigate(PATHS.Camera, { capturedImageUri: uri });
-          return;
-        }
+    const from = route.params?.from;
 
-        setCapturedImageUri(uri);
+    if (from === 'Camera' && onCapture) {
+      onCapture?.(uri);
+      navigation.goBack();
+      return;
+    }
 
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const shortTZ = moment().tz(timezone).format('z');
-        const formData = new FormData();
-        const fileOBJ = {
-          uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
-          type: 'image/jpeg',
-          name: 'parking_sign.jpg',
-        };
-        formData.append('file', fileOBJ);
-        formData.append('timezone', shortTZ);
+    setCapturedImageUri(uri);
 
-        try {
-          const result = await uploadImage({ formData }).unwrap();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const shortTZ = moment().tz(timezone).format('z');
+    const formData = new FormData();
+    const fileOBJ = {
+      uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
+      type: 'image/jpeg',
+      name: 'parking_sign.jpg',
+    };
+    formData.append('file', fileOBJ);
+    formData.append('timezone', shortTZ);
 
-          console.log('result capture---->', result);
-          console.log('formData---->', formData);
+    try {
+      const result = await uploadImage({ formData }).unwrap();
 
-          if (result?.status === true) {
-            navigation.navigate(PATHS.Result, {
-              id: result?.id,
-              variant: result?.park_status ? 'resolve' : 'reject',
-              summarize_message: result?.summarize_message,
-              endTimeIso: result?.end_time_iso,
-            });
-          } else {
-            Toast.show({
-              type: 'error',
-              text1: 'Error',
-              text2: result?.message || 'Invalid image.',
-            });
-          }
-        } catch (error: any) {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: error?.message || 'Upload failed.',
-          });
-        }
-      },
-    );
+      console.log('result instruction screen---->', result);
+      console.log('formData instruction screen---->', formData);
+
+      if (result?.status === true) {
+        navigation.navigate(PATHS.Result, {
+          id: result?.id,
+          variant: result?.park_status ? 'resolve' : 'reject',
+          summarize_message: result?.summarize_message,
+          endTimeIso: result?.end_time_iso,
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: result?.message || 'Invalid image.',
+        });
+      }
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error?.message || 'Upload failed.',
+      });
+    }
   };
 
   return (

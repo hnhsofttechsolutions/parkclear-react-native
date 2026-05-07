@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -67,120 +68,128 @@ const ContactUsScreen = ({ navigation }: any) => {
           onBack={() => navigation.goBack()}
         />
       </View>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.scroll}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
       >
-        <LinearGradient
-          colors={[...Gradient.colors]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={[styles.hero, Platform.OS === 'ios' && styles.heroIOS]}
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scroll}
         >
-          <MailLogo width={48} height={48} />
-          <TouchableOpacity activeOpacity={0.85}>
-            <AppText size={17} color={Colors.white} style={{ marginTop: 5 }}>
-              contact@parkclear.co
-            </AppText>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.85}>
-            <AppText size={17} color={Colors.white}>
-              www.parkclear.co
-            </AppText>
-          </TouchableOpacity>
-        </LinearGradient>
-        <View style={{ height: 25 }} />
-        <Formik
-          initialValues={{
-            first_name: '',
-            last_name: '',
-            email: '',
-            phone_number: '',
-            message: '',
-          }}
-          validationSchema={contactSchema}
-          onSubmit={handleContact}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <>
-              <AppTextField
-                label={FlutterStrings.firstName}
-                prefix={<UserImg width={22} height={22} />}
-                placeholder={FlutterStrings.enterFirstName}
-                autoCapitalize="words"
-                onChangeText={handleChange('first_name')}
-                onBlur={handleBlur('first_name')}
-                value={values.first_name}
-              />
-              <ErrorText
-                visible={touched.first_name}
-                error={errors.first_name}
-              />
-              <View style={{ height: 20 }} />
-              <AppTextField
-                label={FlutterStrings.lastName}
-                prefix={<UserImg width={22} height={22} />}
-                placeholder={FlutterStrings.enterLastName}
-                autoCapitalize="words"
-                onChangeText={handleChange('last_name')}
-                onBlur={handleBlur('last_name')}
-                value={values.last_name}
-              />
-              <ErrorText visible={touched.last_name} error={errors.last_name} />
-              <View style={{ height: 20 }} />
-              <AppTextField
-                label={FlutterStrings.email}
-                prefix={<EmailImg width={22} height={22} />}
-                placeholder={FlutterStrings.enterYourEmailAddress}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
-              />
-              <ErrorText visible={touched.email} error={errors.email} />
-              <View style={{ height: 20 }} />
-              <AppTextField
-                label={FlutterStrings.phoneNumber}
-                prefix={<PhonePrefix />}
-                placeholder={FlutterStrings.enterYourPhoneNumber}
-                keyboardType="phone-pad"
-                maxLength={10}
-                onChangeText={handleChange('phone_number')}
-                onBlur={handleBlur('phone_number')}
-                value={values.phone_number}
-              />
-              <ErrorText
-                visible={touched.phone_number}
-                error={errors.phone_number}
-              />
-              <View style={{ height: 20 }} />
-              <AppTextField
-                label={FlutterStrings.message}
-                placeholder={FlutterStrings.writeYourMessage}
-                multiline
-                onChangeText={handleChange('message')}
-                onBlur={handleBlur('message')}
-                value={values.message}
-              />
-              <ErrorText visible={touched.message} error={errors.message} />
-              <View style={{ height: 35 }} />
-              <GradientButton
-                label={FlutterStrings.sendMessage}
-                onPress={handleSubmit}
-                isLoading={isLoading}
-              />
-            </>
-          )}
-        </Formik>
-      </ScrollView>
+          <LinearGradient
+            colors={[...Gradient.colors]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.hero, Platform.OS === 'ios' && styles.heroIOS]}
+          >
+            <MailLogo width={48} height={48} />
+            <TouchableOpacity activeOpacity={0.85}>
+              <AppText size={17} color={Colors.white} style={{ marginTop: 5 }}>
+                contact@parkclear.co
+              </AppText>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.85}>
+              <AppText size={17} color={Colors.white}>
+                www.parkclear.co
+              </AppText>
+            </TouchableOpacity>
+          </LinearGradient>
+          <View style={{ height: 25 }} />
+          <Formik
+            initialValues={{
+              first_name: '',
+              last_name: '',
+              email: '',
+              phone_number: '',
+              message: '',
+            }}
+            validationSchema={contactSchema}
+            onSubmit={handleContact}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <>
+                <AppTextField
+                  label={FlutterStrings.firstName}
+                  prefix={<UserImg width={22} height={22} />}
+                  placeholder={FlutterStrings.enterFirstName}
+                  autoCapitalize="words"
+                  onChangeText={handleChange('first_name')}
+                  onBlur={handleBlur('first_name')}
+                  value={values.first_name}
+                />
+                <ErrorText
+                  visible={touched.first_name}
+                  error={errors.first_name}
+                />
+                <View style={{ height: 20 }} />
+                <AppTextField
+                  label={FlutterStrings.lastName}
+                  prefix={<UserImg width={22} height={22} />}
+                  placeholder={FlutterStrings.enterLastName}
+                  autoCapitalize="words"
+                  onChangeText={handleChange('last_name')}
+                  onBlur={handleBlur('last_name')}
+                  value={values.last_name}
+                />
+                <ErrorText
+                  visible={touched.last_name}
+                  error={errors.last_name}
+                />
+                <View style={{ height: 20 }} />
+                <AppTextField
+                  label={FlutterStrings.email}
+                  prefix={<EmailImg width={22} height={22} />}
+                  placeholder={FlutterStrings.enterYourEmailAddress}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  value={values.email}
+                />
+                <ErrorText visible={touched.email} error={errors.email} />
+                <View style={{ height: 20 }} />
+                <AppTextField
+                  label={FlutterStrings.phoneNumber}
+                  prefix={<PhonePrefix />}
+                  placeholder={FlutterStrings.enterYourPhoneNumber}
+                  keyboardType="phone-pad"
+                  maxLength={10}
+                  onChangeText={handleChange('phone_number')}
+                  onBlur={handleBlur('phone_number')}
+                  value={values.phone_number}
+                />
+                <ErrorText
+                  visible={touched.phone_number}
+                  error={errors.phone_number}
+                />
+                <View style={{ height: 20 }} />
+                <AppTextField
+                  label={FlutterStrings.message}
+                  placeholder={FlutterStrings.writeYourMessage}
+                  multiline
+                  onChangeText={handleChange('message')}
+                  onBlur={handleBlur('message')}
+                  value={values.message}
+                />
+                <ErrorText visible={touched.message} error={errors.message} />
+                <View style={{ height: 35 }} />
+                <GradientButton
+                  label={FlutterStrings.sendMessage}
+                  onPress={handleSubmit}
+                  isLoading={isLoading}
+                />
+              </>
+            )}
+          </Formik>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaWrapper>
   );
 };

@@ -24,7 +24,7 @@ export const UNITY_INTERSTITIAL_IOS = 'duushj0ud6e6so9e';
 
 export const UNITY_BANNER_ANDROID = 'nc00qduiu7fc5czx';
 /** Must match Setup → Ad units → Banner → Ad Unit ID on the iOS app row in Grow (copy-paste only). */
-export const UNITY_BANNER_IOS = 'yj2csnpse33qc37h';
+export const UNITY_BANNER_IOS = 'yj2osnpse33go37h';
 
 export function getInterstitialAdUnitId(): string {
   const raw = Platform.select({

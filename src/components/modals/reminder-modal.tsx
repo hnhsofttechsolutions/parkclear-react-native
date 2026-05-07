@@ -41,6 +41,8 @@ function ReminderModal({
       formData.append('end_time_iso', endTimeIso);
       formData.append('timezone', shortTZ);
       const response = await remindApi({ formData }).unwrap();
+      console.log('response---->', response);
+      console.log('formData---->', formData);
       if (response?.status) {
         Toast.show({
           type: 'success',

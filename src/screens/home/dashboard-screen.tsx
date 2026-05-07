@@ -151,7 +151,7 @@ const DashboardScreen = ({ navigation }: any) => {
         <View
           style={[
             styles.bottomCard,
-            { bottom: showAds && isAdLoaded ? bottomChromeHeight : 0 },
+            { bottom: showAds ? bottomChromeHeight : 0 },
           ]}
         >
           <GradientButton
@@ -187,7 +187,7 @@ const DashboardScreen = ({ navigation }: any) => {
         setDrawer={setDrawer}
         navigation={navigation}
       />
-      {showAds && isAdLoaded && (
+      {showAds && (
         <View
           style={[styles.bannerDock, { paddingBottom: insets.bottom }]}
           pointerEvents="box-none"

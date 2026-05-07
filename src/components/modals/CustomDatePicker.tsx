@@ -4,7 +4,7 @@ import {
   ChevronRight,
   Clock,
 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -19,6 +19,39 @@ import { Calendar } from 'react-native-calendars';
 import { Colors } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
 import CustomTimePicker from './CustomTimePicker';
+
+/** Calendar YYYY-MM-DD in the device local timezone (not UTC). */
+function localYmdFromDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * Parse a calendar day string from react-native-calendars as a local Date.
+ * Avoids `new Date('YYYY-MM-DD')` (UTC) which shifts the day in many zones.
+ * Noon reduces DST boundary issues around midnight.
+ */
+function localDateFromYmd(dateString: string): Date {
+  const [y, m, d] = dateString.split('-').map(Number);
+  if (!y || !m || !d) return new Date(NaN);
+  return new Date(y, m - 1, d, 12, 0, 0, 0);
+}
+
+function ymdFromValue(value: CommonDatePickerProps['value'], fallbackYmd: string): string {
+  if (value == null) return fallbackYmd;
+  if (value instanceof Date) {
+    return isNaN(value.getTime()) ? fallbackYmd : localYmdFromDate(value);
+  }
+  if (typeof value === 'string') {
+    if (/^\d{1,2}:\d{2}$/.test(value)) return fallbackYmd;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+    const parsed = new Date(value);
+    return isNaN(parsed.getTime()) ? fallbackYmd : localYmdFromDate(parsed);
+  }
+  return fallbackYmd;
+}
 
 interface CommonDatePickerProps extends TouchableOpacityProps {
   value?: string | Date | undefined;
@@ -51,11 +84,11 @@ const CustomDatePicker: React.FC<CommonDatePickerProps> = ({
   disabled,
   ...props
 }) => {
-  const today = new Date().toISOString().split('T')[0];
+  const todayYmd = localYmdFromDate(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<String | any>(null);
-  const isDate = value ? String(value)?.split('T')[0] : today;
+  const isDate = ymdFromValue(value, todayYmd);
 
   const formatDate = (date: any) => {
     if (!date) return placeholder;
@@ -132,11 +165,15 @@ const CustomDatePicker: React.FC<CommonDatePickerProps> = ({
             <Calendar
               onDayPress={day => {
                 setSelectedDate(day.dateString);
-                onDateChange?.(new Date(day.dateString));
+                onDateChange?.(localDateFromYmd(day.dateString));
               }}
-              current={isDate ? isDate : today}
-              minDate={minimumDate?.toISOString()}
-              maxDate={maximumDate?.toISOString()}
+              current={isDate || todayYmd}
+              minDate={
+                minimumDate ? localYmdFromDate(minimumDate) : undefined
+              }
+              maxDate={
+                maximumDate ? localYmdFromDate(maximumDate) : undefined
+              }
               enableSwipeMonths
               markingType={'custom'}
               markedDates={{
@@ -202,8 +239,11 @@ const CustomDatePicker: React.FC<CommonDatePickerProps> = ({
               <TouchableOpacity
                 style={styles.confirmBtn}
                 onPress={() => {
-                  setSelectedDate(new Date(isDate));
-                  onDateChange?.(new Date(isDate));
+                  const ymd =
+                    typeof selectedDate === 'string' ? selectedDate : isDate;
+                  const confirmed = localDateFromYmd(ymd);
+                  setSelectedDate(ymd);
+                  onDateChange?.(confirmed);
                   setShowCalendar(false);
                 }}
               >

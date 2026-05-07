@@ -28,12 +28,12 @@ function ResultFeedBack({ id, isVisible, setIsVisible }: Props) {
       formData.append('feedback', values.message);
       const response = await feedbackApi({ formData }).unwrap();
       if (response?.status) {
+        setIsVisible(false);
         Toast.show({
           type: 'success',
           text1: 'Feedback Submitted!',
           text2: response?.message,
         });
-        setIsVisible(false);
       }
     } catch (error: any) {
       Toast.show({

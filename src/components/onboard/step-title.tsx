@@ -44,8 +44,8 @@ function StepTitle({ step }: { step: 1 | 2 | 3 }) {
           align="center"
           style={{ marginTop: 10 }}
         >
-          No more wasted time and frustrations, we’re here to help you Park
-          Clear!
+          No more wasted time and frustrations, we’re here to help you
+          ParkClear!
         </AppText>
       </>
     );

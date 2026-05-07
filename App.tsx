@@ -1,5 +1,5 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationProp } from '@react-navigation/native';
 import { InteractionManager, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -12,13 +12,31 @@ import { persistor, store } from './src/store/store';
 import { MyDarkTheme, MyLightTheme } from './src/utils/colors';
 import { useEffect } from 'react';
 import AdService from './src/services/ad-service';
+import { navigationRef, navigate } from './src/navigation/RootNavigation';
+import { PATHS } from './src/navigation/paths';
+import SpInAppUpdates from 'sp-react-native-in-app-updates';
 
 function App() {
   const isDark = useColorScheme() === 'dark';
   const {} = useFirebase();
+  const inAppUpdates = new SpInAppUpdates(__DEV__ ?? false);
+
+  const checkUpdate = async () => {
+    try {
+      if (__DEV__) {
+        navigate(PATHS.Update);
+        return;
+      }
+      const result = await inAppUpdates.checkNeedsUpdate();
+      if (result.shouldUpdate) {
+        navigate(PATHS.Update);
+      }
+    } catch (error) {
+      console.log('Update check failed (Normal in dev):', error);
+    }
+  };
 
   useEffect(() => {
-    // Defer until after first paint so native LevelPlay module + bridge are stable (Unity RN guidance).
     const task = InteractionManager.runAfterInteractions(() => {
       void AdService.init();
     });
@@ -42,7 +60,11 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <SafeAreaProvider>
-            <NavigationContainer theme={isDark ? MyDarkTheme : MyLightTheme}>
+            <NavigationContainer
+              ref={navigationRef}
+              onReady={checkUpdate}
+              theme={isDark ? MyDarkTheme : MyLightTheme}
+            >
               <StackNavigation />
               <Toast />
             </NavigationContainer>

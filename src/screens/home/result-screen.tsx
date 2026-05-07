@@ -177,7 +177,10 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
         <ResultFeedBack
           id={id}
           isVisible={isFeedVisible}
-          setIsVisible={setIsFeedVisible}
+          setIsVisible={e => {
+            setHasShownReminder(false);
+            setIsFeedVisible(e);
+          }}
         />
         <ReminderModal
           endTimeIso={endTimeIso}

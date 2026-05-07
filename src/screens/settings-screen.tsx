@@ -29,6 +29,8 @@ import {
 import { logout, setCredentials } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
 import { Colors } from '../utils/colors';
+import Purchases from 'react-native-purchases';
+import { baseApi } from '../store/api/baseApi';
 const chevron = <ChevronRight size={15} color={Colors.primary} />;
 
 const SettingsScreen = ({ navigation }: any) => {
@@ -39,6 +41,7 @@ const SettingsScreen = ({ navigation }: any) => {
   const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
   const { user, token } = useSelector((state: RootState) => state.auth);
   const [isPaid, setIsPaid] = useState(user.is_paid);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const [triggerGetProfile, { isLoading: isProfileLoading }] =
     useLazyGetProfileQuery();
 
@@ -53,6 +56,7 @@ const SettingsScreen = ({ navigation }: any) => {
 
   const handleDeleteAccount = async () => {
     try {
+      setLogoutLoading(true);
       const response = await deleteAccount({}).unwrap();
       if (response?.status) {
         Toast.show({
@@ -61,25 +65,16 @@ const SettingsScreen = ({ navigation }: any) => {
           text2: response?.message,
         });
         try {
-          await GoogleSignin.revokeAccess();
           await GoogleSignin.signOut();
+
+          if (!(await Purchases.isAnonymous())) {
+            await Purchases.logOut();
+          }
+          dispatch(logout());
+          dispatch(baseApi.util.resetApiState());
         } catch (e) {
           console.log('Google logout error', e);
         }
-        try {
-          if (appleAuth.isSupported) {
-            await appleAuth.performRequest({
-              requestedOperation: appleAuth.Operation.LOGOUT,
-            });
-          }
-        } catch (e) {
-          console.log('Apple logout error', e);
-        }
-        dispatch(logout());
-        navigation.reset({
-          index: 0,
-          routes: [{ name: PATHS.LoginRegister }],
-        });
       }
     } catch (error: any) {
       Toast.show({
@@ -87,6 +82,8 @@ const SettingsScreen = ({ navigation }: any) => {
         text1: 'Delete Failed',
         text2: error?.data?.message,
       });
+    } finally {
+      setLogoutLoading(false);
     }
   };
 
@@ -182,6 +179,7 @@ const SettingsScreen = ({ navigation }: any) => {
       </View>
       <FeedBackForm isVisible={isVisible} setIsVisible={setIsVisible} />
       <DeleteModal
+        isLoading={logoutLoading}
         title="Delete “ParkClear” App ?"
         description="Deleting this app will also delete its data."
         visible={isDeletetModal}

@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "429728101706-90vcl3c8iokcf2kt2uqq1koasu6rkn9j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.parkclear",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "429728101706-pa4t6569okuiqtj5eond0n77a48t7rba.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -31,10 +39,11 @@
               "client_type": 3
             },
             {
-              "client_id": "429728101706-7b0dlkff8kh72snvadgi5f85icumlmtq.apps.googleusercontent.com",
+              "client_id": "429728101706-5nep6pdopculmj4pqpvm895f7kc1ijo1.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "org.reactjs.native.example.parkclear"
+                "bundle_id": "com.app.parkclear",
+                "app_store_id": "6746191345"
               }
             }
           ]

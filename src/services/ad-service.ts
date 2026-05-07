@@ -162,7 +162,8 @@ class AdService {
     if (__DEV__) {
       try {
         await LevelPlay.setAdaptersDebug(true);
-        await LevelPlay.validateIntegration();
+        const validation = await LevelPlay.validateIntegration();
+        console.log('validation---->', validation);
       } catch (e) {
         console.warn('Unity LevelPlay: validateIntegration / setAdaptersDebug', e);
       }

@@ -43,8 +43,7 @@ function SignUpForm({ navigation }: any) {
       // });
       Toast.show({
         type: 'info',
-        text1: 'Sign Up Failed',
-        text2: 'Already a User, Please Login',
+        text2: error?.data?.message || 'Already a User, Please Login',
       });
     }
   };

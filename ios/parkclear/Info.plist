@@ -31,23 +31,25 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.429728101706-7b0dlkff8kh72snvadgi5f85icumlmtq</string>
+				<string>com.googleusercontent.apps.429728101706-5nep6pdopculmj4pqpvm895f7kc1ijo1</string>
 			</array>
 		</dict>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+  		<string>itms-apps</string>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<!-- Unity LevelPlay (React Native plugin): ATS must follow https://docs.unity.com/grow/levelplay/sdk/react/plugin-integration — only NSAllowsArbitraryLoads here to avoid mediation conflicts. -->
+	<key>NSAdvertisingAttributionReportEndpoint</key>
+	<string>https://postbacks-is.com</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<!-- Universal SKAN reporting for LevelPlay / mediated networks (same doc Step 2). -->
-	<key>NSAdvertisingAttributionReportEndpoint</key>
-	<string>https://postbacks-is.com</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to take photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -58,26 +60,15 @@
 	<string>This app needs photo library access to select photos.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>su67r6k2v3.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
-		<!-- <string>Poppins-ExtraLight.ttf</string>
-		<string>Poppins-ThinItalic.ttf</string>
-		<string>Poppins-ExtraLightItalic.ttf</string>
-		<string>Poppins-BoldItalic.ttf</string>
-		<string>Poppins-Light.ttf</string>
-		<string>Poppins-Medium.ttf</string>
-		<string>Poppins-SemiBoldItalic.ttf</string>
-		<string>Poppins-ExtraBoldItalic.ttf</string>
-		<string>Poppins-ExtraBold.ttf</string>
-		<string>Poppins-BlackItalic.ttf</string>
-		<string>Poppins-Regular.ttf</string>
-		<string>Poppins-LightItalic.ttf</string>
-		<string>Poppins-Bold.ttf</string>
-		<string>Poppins-Black.ttf</string>
-		<string>Poppins-Thin.ttf</string>
-		<string>Poppins-SemiBold.ttf</string>
-		<string>Poppins-Italic.ttf</string>
-		<string>Poppins-MediumItalic.ttf</string> -->
 		<string>Outfit-Thin.ttf</string>
 		<string>Outfit-Light.ttf</string>
 		<string>Outfit-Regular.ttf</string>
@@ -108,12 +99,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>SKAdNetworkItems</key>
-	<array>
-		<dict>
-			<key>SKAdNetworkIdentifier</key>
-			<string>su67r6k2v3.skadnetwork</string>
-		</dict>
-	</array>
 </dict>
 </plist>

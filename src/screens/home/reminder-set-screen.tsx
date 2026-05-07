@@ -9,24 +9,30 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
-import moment from "moment-timezone";
+import moment from 'moment-timezone';
 import Toast from 'react-native-toast-message';
 import { PATHS } from '../../navigation/paths';
 import { ReminderSetScreenProps } from '../../navigation/types';
 import { useCancelRemindMutation } from '../../store/api/uploadApi';
 import { Colors } from '../../utils/colors';
+import { CommonActions } from '@react-navigation/native';
 
 const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
-  const { reminderMinutes, parking_end_time_iso, reminder_time_iso } = route.params;
-  const [cancelRemind, { isLoading: cancelRemindLoading }] = useCancelRemindMutation();
-  const end_time = moment(parking_end_time_iso).format("hh:mm A");
-  const reminder_time = moment(reminder_time_iso).format("hh:mm A");
+  const { reminderMinutes, parking_end_time_iso, reminder_time_iso } =
+    route.params;
+  const [cancelRemind, { isLoading: cancelRemindLoading }] =
+    useCancelRemindMutation();
+  const end_time = moment(parking_end_time_iso).format('hh:mm A');
+  const reminder_time = moment(reminder_time_iso).format('hh:mm A');
+  const dayName = moment(reminder_time_iso).format('dddd');
 
   const handleReset = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: PATHS.Dashboard }],
-    });
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: PATHS.Dashboard }],
+      }),
+    );
   };
 
   const handleCancelRemind = async () => {
@@ -91,8 +97,13 @@ const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
                 {end_time}
               </AppText>
             </View>
-            <AppText font="medium" size={16} color={Colors.white} align="center">
-              🔔 Reminder at {reminder_time}
+            <AppText
+              font="medium"
+              size={16}
+              color={Colors.white}
+              align="center"
+            >
+              🔔 Reminder at {dayName} {reminder_time}
             </AppText>
           </View>
 
@@ -105,13 +116,13 @@ const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
               {cancelRemindLoading ? (
                 <ActivityIndicator color={Colors.greenDark} size="small" />
               ) : (
-                <AppText font='medium' size={16} color={Colors.greenDark}>
+                <AppText font="medium" size={16} color={Colors.greenDark}>
                   Reset Timer
                 </AppText>
               )}
             </TouchableOpacity>
             <TouchableOpacity style={styles.overBtn} onPress={handleReset}>
-              <AppText font='medium' size={16} color={Colors.white}>
+              <AppText font="medium" size={16} color={Colors.white}>
                 Start Over
               </AppText>
             </TouchableOpacity>

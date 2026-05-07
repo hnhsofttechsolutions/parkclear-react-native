@@ -54,4 +54,5 @@ export const AUTH_SCREENS = [
   { name: PATHS.OtpRegister, component: OtpRegisterScreen },
   { name: PATHS.OtpForgot, component: OtpForgotScreen },
   { name: PATHS.CreateNewPassword, component: CreateNewPasswordScreen },
+  { name: PATHS.Update, component: UpdateScreen },
 ];

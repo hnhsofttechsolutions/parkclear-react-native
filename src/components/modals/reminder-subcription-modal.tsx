@@ -101,19 +101,19 @@ function ReminderSubcriptionModal({
               font="regular"
               style={{ marginTop: -10, marginBottom: 20 }}
             >{`(auto-renewing monthly plan)`}</AppText>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.modalCancelBtn}
               onPress={() => setShowReminderModal(false)}
-            > */}
-            <AppText
-              align="center"
-              font="medium"
-              size={16}
-              color={Colors.greenDark}
             >
-              Cancel Anytime
-            </AppText>
-            {/* </TouchableOpacity> */}
+              <AppText
+                align="center"
+                font="medium"
+                size={16}
+                color={Colors.greenDark}
+              >
+                Cancel Anytime
+              </AppText>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

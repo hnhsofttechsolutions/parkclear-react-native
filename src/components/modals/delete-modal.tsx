@@ -64,6 +64,7 @@ const DeleteModal = ({
             </TouchableOpacity>
             <View style={styles.verticalDivider} />
             <TouchableOpacity
+              disabled={isLoading}
               style={styles.button}
               onPress={onDelete}
               activeOpacity={0.7}

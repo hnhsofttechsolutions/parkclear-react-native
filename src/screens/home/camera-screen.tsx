@@ -74,7 +74,7 @@ const CameraScreen = ({ navigation, route }: any) => {
     if (!selectedImage) return;
     if (!selectedDate || !time) {
       Toast.show({
-        type: 'error',
+        type: 'info',
         text1: 'Required Fields',
         text2: 'Please select Date and Time before uploading.',
       });
@@ -101,8 +101,8 @@ const CameraScreen = ({ navigation, route }: any) => {
       formData.append('date', formatDateToYYYYMMDD(selectedDate));
       formData.append('time', formatTimeToAMPM(time));
       const result = await uploadImage({ formData }).unwrap();
-      console.log('formData---->', formData);
-      console.log('result capture---->', result);
+      console.log('formData camera screen---->', formData);
+      console.log('result camera screen---->', result);
       if (result?.status === true) {
         navigation.navigate(PATHS.Result, {
           id: result?.id,
@@ -216,6 +216,7 @@ const CameraScreen = ({ navigation, route }: any) => {
                   onPress={() =>
                     navigation.navigate(PATHS.CaptureInstruction, {
                       from: 'Camera',
+                      onCapture: (uri: string) => setSelectedImage(uri),
                     })
                   }
                   leftIcon={<Camera size={20} color={Colors.white} />}
