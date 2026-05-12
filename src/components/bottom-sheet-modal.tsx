@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  ViewStyle,
 } from 'react-native';
 import { Colors } from '../utils/colors';
 
@@ -18,6 +19,7 @@ interface Props {
   height?: number;
   disableBackdropClose?: boolean;
   children: React.ReactNode;
+  sheetStyle?: ViewStyle;
 }
 
 const BottomSheetModal = ({
@@ -26,6 +28,7 @@ const BottomSheetModal = ({
   height = 420,
   children,
   disableBackdropClose,
+  sheetStyle,
 }: Props) => {
   const translateY = useRef(new Animated.Value(height)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -105,7 +108,11 @@ const BottomSheetModal = ({
               />
             </Animated.View>
             <Animated.View
-              style={[styles.sheet, { transform: [{ translateY }] }]}
+              style={[
+                styles.sheet,
+                sheetStyle,
+                { transform: [{ translateY }] },
+              ]}
             >
               <View {...panResponder.panHandlers}>
                 <View style={styles.handle} />
@@ -134,6 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
+    overflow: 'hidden',
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 28,

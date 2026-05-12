@@ -1,4 +1,5 @@
 import { ArrowLeft, MessageSquare } from 'lucide-react-native';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -16,13 +17,22 @@ import AppText from '../../components/ui/app-text';
 import { PATHS } from '../../navigation/paths';
 import { ResultScreenProps } from '../../navigation/types';
 import AdService from '../../services/ad-service';
+import { useGetAdStatusQuery } from '../../store/api/settingApi';
 import { RootState } from '../../store/store';
 import { Colors, Gradient } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
-  const { id, variant, summarize_message, endTimeIso } = route.params;
-  const isResolve = variant === 'resolve';
+  const {
+    id,
+    summarize_message,
+    end_time_iso,
+    has_arrow,
+    park_status,
+    right_end_time_iso,
+    left_end_time_iso,
+  } = route.params.data;
+  const isResolve = park_status;
   const [reminderMinutes, setReminderMinutes] = useState(15);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderSubcriptionModal, setReminderSubcriptionModal] =
@@ -30,10 +40,14 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const [hasShownReminder, setHasShownReminder] = useState(false);
   const [isFeedVisible, setIsFeedVisible] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
+  const { data: adStatus } = useGetAdStatusQuery();
   const isPaid = user?.is_paid;
+  const showAds = !isPaid && adStatus?.status;
+  const [customTime, setCustomTime] = useState<Date | any>(end_time_iso);
+  const [arrowSide, setArrowSide] = useState<string | null>(null);
 
   const handleReset = () => {
-    if (!isPaid) {
+    if (!isPaid && showAds) {
       void AdService.showInterstitial(() => {
         navigation.reset({
           index: 0,
@@ -81,6 +95,15 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
       return () => clearTimeout(timer);
     }
   }, [isPaid, hasShownReminder]);
+
+  const handleArrowSide = (side: string) => {
+    setArrowSide(side);
+    if (side === 'left') {
+      setCustomTime(left_end_time_iso ?? end_time_iso);
+    } else {
+      setCustomTime(right_end_time_iso ?? end_time_iso);
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -139,10 +162,69 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
             <Markdown style={markdownStyles}>{summarize_message}</Markdown>
 
             {isResolve && isPaid && (
-              <RemindCard
-                reminderMinutes={reminderMinutes}
-                setReminderMinutes={setReminderMinutes}
-              />
+              <>
+                {has_arrow && left_end_time_iso && right_end_time_iso && (
+                  <>
+                    <AppText
+                      align="center"
+                      font="medium"
+                      size={18}
+                      color={Colors.white}
+                      style={{ marginTop: 20 }}
+                    >
+                      {arrowSide
+                        ? arrowSide === 'left'
+                          ? 'Left'
+                          : 'Right'
+                        : 'Reminder for Left or Right Side?'}
+                    </AppText>
+                    <View style={styles.arrowSideWrapper}>
+                      <TouchableOpacity
+                        style={[
+                          styles.arrowSideBtn,
+                          arrowSide === 'left' && styles.arrowSideBtnActive,
+                        ]}
+                        onPress={() => handleArrowSide('left')}
+                      >
+                        <AppText
+                          font="medium"
+                          size={16}
+                          color={
+                            arrowSide === 'left'
+                              ? Colors.greenDark
+                              : Colors.white
+                          }
+                        >
+                          Left
+                        </AppText>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.arrowSideBtn,
+                          arrowSide === 'right' && styles.arrowSideBtnActive,
+                        ]}
+                        onPress={() => handleArrowSide('right')}
+                      >
+                        <AppText
+                          font="medium"
+                          size={16}
+                          color={
+                            arrowSide === 'right'
+                              ? Colors.greenDark
+                              : Colors.white
+                          }
+                        >
+                          Right
+                        </AppText>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                )}
+                <RemindCard
+                  reminderMinutes={reminderMinutes}
+                  setReminderMinutes={setReminderMinutes}
+                />
+              </>
             )}
           </View>
           <View style={styles.actionsWrapper}>
@@ -183,7 +265,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
           }}
         />
         <ReminderModal
-          endTimeIso={endTimeIso}
+          endTimeIso={moment(customTime).format('YYYY-MM-DDTHH:mm:ss')}
           reminderMinutes={reminderMinutes}
           showReminderModal={showReminderModal}
           setShowReminderModal={setShowReminderModal}
@@ -264,6 +346,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   overBtnDefault: {
+    backgroundColor: Colors.white,
+  },
+  arrowSideWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: 20,
+    borderRadius: 360,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    overflow: 'hidden',
+  },
+  arrowSideBtn: {
+    width: '50%',
+    height: 55,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  arrowSideBtnActive: {
     backgroundColor: Colors.white,
   },
 });

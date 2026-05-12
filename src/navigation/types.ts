@@ -4,11 +4,16 @@ import { PATHS } from './paths';
 export type RootStackParamList = {
   [PATHS.Home]: undefined;
   [PATHS.Result]: {
-    id: string;
-    variant: 'resolve' | 'reject';
-    summarize_message: string;
-    endTime: string;
-    endTimeIso: string;
+    data: {
+      id: string;
+      summarize_message: string;
+      end_time_iso: string;
+      has_arrow: boolean;
+      park_status: boolean;
+      right_end_time_iso: string;
+      left_end_time_iso: string;
+      days_offset: number;
+    };
   };
   [PATHS.ReminderSet]: {
     reminderMinutes: number;

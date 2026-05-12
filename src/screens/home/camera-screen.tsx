@@ -5,9 +5,8 @@ import {
   RefreshCcw,
 } from 'lucide-react-native';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   Platform,
@@ -15,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
 import CustomDatePicker from '../../components/modals/CustomDatePicker';
@@ -25,22 +24,15 @@ import {
   GradientButton,
   OutlineButton,
 } from '../../components/ui/gradient-button';
-import { useGalleryPermission } from '../../hooks/use-gallery-permission';
 import { PATHS } from '../../navigation/paths';
 import { useUploadCustomImageMutation } from '../../store/api/uploadApi';
 import { Colors, Gradient } from '../../utils/colors';
-import {
-  formatDateToYYYYMMDD,
-  formatTimeToAMPM,
-  pickerOptions,
-  uriFromResponse,
-} from '../../utils/helpers';
+import { formatDateToYYYYMMDD, formatTimeToAMPM } from '../../utils/helpers';
 
 const { height } = Dimensions.get('window');
 
 const CameraScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadCustomImageMutation();
-  const { requestGalleryPermission } = useGalleryPermission();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [time, setTime] = useState<Date | null>(null);
@@ -52,22 +44,35 @@ const CameraScreen = ({ navigation, route }: any) => {
     }
   }, [route.params?.capturedImageUri, navigation]);
 
+  useEffect(() => {
+    return () => {
+      ImagePicker.clean()
+        .then(() => {})
+        .catch(e => {
+          console.log('error clean ---->', e);
+        });
+    };
+  }, []);
+
   const onSelectImage = (uri: string) => {
     setSelectedImage(uri);
   };
 
   const openGallery = async () => {
-    const ok = await requestGalleryPermission();
-    if (!ok) return;
-    launchImageLibrary(pickerOptions, res => {
-      if (res.didCancel) return;
-      if (res.errorCode) {
-        Alert.alert('Gallery Error', res.errorMessage || res.errorCode);
+    ImagePicker.openPicker({
+      mediaType: 'photo',
+      quality: 0.9,
+      includeBase64: false,
+    })
+      .then(res => {
+        // console.log('res gallery ---->', res);
+        const uri = res?.path;
+        if (uri) onSelectImage(uri);
+      })
+      .catch(err => {
+        console.log('error gallery ---->', err);
         return;
-      }
-      const uri = uriFromResponse(res);
-      if (uri) onSelectImage(uri);
-    });
+      });
   };
 
   const onUpload = async () => {
@@ -104,13 +109,7 @@ const CameraScreen = ({ navigation, route }: any) => {
       console.log('formData camera screen---->', formData);
       console.log('result camera screen---->', result);
       if (result?.status === true) {
-        navigation.navigate(PATHS.Result, {
-          id: result?.id,
-          variant: result?.park_status ? 'resolve' : 'reject',
-          summarize_message: result?.summarize_message,
-          endTime: result?.end_time,
-          endTimeIso: result?.end_time_iso,
-        });
+        navigation.navigate(PATHS.Result, { data: result });
         setSelectedImage(null);
         setSelectedDate(null);
         setTime(null);

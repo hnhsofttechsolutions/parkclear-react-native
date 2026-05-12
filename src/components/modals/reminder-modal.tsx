@@ -14,6 +14,7 @@ import { PATHS } from '../../navigation/paths';
 import { useResultRemindMutation } from '../../store/api/uploadApi';
 import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
+import React from 'react';
 
 interface Props {
   endTimeIso?: string;
@@ -30,8 +31,7 @@ function ReminderModal({
 }: Props) {
   const navigation = useNavigation<any>();
   const [remindApi, { isLoading }] = useResultRemindMutation();
-  console.log('endTimeIso', endTimeIso);
-
+  console.log('endTimeIso reminder modal---->', endTimeIso);
   const handlerConfirm = async () => {
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -58,6 +58,7 @@ function ReminderModal({
       }
     } catch (error: any) {
       setShowReminderModal(false);
+      console.log('error---->', error);
       Toast.show({
         type: 'error',
         text1: 'Remind Failed',

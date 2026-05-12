@@ -9,10 +9,7 @@ import {
 
 async function requestAndroidGallery(): Promise<boolean> {
   try {
-    const permission =
-      Number(Platform.Version) >= 33
-        ? 'android.permission.READ_MEDIA_IMAGES'
-        : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+    const permission = PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
     const result = await PermissionsAndroid.request(permission);
     if (result === PermissionsAndroid.RESULTS.GRANTED) {
       return true;

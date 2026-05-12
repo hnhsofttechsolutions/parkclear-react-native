@@ -73,12 +73,7 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
       console.log('formData instruction screen---->', formData);
 
       if (result?.status === true) {
-        navigation.navigate(PATHS.Result, {
-          id: result?.id,
-          variant: result?.park_status ? 'resolve' : 'reject',
-          summarize_message: result?.summarize_message,
-          endTimeIso: result?.end_time_iso,
-        });
+        navigation.navigate(PATHS.Result, { data: result });
       } else {
         Toast.show({
           type: 'error',

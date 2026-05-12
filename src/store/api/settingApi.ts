@@ -25,6 +25,9 @@ export const settingApi = baseApi.injectEndpoints({
     getProfile: builder.query<any, void>({
       query: () => 'user/v1/contact-message/user_status_check/',
     }),
+    getAdStatus: builder.query<any, void>({
+      query: () => 'user/v1/ad-status/',
+    }),
   }),
   overrideExisting: true,
 });
@@ -34,4 +37,5 @@ export const {
   useContactMutation,
   useFeedbackMutation,
   useLazyGetProfileQuery,
+  useGetAdStatusQuery,
 } = settingApi;

@@ -2,6 +2,7 @@ import Slider from '@react-native-community/slider';
 import { StyleSheet, View } from 'react-native';
 import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
+import React from 'react';
 
 interface Props {
   reminderMinutes: number;
@@ -28,7 +29,7 @@ function RemindCard({ reminderMinutes, setReminderMinutes }: Props) {
           minimumValue={minMinutes}
           maximumValue={maxMinutes}
           value={reminderMinutes}
-          onValueChange={(value) => setReminderMinutes(Math.round(value))}
+          onValueChange={value => setReminderMinutes(Math.round(value))}
           minimumTrackTintColor={Colors.white}
           maximumTrackTintColor="rgba(255,255,255,0.35)"
           thumbTintColor={Colors.greenDark}

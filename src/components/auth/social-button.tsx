@@ -1,11 +1,13 @@
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import React from 'react';
 import { Platform, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 import AppleLogo from '../../assets/images/apple.svg';
 import GoogleLogo from '../../assets/images/google_logo.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
+import { useFirebase } from '../../hooks/use-firebase';
 import {
   useAppleLoginMutation,
   useGoogleLoginMutation,
@@ -15,7 +17,6 @@ import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
 import { GreyPillButton } from '../ui/gradient-button';
 import PageLoader from '../ui/page-loader';
-import { useFirebase } from '../../hooks/use-firebase';
 
 function SocialButtons() {
   const dispatch = useDispatch();

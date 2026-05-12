@@ -8,18 +8,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Sound from 'react-native-sound';
+import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   LevelPlayAdSize,
   LevelPlayBannerAdView,
   type LevelPlayBannerAdViewListener,
   type LevelPlayBannerAdViewMethods,
 } from 'unity-levelplay-mediation';
-import { getBannerAdUnitId } from '../../constants/unityAds';
-import LinearGradient from 'react-native-linear-gradient';
-import Sound from 'react-native-sound';
-import Toast from 'react-native-toast-message';
-import { useDispatch, useSelector } from 'react-redux';
 import CameraIcon from '../../assets/images/camera.svg';
 import GalleryFabIcon from '../../assets/images/gallery_circle.svg';
 import HamburgerIcon from '../../assets/images/hamburger_menu.svg';
@@ -30,7 +29,9 @@ import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import SideDrawer from '../../components/side-drawer';
 import { GradientButton } from '../../components/ui/gradient-button';
 import PageLoader from '../../components/ui/page-loader';
+import { getBannerAdUnitId } from '../../constants/unityAds';
 import { PATHS } from '../../navigation/paths';
+import { useGetAdStatusQuery } from '../../store/api/settingApi';
 import { useScreenStatusMutation } from '../../store/api/uploadApi';
 import { setCredentials } from '../../store/slices/authSlice';
 import { RootState } from '../../store/store';
@@ -54,8 +55,8 @@ const DashboardScreen = ({ navigation }: any) => {
   const isScreen = user?.is_screen;
   const [statusUpdate, { isLoading: isStatusLoading }] =
     useScreenStatusMutation();
-
-  const showAds = !isPaid;
+  const { data: adStatus } = useGetAdStatusQuery();
+  const showAds = !isPaid && adStatus?.status;
   const bottomChromeHeight = showAds ? bannerAdSize.height + insets.bottom : 0;
   const [isAdLoaded, setIsAdLoaded] = useState(false);
 

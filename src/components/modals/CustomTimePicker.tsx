@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
-  Modal,
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
+import BottomSheetModal from '../bottom-sheet-modal';
 
 const ITEM_HEIGHT = 44;
 const VISIBLE_ROWS = 5;
@@ -338,282 +338,274 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
   }, [visible, hourLaidOut, minuteLaidOut, ampmLaidOut, initScrollIndices]);
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Select Time</Text>
+    <BottomSheetModal visible={visible} onClose={onClose}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Select Time</Text>
 
-          <View style={styles.wheelFrame}>
-            <View
-              pointerEvents="none"
-              style={[
-                styles.selectionRails,
-                { top: WHEEL_PAD, height: ITEM_HEIGHT },
-              ]}
-            >
-              <View style={styles.selectionLine} />
-              <View style={styles.selectionLine} />
-            </View>
-
-            <View style={styles.pickerRow}>
-              <View style={styles.wheelColumn}>
-                <FlatList
-                  ref={hourRef}
-                  data={loopedHours}
-                  keyExtractor={(_, i) => `h-${i}`}
-                  renderItem={({ item, index }) =>
-                    renderWheelItem(
-                      item,
-                      index,
-                      hourScrollY,
-                      selectedHour,
-                      false,
-                    )
-                  }
-                  getItemLayout={(_, i) => ({
-                    length: ITEM_HEIGHT,
-                    offset: ITEM_HEIGHT * i,
-                    index: i,
-                  })}
-                  contentContainerStyle={styles.wheelContent}
-                  // {...(IS_ANDROID ? {} : IOS_WHEEL_SNAP)}
-                  decelerationRate={WHEEL_DECELERATION}
-                  removeClippedSubviews={false}
-                  bounces={false}
-                  overScrollMode="never"
-                  nestedScrollEnabled={false}
-                  showsVerticalScrollIndicator={false}
-                  style={styles.wheelList}
-                  onLayout={() => setHourLaidOut(true)}
-                  onScroll={(ev: NativeSyntheticEvent<NativeScrollEvent>) => {
-                    const y = ev.nativeEvent.contentOffset.y;
-                    if (IS_ANDROID) {
-                      hourOffsetRef.current = y;
-                    } else {
-                      setHourScrollY(y);
-                    }
-                  }}
-                  scrollEventThrottle={16}
-                  onMomentumScrollEnd={e =>
-                    snapColumn(
-                      e,
-                      'hour',
-                      loopedHours,
-                      baseHours.length,
-                      setSelectedHour,
-                      hourRef,
-                      item => parseInt(item, 10) - 1,
-                    )
-                  }
-                  onScrollEndDrag={e => {
-                    if (IS_ANDROID) {
-                      if (shouldDeferSnapToMomentum(e)) return;
-                      requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                          snapColumn(
-                            coerceScrollEvent(hourOffsetRef.current),
-                            'hour',
-                            loopedHours,
-                            baseHours.length,
-                            setSelectedHour,
-                            hourRef,
-                            item => parseInt(item, 10) - 1,
-                          );
-                        });
-                      });
-                      return;
-                    }
-                    if (shouldDeferSnapToMomentum(e)) return;
-                    snapColumn(
-                      e,
-                      'hour',
-                      loopedHours,
-                      baseHours.length,
-                      setSelectedHour,
-                      hourRef,
-                      item => parseInt(item, 10) - 1,
-                    );
-                  }}
-                />
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={[Colors.white, 'rgba(255,255,255,0)']}
-                  style={styles.fadeTop}
-                />
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={['rgba(255,255,255,0)', Colors.white]}
-                  style={styles.fadeBottom}
-                />
-              </View>
-
-              <Text style={styles.colon}>:</Text>
-
-              <View style={styles.wheelColumn}>
-                <FlatList
-                  ref={minuteRef}
-                  data={loopedMinutes}
-                  keyExtractor={(_, i) => `m-${i}`}
-                  renderItem={({ item, index }) =>
-                    renderWheelItem(
-                      item,
-                      index,
-                      minuteScrollY,
-                      selectedMinute,
-                      true,
-                    )
-                  }
-                  getItemLayout={(_, i) => ({
-                    length: ITEM_HEIGHT,
-                    offset: ITEM_HEIGHT * i,
-                    index: i,
-                  })}
-                  contentContainerStyle={styles.wheelContent}
-                  // {...(IS_ANDROID ? {} : IOS_WHEEL_SNAP)}
-                  decelerationRate={WHEEL_DECELERATION}
-                  removeClippedSubviews={false}
-                  bounces={false}
-                  overScrollMode="never"
-                  nestedScrollEnabled={false}
-                  showsVerticalScrollIndicator={false}
-                  style={styles.wheelList}
-                  onLayout={() => setMinuteLaidOut(true)}
-                  onScroll={(ev: NativeSyntheticEvent<NativeScrollEvent>) => {
-                    const y = ev.nativeEvent.contentOffset.y;
-                    if (IS_ANDROID) {
-                      minuteOffsetRef.current = y;
-                    } else {
-                      setMinuteScrollY(y);
-                    }
-                  }}
-                  scrollEventThrottle={16}
-                  onMomentumScrollEnd={e =>
-                    snapColumn(
-                      e,
-                      'minute',
-                      loopedMinutes,
-                      baseMinutes.length,
-                      setSelectedMinute,
-                      minuteRef,
-                      item => parseInt(item, 10),
-                    )
-                  }
-                  onScrollEndDrag={e => {
-                    if (IS_ANDROID) {
-                      if (shouldDeferSnapToMomentum(e)) return;
-                      requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                          snapColumn(
-                            coerceScrollEvent(minuteOffsetRef.current),
-                            'minute',
-                            loopedMinutes,
-                            baseMinutes.length,
-                            setSelectedMinute,
-                            minuteRef,
-                            item => parseInt(item, 10),
-                          );
-                        });
-                      });
-                      return;
-                    }
-                    if (shouldDeferSnapToMomentum(e)) return;
-                    snapColumn(
-                      e,
-                      'minute',
-                      loopedMinutes,
-                      baseMinutes.length,
-                      setSelectedMinute,
-                      minuteRef,
-                      item => parseInt(item, 10),
-                    );
-                  }}
-                />
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={[Colors.white, 'rgba(255,255,255,0)']}
-                  style={styles.fadeTop}
-                />
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={['rgba(255,255,255,0)', Colors.white]}
-                  style={styles.fadeBottom}
-                />
-              </View>
-
-              <View style={[styles.wheelColumn, styles.ampmWheelColumn]}>
-                <FlatList
-                  ref={ampmRef}
-                  data={AMPM_ITEMS}
-                  keyExtractor={item => `ap-${item}`}
-                  renderItem={({ item, index }) =>
-                    renderWheelItem(item, index, ampmScrollY, amPm, false)
-                  }
-                  getItemLayout={(_, i) => ({
-                    length: ITEM_HEIGHT,
-                    offset: ITEM_HEIGHT * i,
-                    index: i,
-                  })}
-                  contentContainerStyle={styles.wheelContent}
-                  {...(IS_ANDROID ? {} : IOS_WHEEL_SNAP)}
-                  decelerationRate={WHEEL_DECELERATION}
-                  removeClippedSubviews={false}
-                  bounces={false}
-                  overScrollMode="never"
-                  nestedScrollEnabled={false}
-                  showsVerticalScrollIndicator={false}
-                  style={styles.wheelList}
-                  onLayout={() => setAmpmLaidOut(true)}
-                  onScroll={(ev: NativeSyntheticEvent<NativeScrollEvent>) => {
-                    const y = ev.nativeEvent.contentOffset.y;
-                    if (IS_ANDROID) {
-                      ampmOffsetRef.current = y;
-                    } else {
-                      setAmpmScrollY(y);
-                    }
-                  }}
-                  scrollEventThrottle={16}
-                  onMomentumScrollEnd={snapAmpmColumn}
-                  onScrollEndDrag={e => {
-                    if (IS_ANDROID) {
-                      if (shouldDeferSnapToMomentum(e)) return;
-                      requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                          snapAmpmColumn(
-                            coerceScrollEvent(ampmOffsetRef.current),
-                          );
-                        });
-                      });
-                      return;
-                    }
-                    if (shouldDeferSnapToMomentum(e)) return;
-                    snapAmpmColumn(e);
-                  }}
-                />
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={[Colors.white, 'rgba(255,255,255,0)']}
-                  style={styles.fadeTop}
-                />
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={['rgba(255,255,255,0)', Colors.white]}
-                  style={styles.fadeBottom}
-                />
-              </View>
-            </View>
+        <View style={styles.wheelFrame}>
+          <View
+            pointerEvents="none"
+            style={[
+              styles.selectionRails,
+              { top: WHEEL_PAD, height: ITEM_HEIGHT },
+            ]}
+          >
+            <View style={styles.selectionLine} />
+            <View style={styles.selectionLine} />
           </View>
 
-          <View style={styles.buttonRowOuter}>
-            <TouchableOpacity style={styles.confirmBtn} onPress={handleConfirm}>
-              <Text style={styles.confirmText}>Confirm</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
-              <Text style={styles.cancelText}>Cancel</Text>
-            </TouchableOpacity>
+          <View style={styles.pickerRow}>
+            <View style={styles.wheelColumn}>
+              <FlatList
+                ref={hourRef}
+                data={loopedHours}
+                keyExtractor={(_, i) => `h-${i}`}
+                renderItem={({ item, index }) =>
+                  renderWheelItem(item, index, hourScrollY, selectedHour, false)
+                }
+                getItemLayout={(_, i) => ({
+                  length: ITEM_HEIGHT,
+                  offset: ITEM_HEIGHT * i,
+                  index: i,
+                })}
+                contentContainerStyle={styles.wheelContent}
+                // {...(IS_ANDROID ? {} : IOS_WHEEL_SNAP)}
+                decelerationRate={WHEEL_DECELERATION}
+                removeClippedSubviews={false}
+                bounces={false}
+                overScrollMode="never"
+                nestedScrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                style={styles.wheelList}
+                onLayout={() => setHourLaidOut(true)}
+                onScroll={(ev: NativeSyntheticEvent<NativeScrollEvent>) => {
+                  const y = ev.nativeEvent.contentOffset.y;
+                  if (IS_ANDROID) {
+                    hourOffsetRef.current = y;
+                  } else {
+                    setHourScrollY(y);
+                  }
+                }}
+                scrollEventThrottle={16}
+                onMomentumScrollEnd={e =>
+                  snapColumn(
+                    e,
+                    'hour',
+                    loopedHours,
+                    baseHours.length,
+                    setSelectedHour,
+                    hourRef,
+                    item => parseInt(item, 10) - 1,
+                  )
+                }
+                onScrollEndDrag={e => {
+                  if (IS_ANDROID) {
+                    if (shouldDeferSnapToMomentum(e)) return;
+                    requestAnimationFrame(() => {
+                      requestAnimationFrame(() => {
+                        snapColumn(
+                          coerceScrollEvent(hourOffsetRef.current),
+                          'hour',
+                          loopedHours,
+                          baseHours.length,
+                          setSelectedHour,
+                          hourRef,
+                          item => parseInt(item, 10) - 1,
+                        );
+                      });
+                    });
+                    return;
+                  }
+                  if (shouldDeferSnapToMomentum(e)) return;
+                  snapColumn(
+                    e,
+                    'hour',
+                    loopedHours,
+                    baseHours.length,
+                    setSelectedHour,
+                    hourRef,
+                    item => parseInt(item, 10) - 1,
+                  );
+                }}
+              />
+              <LinearGradient
+                pointerEvents="none"
+                colors={[Colors.white, 'rgba(255,255,255,0)']}
+                style={styles.fadeTop}
+              />
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(255,255,255,0)', Colors.white]}
+                style={styles.fadeBottom}
+              />
+            </View>
+
+            <Text style={styles.colon}>:</Text>
+
+            <View style={styles.wheelColumn}>
+              <FlatList
+                ref={minuteRef}
+                data={loopedMinutes}
+                keyExtractor={(_, i) => `m-${i}`}
+                renderItem={({ item, index }) =>
+                  renderWheelItem(
+                    item,
+                    index,
+                    minuteScrollY,
+                    selectedMinute,
+                    true,
+                  )
+                }
+                getItemLayout={(_, i) => ({
+                  length: ITEM_HEIGHT,
+                  offset: ITEM_HEIGHT * i,
+                  index: i,
+                })}
+                contentContainerStyle={styles.wheelContent}
+                // {...(IS_ANDROID ? {} : IOS_WHEEL_SNAP)}
+                decelerationRate={WHEEL_DECELERATION}
+                removeClippedSubviews={false}
+                bounces={false}
+                overScrollMode="never"
+                nestedScrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                style={styles.wheelList}
+                onLayout={() => setMinuteLaidOut(true)}
+                onScroll={(ev: NativeSyntheticEvent<NativeScrollEvent>) => {
+                  const y = ev.nativeEvent.contentOffset.y;
+                  if (IS_ANDROID) {
+                    minuteOffsetRef.current = y;
+                  } else {
+                    setMinuteScrollY(y);
+                  }
+                }}
+                scrollEventThrottle={16}
+                onMomentumScrollEnd={e =>
+                  snapColumn(
+                    e,
+                    'minute',
+                    loopedMinutes,
+                    baseMinutes.length,
+                    setSelectedMinute,
+                    minuteRef,
+                    item => parseInt(item, 10),
+                  )
+                }
+                onScrollEndDrag={e => {
+                  if (IS_ANDROID) {
+                    if (shouldDeferSnapToMomentum(e)) return;
+                    requestAnimationFrame(() => {
+                      requestAnimationFrame(() => {
+                        snapColumn(
+                          coerceScrollEvent(minuteOffsetRef.current),
+                          'minute',
+                          loopedMinutes,
+                          baseMinutes.length,
+                          setSelectedMinute,
+                          minuteRef,
+                          item => parseInt(item, 10),
+                        );
+                      });
+                    });
+                    return;
+                  }
+                  if (shouldDeferSnapToMomentum(e)) return;
+                  snapColumn(
+                    e,
+                    'minute',
+                    loopedMinutes,
+                    baseMinutes.length,
+                    setSelectedMinute,
+                    minuteRef,
+                    item => parseInt(item, 10),
+                  );
+                }}
+              />
+              <LinearGradient
+                pointerEvents="none"
+                colors={[Colors.white, 'rgba(255,255,255,0)']}
+                style={styles.fadeTop}
+              />
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(255,255,255,0)', Colors.white]}
+                style={styles.fadeBottom}
+              />
+            </View>
+
+            <View style={[styles.wheelColumn, styles.ampmWheelColumn]}>
+              <FlatList
+                ref={ampmRef}
+                data={AMPM_ITEMS}
+                keyExtractor={item => `ap-${item}`}
+                renderItem={({ item, index }) =>
+                  renderWheelItem(item, index, ampmScrollY, amPm, false)
+                }
+                getItemLayout={(_, i) => ({
+                  length: ITEM_HEIGHT,
+                  offset: ITEM_HEIGHT * i,
+                  index: i,
+                })}
+                contentContainerStyle={styles.wheelContent}
+                {...(IS_ANDROID ? {} : IOS_WHEEL_SNAP)}
+                decelerationRate={WHEEL_DECELERATION}
+                removeClippedSubviews={false}
+                bounces={false}
+                overScrollMode="never"
+                nestedScrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                style={styles.wheelList}
+                onLayout={() => setAmpmLaidOut(true)}
+                onScroll={(ev: NativeSyntheticEvent<NativeScrollEvent>) => {
+                  const y = ev.nativeEvent.contentOffset.y;
+                  if (IS_ANDROID) {
+                    ampmOffsetRef.current = y;
+                  } else {
+                    setAmpmScrollY(y);
+                  }
+                }}
+                scrollEventThrottle={16}
+                onMomentumScrollEnd={snapAmpmColumn}
+                onScrollEndDrag={e => {
+                  if (IS_ANDROID) {
+                    if (shouldDeferSnapToMomentum(e)) return;
+                    requestAnimationFrame(() => {
+                      requestAnimationFrame(() => {
+                        snapAmpmColumn(
+                          coerceScrollEvent(ampmOffsetRef.current),
+                        );
+                      });
+                    });
+                    return;
+                  }
+                  if (shouldDeferSnapToMomentum(e)) return;
+                  snapAmpmColumn(e);
+                }}
+              />
+              <LinearGradient
+                pointerEvents="none"
+                colors={[Colors.white, 'rgba(255,255,255,0)']}
+                style={styles.fadeTop}
+              />
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(255,255,255,0)', Colors.white]}
+                style={styles.fadeBottom}
+              />
+            </View>
           </View>
         </View>
+
+        <View style={styles.buttonRowOuter}>
+          <TouchableOpacity style={styles.confirmBtn} onPress={handleConfirm}>
+            <Text style={styles.confirmText}>Confirm</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </Modal>
+    </BottomSheetModal>
   );
 };
 
@@ -631,8 +623,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
-    padding: 20,
-    paddingBottom: 24,
   },
   title: {
     color: Colors.header,

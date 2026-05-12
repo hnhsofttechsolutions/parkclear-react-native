@@ -6,18 +6,18 @@ import {
 } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
-  Modal,
   StyleSheet,
   Text,
   TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
   View,
-  ViewStyle,
+  ViewStyle
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Colors } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
+import BottomSheetModal from '../bottom-sheet-modal';
 import CustomTimePicker from './CustomTimePicker';
 
 /** Calendar YYYY-MM-DD in the device local timezone (not UTC). */
@@ -39,7 +39,10 @@ function localDateFromYmd(dateString: string): Date {
   return new Date(y, m - 1, d, 12, 0, 0, 0);
 }
 
-function ymdFromValue(value: CommonDatePickerProps['value'], fallbackYmd: string): string {
+function ymdFromValue(
+  value: CommonDatePickerProps['value'],
+  fallbackYmd: string,
+): string {
   if (value == null) return fallbackYmd;
   if (value instanceof Date) {
     return isNaN(value.getTime()) ? fallbackYmd : localYmdFromDate(value);
@@ -154,114 +157,108 @@ const CustomDatePicker: React.FC<CommonDatePickerProps> = ({
       </TouchableOpacity>
 
       {/* 📅 Calendar for Single Date */}
-      <Modal
-        visible={showCalendar}
-        onRequestClose={() => setShowCalendar(false)}
-        transparent
-        animationType="slide"
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.calendarContainer}>
-            <Calendar
-              onDayPress={day => {
-                setSelectedDate(day.dateString);
-                onDateChange?.(localDateFromYmd(day.dateString));
-              }}
-              current={isDate || todayYmd}
-              minDate={
-                minimumDate ? localYmdFromDate(minimumDate) : undefined
-              }
-              maxDate={
-                maximumDate ? localYmdFromDate(maximumDate) : undefined
-              }
-              enableSwipeMonths
-              markingType={'custom'}
-              markedDates={{
-                [isDate]: {
-                  selected: true,
-                  customStyles: {
-                    container: {
-                      backgroundColor: Colors.blue,
-                      borderRadius: 360,
-                    },
-                    text: {
-                      color: '#fff',
-                      fontFamily: FontFamily.medium,
-                    },
-                  },
-                },
-                [selectedDate]: {
-                  selected: true,
-                  customStyles: {
-                    container: {
-                      backgroundColor: Colors.blue,
-                      borderRadius: 360,
-                    },
-                    text: {
-                      color: '#fff',
-                      fontFamily: FontFamily.medium,
-                    },
-                  },
-                },
-              }}
-              theme={{
-                backgroundColor: Colors.white,
-                calendarBackground: Colors.white,
-                dayTextColor: Colors.header,
-                todayTextColor: Colors.blue,
-                selectedDayBackgroundColor: Colors.blue,
-                monthTextColor: Colors.header,
-                textMonthFontSize: 18,
-                textMonthFontWeight: '700',
-                textDayFontSize: 16,
-                textDayFontWeight: '600',
-                textDisabledColor: Colors.headerGrey,
-              }}
-              renderArrow={direction => (
-                <View style={{ flexDirection: 'row', gap: 10 }}>
-                  {direction === 'left' ? (
-                    <ChevronLeft size={25} color={Colors.header} />
-                  ) : (
-                    <ChevronRight size={25} color={Colors.header} />
-                  )}
-                </View>
-              )}
-            />
 
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 10,
-                paddingHorizontal: 10,
+      <BottomSheetModal
+        visible={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        sheetStyle={{ paddingHorizontal: 0 }}
+      >
+        <View style={styles.calendarContainer}>
+          <Calendar
+            onDayPress={day => {
+              setSelectedDate(day.dateString);
+              onDateChange?.(localDateFromYmd(day.dateString));
+            }}
+            current={isDate || todayYmd}
+            minDate={minimumDate ? localYmdFromDate(minimumDate) : undefined}
+            maxDate={maximumDate ? localYmdFromDate(maximumDate) : undefined}
+            enableSwipeMonths
+            markingType={'custom'}
+            markedDates={{
+              [isDate]: {
+                selected: true,
+                customStyles: {
+                  container: {
+                    backgroundColor: Colors.blue,
+                    borderRadius: 360,
+                  },
+                  text: {
+                    color: '#fff',
+                    fontFamily: FontFamily.medium,
+                  },
+                },
+              },
+              [selectedDate]: {
+                selected: true,
+                customStyles: {
+                  container: {
+                    backgroundColor: Colors.blue,
+                    borderRadius: 360,
+                  },
+                  text: {
+                    color: '#fff',
+                    fontFamily: FontFamily.medium,
+                  },
+                },
+              },
+            }}
+            theme={{
+              backgroundColor: Colors.white,
+              calendarBackground: Colors.white,
+              dayTextColor: Colors.header,
+              todayTextColor: Colors.blue,
+              selectedDayBackgroundColor: Colors.blue,
+              monthTextColor: Colors.header,
+              textMonthFontSize: 18,
+              textMonthFontWeight: '700',
+              textDayFontSize: 16,
+              textDayFontWeight: '600',
+              textDisabledColor: Colors.headerGrey,
+            }}
+            renderArrow={direction => (
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                {direction === 'left' ? (
+                  <ChevronLeft size={25} color={Colors.header} />
+                ) : (
+                  <ChevronRight size={25} color={Colors.header} />
+                )}
+              </View>
+            )}
+          />
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginVertical: 10,
+              paddingHorizontal: 10,
+            }}
+          >
+            <TouchableOpacity
+              style={styles.confirmBtn}
+              onPress={() => {
+                const ymd =
+                  typeof selectedDate === 'string' ? selectedDate : isDate;
+                const confirmed = localDateFromYmd(ymd);
+                setSelectedDate(ymd);
+                onDateChange?.(confirmed);
+                setShowCalendar(false);
               }}
             >
-              <TouchableOpacity
-                style={styles.confirmBtn}
-                onPress={() => {
-                  const ymd =
-                    typeof selectedDate === 'string' ? selectedDate : isDate;
-                  const confirmed = localDateFromYmd(ymd);
-                  setSelectedDate(ymd);
-                  onDateChange?.(confirmed);
-                  setShowCalendar(false);
-                }}
-              >
-                <Text style={styles.confirmText}>Confirm</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.cancelBtn}
-                onPress={() => {
-                  setSelectedDate(null);
-                  setShowCalendar(false);
-                }}
-              >
-                <Text style={styles.cancelText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+              <Text style={styles.confirmText}>Confirm</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cancelBtn}
+              onPress={() => {
+                setSelectedDate(null);
+                setShowCalendar(false);
+              }}
+            >
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </BottomSheetModal>
 
       {/* ⏰ Time Picker */}
 
@@ -300,7 +297,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    // backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
@@ -308,8 +305,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.white,
     borderRadius: 12,
-    paddingVertical: 10,
-    paddingBottom: 20,
   },
   closeButton: {
     marginTop: 10,
