@@ -32,6 +32,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
     right_end_time_iso,
     left_end_time_iso,
   } = route.params.data;
+  const screen_name = route.params.screen_name;
   const isResolve = park_status;
   const [reminderMinutes, setReminderMinutes] = useState(15);
   const [showReminderModal, setShowReminderModal] = useState(false);
@@ -161,7 +162,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
 
             <Markdown style={markdownStyles}>{summarize_message}</Markdown>
 
-            {isResolve && isPaid && (
+            {isResolve && isPaid && screen_name !== 'camera' && (
               <>
                 {has_arrow && left_end_time_iso && right_end_time_iso && (
                   <>
@@ -228,7 +229,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
             )}
           </View>
           <View style={styles.actionsWrapper}>
-            {isResolve && isPaid && (
+            {isResolve && isPaid && screen_name !== 'camera' && (
               <TouchableOpacity
                 style={styles.confirmBtn}
                 onPress={handleConfirmReminder}

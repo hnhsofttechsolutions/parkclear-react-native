@@ -24,6 +24,7 @@ import TrialScreen from '../../screens/trial-screen';
 import UpdateScreen from '../../screens/update-screen';
 import UploadPhotoScreen from '../../screens/upload-photo-screen';
 import { PATHS } from '../paths';
+import BetaScreen from '../../screens/Beta/Beta-Screen';
 
 export const APP_SCREENS = [
   { name: PATHS.Dashboard, component: DashboardScreen },
@@ -46,6 +47,7 @@ export const APP_SCREENS = [
   { name: PATHS.ReminderSet, component: ReminderSetScreen },
   { name: PATHS.Result, component: ResultScreen },
   { name: PATHS.Trial, component: TrialScreen },
+  { name: PATHS.Beta, component: BetaScreen },
 ];
 
 export const AUTH_SCREENS = [

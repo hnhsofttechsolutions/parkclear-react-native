@@ -14,6 +14,7 @@ export type RootStackParamList = {
       left_end_time_iso: string;
       days_offset: number;
     };
+    screen_name: string;
   };
   [PATHS.ReminderSet]: {
     reminderMinutes: number;

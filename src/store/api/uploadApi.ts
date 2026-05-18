@@ -50,6 +50,13 @@ export const uploadApi = baseApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    betaCanIParkHere: builder.mutation<any, any>({
+      query: ({ formData }: any) => ({
+        url: 'authentication/v1/parking-sign-analysis/geo_parking_analysis/',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -62,4 +69,5 @@ export const {
   useScreenStatusMutation,
   useResultRemindMutation,
   useResultFeedbackMutation,
+  useBetaCanIParkHereMutation,
 } = uploadApi;

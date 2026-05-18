@@ -109,7 +109,10 @@ const CameraScreen = ({ navigation, route }: any) => {
       console.log('formData camera screen---->', formData);
       console.log('result camera screen---->', result);
       if (result?.status === true) {
-        navigation.navigate(PATHS.Result, { data: result });
+        navigation.navigate(PATHS.Result, {
+          data: result,
+          screen_name: 'camera',
+        });
         setSelectedImage(null);
         setSelectedDate(null);
         setTime(null);

@@ -27,4 +27,5 @@ export const PATHS = {
   Camera: 'Camera',
   CaptureInstruction: 'CaptureInstruction',
   GalleryDetails: 'GalleryDetails',
+  Beta: 'Beta',
 } as const;

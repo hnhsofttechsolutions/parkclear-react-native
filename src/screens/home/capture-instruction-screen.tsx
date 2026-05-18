@@ -73,7 +73,10 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
       console.log('formData instruction screen---->', formData);
 
       if (result?.status === true) {
-        navigation.navigate(PATHS.Result, { data: result });
+        navigation.navigate(PATHS.Result, {
+          data: result,
+          screen_name: 'capture',
+        });
       } else {
         Toast.show({
           type: 'error',

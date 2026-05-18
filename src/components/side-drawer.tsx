@@ -1,4 +1,5 @@
-import { HomeIcon } from 'lucide-react-native';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { CpuIcon, HomeIcon } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -10,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Purchases from 'react-native-purchases';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
 import BackArrowIcon from '../assets/images/back_arrow.svg';
@@ -22,8 +24,6 @@ import UpgradeIcon from '../assets/images/upgrade.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { baseApi } from '../store/api/baseApi';
-import { appleAuth } from '@invertase/react-native-apple-authentication';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useCancelRemindMutation } from '../store/api/uploadApi';
 import { logout } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
@@ -31,7 +31,6 @@ import { Colors } from '../utils/colors';
 import DeleteModal from './modals/delete-modal';
 import DrawerRow from './settings/drawer-row';
 import PageLoader from './ui/page-loader';
-import Purchases from 'react-native-purchases';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
@@ -215,6 +214,11 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                     onPress={handleCancelRemind}
                   />
                 )}
+                <DrawerRow
+                  icon={<CpuIcon color="white" size={25} />}
+                  label={'Beta'}
+                  onPress={() => navigateTo(PATHS.Beta)}
+                />
                 <View style={{ flex: 1 }} />
                 <DrawerRow
                   icon={<LogoutIcon width={25} height={25} />}
