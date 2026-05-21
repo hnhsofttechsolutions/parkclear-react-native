@@ -31,7 +31,7 @@ function ReminderModal({
 }: Props) {
   const navigation = useNavigation<any>();
   const [remindApi, { isLoading }] = useResultRemindMutation();
-  console.log('endTimeIso reminder modal---->', endTimeIso);
+
   const handlerConfirm = async () => {
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -41,7 +41,7 @@ function ReminderModal({
       formData.append('end_time_iso', endTimeIso);
       formData.append('timezone', shortTZ);
       const response = await remindApi({ formData }).unwrap();
-      console.log('response---->', response);
+      console.log('response remind modal---->', response);
       console.log('formData---->', formData);
       if (response?.status) {
         Toast.show({
@@ -54,6 +54,7 @@ function ReminderModal({
           reminderMinutes,
           parking_end_time_iso: response?.parking_end_time_iso,
           reminder_time_iso: response?.reminder_time_iso,
+          alert_id: String(response?.alert_id ?? ''),
         });
       }
     } catch (error: any) {

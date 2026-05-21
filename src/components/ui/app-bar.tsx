@@ -3,13 +3,16 @@ import BackArrowIcon from '../../assets/images/back_arrow.svg';
 import { Colors } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
 import AppText from './app-text';
+import React from 'react';
 
 export function AppBar({
   title,
   onBack,
+  textColor = Colors.primary,
 }: {
   title: string;
   onBack?: () => void;
+  textColor?: string;
 }) {
   return (
     <View>
@@ -31,7 +34,7 @@ export function AppBar({
         <AppText
           font="semiBold"
           size={22}
-          color={Colors.primary}
+          color={textColor}
           style={appBarStyles.title}
         >
           {title}

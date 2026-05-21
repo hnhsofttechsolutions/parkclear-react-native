@@ -1,4 +1,20 @@
 export const FlutterStrings = {
+  activeAlerts: 'Active Alerts',
+  currentAlerts: 'Current',
+  passedAlerts: 'Passed',
+  cancelledAlerts: 'Cancel',
+  cancelledStatus: 'Cancelled',
+  noCancelledAlerts: 'No cancelled alerts',
+  deleteAlert: 'Delete',
+  deleteAlertTitle: 'Delete this alert?',
+  deleteAlertDescription:
+    'This passed alert will be removed from your list. You can’t undo this.',
+  noActiveAlerts: 'No active alerts found',
+  noPassedAlerts: 'No passed alerts yet',
+  parkingUntil: 'Parking until',
+  reminderAt: 'Reminder at',
+  activeStatus: 'Active',
+  passedStatus: 'Passed',
   onboardSubTitle:
     'Helping you save time and money on Confusing Street Parking.',
   swipeToContinue: 'Swipe To Continue',

@@ -26,13 +26,13 @@ function SignInForm({ navigation }: any) {
   const { fcmToken } = useFirebase();
 
   const handleLogin = async (values: any) => {
-    console.log('values login form---->', values);
     try {
       const formData = new FormData();
       formData.append('fcm_token', fcmToken);
       Object.keys(values).forEach(key => {
         formData.append(key, values[key]);
       });
+      console.log('formData login form---->', formData);
       const response = await login({ formData }).unwrap();
       console.log('response---->', response);
       if (response?.status) {

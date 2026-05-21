@@ -12,6 +12,7 @@ export const PATHS = {
   CreateNewPassword: 'CreateNewPassword',
   Dashboard: 'Dashboard',
   Settings: 'Settings',
+  ActiveAlert: 'ActiveAlert',
   AboutUs: 'AboutUs',
   PrivacyPolicy: 'PrivacyPolicy',
   Terms: 'Terms',

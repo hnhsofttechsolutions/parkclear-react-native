@@ -25,6 +25,7 @@ export const uploadApi = baseApi.injectEndpoints({
       providesTags: ['UPLOAD_IMAGE'],
     }),
     resultRemind: builder.mutation<any, any>({
+      invalidatesTags: ['ACTIVE_ALERTS'],
       query: ({ formData }: any) => ({
         url: 'authentication/v1/user/set_parking_reminder/',
         method: 'POST',
@@ -32,11 +33,23 @@ export const uploadApi = baseApi.injectEndpoints({
       }),
     }),
     cancelRemind: builder.mutation<any, any>({
-      query: ({}: any) => ({
+      invalidatesTags: ['ACTIVE_ALERTS'],
+      query: (formData: any) => ({
         url: 'authentication/v1/user/cancel_parking_reminder/',
         method: 'POST',
+        body: formData,
       }),
     }),
+    deleteParkingReminder: builder.mutation<any, { alert_id: number | string }>(
+      {
+        invalidatesTags: ['ACTIVE_ALERTS'],
+        query: ({ alert_id }) => ({
+          url: 'authentication/v1/user/delete_parking_reminder/',
+          method: 'POST',
+          body: { alert_id },
+        }),
+      },
+    ),
     resultFeedback: builder.mutation<any, any>({
       query: ({ formData }: any) => ({
         url: 'authentication/v1/parking-sign-analysis/parking_history_feedback/',
@@ -66,6 +79,7 @@ export const {
   useUploadCustomImageMutation,
   useGetUploadImageQuery,
   useCancelRemindMutation,
+  useDeleteParkingReminderMutation,
   useScreenStatusMutation,
   useResultRemindMutation,
   useResultFeedbackMutation,

@@ -25,6 +25,7 @@ import UpdateScreen from '../../screens/update-screen';
 import UploadPhotoScreen from '../../screens/upload-photo-screen';
 import { PATHS } from '../paths';
 import BetaScreen from '../../screens/Beta/Beta-Screen';
+import ActiveAlertScreen from '../../screens/active-alert-screen';
 
 export const APP_SCREENS = [
   { name: PATHS.Dashboard, component: DashboardScreen },
@@ -48,6 +49,7 @@ export const APP_SCREENS = [
   { name: PATHS.Result, component: ResultScreen },
   { name: PATHS.Trial, component: TrialScreen },
   { name: PATHS.Beta, component: BetaScreen },
+  { name: PATHS.ActiveAlert, component: ActiveAlertScreen },
 ];
 
 export const AUTH_SCREENS = [

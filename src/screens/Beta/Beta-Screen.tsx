@@ -1,8 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
+  Image,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -26,61 +28,152 @@ import moment from 'moment';
 import Toast from 'react-native-toast-message';
 const { height } = Dimensions.get('screen');
 
+const LOADER_GIF = require('../../assets/images/loader.gif');
+const CAR_GOING_GIF = require('../../assets/images/car_going.gif');
+const CAR_STATIC = require('../../assets/images/car.png');
+
+type CarVisualState = 'idle' | 'loading' | 'success';
+
 const BetaScreen = () => {
-  const carSource = require('../../assets/images/car.png');
   const navigation = useNavigation<any>();
   const { location, error, loading, fetchLocation } = useCurrentLocation();
-  const [betaCanIParkHere, { isLoading, isSuccess }] =
+  const [apiSuccess, setApiSuccess] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const hasCalledApi = useRef(false);
+  const navigateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [betaCanIParkHere, { isLoading: isApiLoading }] =
     useBetaCanIParkHereMutation();
 
   useEffect(() => {
-    if (location?.latitude && location?.longitude && !loading) {
-      handleCanIParkHere();
-    }
-  }, [location]);
+    return () => {
+      if (navigateTimeoutRef.current) {
+        clearTimeout(navigateTimeoutRef.current);
+      }
+    };
+  }, []);
 
-  const handleCanIParkHere = async () => {
+  const handleCanIParkHere = useCallback(async () => {
+    if (location?.latitude == null || location?.longitude == null) {
+      return;
+    }
+
+    if (navigateTimeoutRef.current) {
+      clearTimeout(navigateTimeoutRef.current);
+      navigateTimeoutRef.current = null;
+    }
+
+    setIsChecking(true);
+    setApiSuccess(false);
+
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const shortTZ = moment().tz(timezone).format('z');
       const formData = new FormData();
-      formData.append('lat', location?.latitude.toString() || '');
-      formData.append('longitude', location?.longitude.toString() || '');
+      formData.append('lat', location.latitude.toString());
+      formData.append('longitude', location.longitude.toString());
       formData.append('timezone', shortTZ);
 
-      //   formData.append('lat', '34.044673'); // no parking
-      //   formData.append('longitude', '-118.238115'); // no parking
+      // formData.append('lat', '34.044673'); // no parking
+      // formData.append('longitude', '-118.238115'); // no parking
 
       // formData.append('lat', '34.0464336'); //  yes parking
       // formData.append('longitude', '-118.2421487'); // yes parking
-      //   formData.append('timezone', 'PST');
+      // formData.append('timezone', 'PST');
 
       const response = await betaCanIParkHere({ formData }).unwrap();
-      if (response?.status) {
-        console.log('response parking analysis------->', response);
+
+      if (response?.status && response?.park_status) {
+        setIsChecking(false);
+        setApiSuccess(true);
+        navigateTimeoutRef.current = setTimeout(() => {
+          navigation.navigate(PATHS.Result, {
+            data: response,
+            screen_name: 'beta',
+          });
+          setApiSuccess(false);
+          navigateTimeoutRef.current = null;
+        }, 1500);
+        return;
+      } else if (response?.status && !response?.park_status) {
+        setApiSuccess(false);
         navigation.navigate(PATHS.Result, {
           data: response,
           screen_name: 'beta',
         });
+        setApiSuccess(false);
+        navigateTimeoutRef.current = null;
       } else {
-        console.log('error parking analysis------->', response);
-        Toast.show({
-          type: 'info',
-          text2: response?.message || 'Something went wrong',
+        setApiSuccess(false);
+        navigation.navigate(PATHS.CaptureInstruction, {
+          from: 'Beta',
         });
       }
-    } catch (error: any) {
-      console.log('error beta------->', error);
+    } catch (err: any) {
+      console.log('error beta------->', err);
+      setApiSuccess(false);
       Toast.show({
         type: 'info',
-        text2: error.data?.message || 'Something went wrong',
+        text2: err.data?.message || 'Something went wrong',
+      });
+    } finally {
+      setIsChecking(false);
+    }
+  }, [betaCanIParkHere, location, navigation]);
+
+  const runParkingCheck = useCallback(() => {
+    setApiSuccess(false);
+    hasCalledApi.current = false;
+
+    if (location?.latitude != null && location?.longitude != null && !loading) {
+      hasCalledApi.current = true;
+      handleCanIParkHere();
+      return;
+    }
+
+    fetchLocation();
+  }, [fetchLocation, handleCanIParkHere, loading, location]);
+
+  useEffect(() => {
+    if (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Location',
+        text2: error,
       });
     }
-  };
+  }, [error]);
+
+  useEffect(() => {
+    if (
+      location?.latitude != null &&
+      location?.longitude != null &&
+      !loading &&
+      !hasCalledApi.current
+    ) {
+      hasCalledApi.current = true;
+      handleCanIParkHere();
+    }
+  }, [handleCanIParkHere, location, loading]);
+
+  const isBusy = loading || isChecking || isApiLoading;
+
+  const carVisualState: CarVisualState = apiSuccess
+    ? 'success'
+    : isBusy
+    ? 'loading'
+    : 'idle';
+
+  const carImageSource =
+    carVisualState === 'loading'
+      ? LOADER_GIF
+      : carVisualState === 'success'
+      ? CAR_GOING_GIF
+      : CAR_STATIC;
+
+  console.log('carVisualState------->', carVisualState);
 
   return (
     <View style={styles.root}>
-      <PageLoader visible={isLoading && !isSuccess} />
       <StatusBar backgroundColor={Colors.gradientStart} />
       <LinearGradient
         colors={[Colors.gradientStart, Colors.darkBlue, Colors.darkBlue]}
@@ -111,9 +204,10 @@ const BetaScreen = () => {
         >
           <View style={styles.imageContainer}>
             <FastImage
-              source={carSource}
+              key={carVisualState}
+              source={carImageSource}
               style={styles.car}
-              resizeMode="contain"
+              resizeMode={FastImage.resizeMode.contain}
             />
           </View>
           <CurrentTime />
@@ -121,8 +215,8 @@ const BetaScreen = () => {
         <View style={styles.bottomCard}>
           <GradientButton
             label="Can I Park Here?"
-            disabled={loading}
-            onPress={fetchLocation}
+            disabled={isBusy}
+            onPress={runParkingCheck}
           />
           <View style={styles.profileBtnContainer}>
             <TouchableOpacity

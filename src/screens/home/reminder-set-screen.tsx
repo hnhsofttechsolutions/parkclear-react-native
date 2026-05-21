@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
@@ -18,8 +19,12 @@ import { Colors } from '../../utils/colors';
 import { CommonActions } from '@react-navigation/native';
 
 const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
-  const { reminderMinutes, parking_end_time_iso, reminder_time_iso } =
-    route.params;
+  const {
+    reminderMinutes,
+    parking_end_time_iso,
+    reminder_time_iso,
+    alert_id,
+  } = route.params;
   const [cancelRemind, { isLoading: cancelRemindLoading }] =
     useCancelRemindMutation();
   const end_time = moment(parking_end_time_iso).format('hh:mm A');
@@ -37,7 +42,7 @@ const ReminderSetScreen = ({ navigation, route }: ReminderSetScreenProps) => {
 
   const handleCancelRemind = async () => {
     try {
-      const response = await cancelRemind({}).unwrap();
+      const response = await cancelRemind({ alert_id }).unwrap();
       if (response?.status) {
         Toast.show({
           type: 'success',

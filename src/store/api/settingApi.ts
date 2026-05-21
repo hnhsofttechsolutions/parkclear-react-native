@@ -28,6 +28,11 @@ export const settingApi = baseApi.injectEndpoints({
     getAdStatus: builder.query<any, void>({
       query: () => 'user/v1/ad-status/',
     }),
+    getActiveAlerts: builder.query<any, void>({
+      query: () => 'user/v1/alerts/',
+      providesTags: ['ACTIVE_ALERTS'],
+      keepUnusedDataFor: 0,
+    }),
   }),
   overrideExisting: true,
 });
@@ -38,4 +43,5 @@ export const {
   useFeedbackMutation,
   useLazyGetProfileQuery,
   useGetAdStatusQuery,
+  useGetActiveAlertsQuery,
 } = settingApi;

@@ -20,6 +20,7 @@ export type RootStackParamList = {
     reminderMinutes: number;
     parking_end_time_iso: string;
     reminder_time_iso: string;
+    alert_id: string;
   };
 
   [PATHS.Splash]: undefined;

@@ -54,7 +54,10 @@ const baseQueryWith401Logout: BaseQueryFn = async (args, api, extraOptions) => {
 
   const err = result.error;
   const isUnauthorized =
-    err != null && typeof err === 'object' && 'status' in err && err.status === 401;
+    err != null &&
+    typeof err === 'object' &&
+    'status' in err &&
+    err.status === 401;
 
   if (!isUnauthorized) {
     return result;
@@ -88,6 +91,6 @@ const baseQueryWith401Logout: BaseQueryFn = async (args, api, extraOptions) => {
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWith401Logout,
-  tagTypes: ['UPLOAD_IMAGE'],
+  tagTypes: ['UPLOAD_IMAGE', 'ACTIVE_ALERTS'],
   endpoints: () => ({}),
 });

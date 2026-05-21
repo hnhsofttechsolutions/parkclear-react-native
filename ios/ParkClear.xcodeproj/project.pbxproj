@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		033C07DF00E140BDA941615A /* Poppins-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 861F1AE7F29B4D48BDA9005B /* Poppins-LightItalic.ttf */; };
+		0429BFDD2FBDCF56008CB3A2 /* noti_tune.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 0429BFDC2FBDCF56008CB3A2 /* noti_tune.mp3 */; };
 		04D35BDB2FA8DD43000D02CF /* Outfit-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04D35BDA2FA8DD43000D02CF /* Outfit-Thin.ttf */; };
 		04D35BDC2FA8DD43000D02CF /* Outfit-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04D35BD62FA8DD43000D02CF /* Outfit-Light.ttf */; };
 		04D35BDD2FA8DD43000D02CF /* Outfit-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04D35BD72FA8DD43000D02CF /* Outfit-Medium.ttf */; };
@@ -34,7 +35,10 @@
 		B9F86B02950D4765AB212506 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09D4DA9E44C1471C916F04B3 /* Poppins-ExtraBold.ttf */; };
 		BA5BAD302F9A535A007E4A4B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA5BAD2F2F9A535A007E4A4B /* GoogleService-Info.plist */; };
 		BA5E9D7B2F9A4E7F00A86AC9 /* powerupsuccess.wav in Resources */ = {isa = PBXBuildFile; fileRef = BA5E9D7A2F9A4E7F00A86AC9 /* powerupsuccess.wav */; };
+		BA5E9D7C2F9A4E7F00A86AC0 /* noti_tune.caf in Resources */ = {isa = PBXBuildFile; fileRef = BA5E9D902F9A4E7F00A86AE0 /* noti_tune.caf */; };
 		BC8D11A210FE45E8B126C3F1 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95FC2459567A4B7288EE5AF2 /* Poppins-Light.ttf */; };
+		C7E8A1022FEE000100000002 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E8A1012FEE000100000001 /* NotificationService.swift */; };
+		C7E8A1042FEE000100000004 /* NotifeeNotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C7E8A1032FEE000100000003 /* NotifeeNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C8CB95A9AA9D459BADA1DECF /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68260BEF932B4B2588232631 /* Poppins-Black.ttf */; };
 		D6422A621A9144ACA12D9A87 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 07DD47EB167A4B7F89D83A5F /* Poppins-Medium.ttf */; };
 		D9A7A99A0C2D40E8855156B4 /* Poppins-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF5576AC380748D6BB534245 /* Poppins-ThinItalic.ttf */; };
@@ -44,7 +48,32 @@
 		F34195B9C4D44C0894FAE440 /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7DFD0BBF3CB412397D37D95 /* Poppins-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		C7E8A1062FEE000100000006 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C7E8A1052FEE000100000005;
+			remoteInfo = NotifeeNotificationService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C7E8A1072FEE000100000007 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C7E8A1042FEE000100000004 /* NotifeeNotificationService.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0429BFDC2FBDCF56008CB3A2 /* noti_tune.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = noti_tune.mp3; sourceTree = "<group>"; };
 		04D35BD42FA8DD43000D02CF /* Outfit-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Outfit-Bold.ttf"; sourceTree = "<group>"; };
 		04D35BD52FA8DD43000D02CF /* Outfit-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Outfit-ExtraBold.ttf"; sourceTree = "<group>"; };
 		04D35BD62FA8DD43000D02CF /* Outfit-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Outfit-Light.ttf"; sourceTree = "<group>"; };
@@ -75,9 +104,13 @@
 		BA09E9442F93D1A200BA845E /* parkclear.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = parkclear.entitlements; path = parkclear/parkclear.entitlements; sourceTree = "<group>"; };
 		BA5BAD2F2F9A535A007E4A4B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BA5E9D7A2F9A4E7F00A86AC9 /* powerupsuccess.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = powerupsuccess.wav; sourceTree = "<group>"; };
+		BA5E9D902F9A4E7F00A86AE0 /* noti_tune.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = noti_tune.caf; sourceTree = "<group>"; };
 		BBA3F75B5F1BD28BD3FDB9BD /* Pods-parkclear.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-parkclear.release.xcconfig"; path = "Target Support Files/Pods-parkclear/Pods-parkclear.release.xcconfig"; sourceTree = "<group>"; };
 		BF297E099AA645709CA4F694 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		C1C2F24EE79F4A0DB241B594 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
+		C7E8A1012FEE000100000001 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		C7E8A1032FEE000100000003 /* NotifeeNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotifeeNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7E8A1082FEE000100000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CF5576AC380748D6BB534245 /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		E2569BAAF01D4E2FBA8A91C1 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		E4EC1715E8DE4C41BB0464BE /* Poppins-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-BlackItalic.ttf"; path = "../src/assets/fonts/Poppins-BlackItalic.ttf"; sourceTree = "<group>"; };
@@ -94,6 +127,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				7BC706836B011E003E0A9044 /* libPods-parkclear.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C7E8A10D2FEE00010000000D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +200,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				C7E8A1092FEE000100000009 /* NotifeeNotificationService */,
+				0429BFDC2FBDCF56008CB3A2 /* noti_tune.mp3 */,
+				BA5E9D902F9A4E7F00A86AE0 /* noti_tune.caf */,
 				04D35BD42FA8DD43000D02CF /* Outfit-Bold.ttf */,
 				04D35BD52FA8DD43000D02CF /* Outfit-ExtraBold.ttf */,
 				04D35BD62FA8DD43000D02CF /* Outfit-Light.ttf */,
@@ -185,6 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* parkclear.app */,
+				C7E8A1032FEE000100000003 /* NotifeeNotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -196,6 +240,15 @@
 				BBA3F75B5F1BD28BD3FDB9BD /* Pods-parkclear.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		C7E8A1092FEE000100000009 /* NotifeeNotificationService */ = {
+			isa = PBXGroup;
+			children = (
+				C7E8A1012FEE000100000001 /* NotificationService.swift */,
+				C7E8A1082FEE000100000008 /* Info.plist */,
+			);
+			path = NotifeeNotificationService;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,16 +265,34 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				25611B285E4FA43D0137A801 /* [CP] Embed Pods Frameworks */,
 				F2CF27B00A8D7BD104EA0F52 /* [CP] Copy Pods Resources */,
+				C7E8A1072FEE000100000007 /* Embed Foundation Extensions */,
 				61198B63BD29009632E17905 /* [CP-User] [RNFB] Core Configuration */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C7E8A10A2FEE00010000000A /* PBXTargetDependency */,
 			);
 			name = parkclear;
 			productName = parkclear;
 			productReference = 13B07F961A680F5B00A75B9A /* parkclear.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C7E8A1052FEE000100000005 /* NotifeeNotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C7E8A10B2FEE00010000000B /* Build configuration list for PBXNativeTarget "NotifeeNotificationService" */;
+			buildPhases = (
+				C7E8A10C2FEE00010000000C /* Sources */,
+				C7E8A10D2FEE00010000000D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotifeeNotificationService;
+			productName = NotifeeNotificationService;
+			productReference = C7E8A1032FEE000100000003 /* NotifeeNotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -233,6 +304,9 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
+					};
+					C7E8A1052FEE000100000005 = {
+						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
@@ -250,6 +324,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* parkclear */,
+				C7E8A1052FEE000100000005 /* NotifeeNotificationService */,
 			);
 		};
 /* End PBXProject section */
@@ -281,6 +356,8 @@
 				F34195B9C4D44C0894FAE440 /* Poppins-SemiBold.ttf in Resources */,
 				04D35BDB2FA8DD43000D02CF /* Outfit-Thin.ttf in Resources */,
 				04D35BDC2FA8DD43000D02CF /* Outfit-Light.ttf in Resources */,
+				0429BFDD2FBDCF56008CB3A2 /* noti_tune.mp3 in Resources */,
+				BA5E9D7C2F9A4E7F00A86AC0 /* noti_tune.caf in Resources */,
 				04D35BDD2FA8DD43000D02CF /* Outfit-Medium.ttf in Resources */,
 				04D35BDE2FA8DD43000D02CF /* Outfit-Bold.ttf in Resources */,
 				04D35BDF2FA8DD43000D02CF /* Outfit-Regular.ttf in Resources */,
@@ -404,7 +481,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C7E8A10C2FEE00010000000C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7E8A1022FEE000100000002 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C7E8A10A2FEE00010000000A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C7E8A1052FEE000100000005 /* NotifeeNotificationService */;
+			targetProxy = C7E8A1062FEE000100000006 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -416,7 +509,7 @@
 				CODE_SIGN_ENTITLEMENTS = parkclear/parkclear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ULZX555Y8J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = parkclear/Info.plist;
@@ -450,7 +543,7 @@
 				CODE_SIGN_ENTITLEMENTS = parkclear/parkclear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ULZX555Y8J;
 				INFOPLIST_FILE = parkclear/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "ParkClear - Smart Parking App";
@@ -619,6 +712,54 @@
 			};
 			name = Release;
 		};
+		C7E8A10E2FEE00010000000E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = ULZX555Y8J;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NotifeeNotificationService/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.parkclear.NotifeeNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C7E8A10F2FEE00010000000F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = ULZX555Y8J;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NotifeeNotificationService/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.parkclear.NotifeeNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -636,6 +777,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C7E8A10B2FEE00010000000B /* Build configuration list for PBXNativeTarget "NotifeeNotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C7E8A10E2FEE00010000000E /* Debug */,
+				C7E8A10F2FEE00010000000F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

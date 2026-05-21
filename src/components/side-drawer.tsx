@@ -1,5 +1,5 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { CpuIcon, HomeIcon } from 'lucide-react-native';
+import { Bell, CpuIcon, HomeIcon } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -24,7 +24,6 @@ import UpgradeIcon from '../assets/images/upgrade.svg';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
 import { baseApi } from '../store/api/baseApi';
-import { useCancelRemindMutation } from '../store/api/uploadApi';
 import { logout } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
 import { Colors } from '../utils/colors';
@@ -43,8 +42,6 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const [isLogoutModal, setIsLogoutModal] = useState(false);
   const [pendingLogoutModal, setPendingLogoutModal] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
-  const [cancelRemind, { isLoading: cancelRemindLoading }] =
-    useCancelRemindMutation();
   const isPaid = user?.is_paid;
   const [logoutLoading, setLogoutLoading] = useState(false);
 
@@ -124,30 +121,8 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
     }
   };
 
-  const handleCancelRemind = async () => {
-    try {
-      const response = await cancelRemind({}).unwrap();
-      if (response?.status) {
-        Toast.show({
-          type: 'success',
-          text1: 'Remind Cancelled',
-          text2: response?.message,
-        });
-        setDrawer(false);
-      }
-    } catch (error: any) {
-      console.log(error);
-      Toast.show({
-        type: 'error',
-        text1: 'Remind Cancelled Failed',
-        text2: error?.data?.message,
-      });
-    }
-  };
-
   return (
     <>
-      <PageLoader visible={cancelRemindLoading} />
       <Modal
         transparent
         visible={modalVisible}
@@ -209,9 +184,9 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 />
                 {isPaid && (
                   <DrawerRow
-                    icon={<CancelIcon width={30} height={30} />}
-                    label="Cancel Alerts"
-                    onPress={handleCancelRemind}
+                    icon={<Bell color="white" size={25} />}
+                    label={FlutterStrings.activeAlerts}
+                    onPress={() => navigateTo(PATHS.ActiveAlert)}
                   />
                 )}
                 <DrawerRow

@@ -2,8 +2,12 @@ import { useEffect, useState } from 'react';
 import messaging, {
   FirebaseMessagingTypes,
 } from '@react-native-firebase/messaging';
-import { PermissionsAndroid, Platform } from 'react-native';
-import { displayNotification } from '../utils/notification-service';
+import { AppState, PermissionsAndroid, Platform } from 'react-native';
+import {
+  displayNotification,
+  setupNotificationChannel,
+  syncIosBadgeWithActiveAlerts,
+} from '../utils/notification-service';
 
 const requestNotificationPermission = async (): Promise<boolean> => {
   if (Platform.OS === 'android' && Platform.Version >= 33) {
@@ -49,6 +53,14 @@ export const useFirebase = (): UseFirebaseReturn => {
       const permission = await requestNotificationPermission();
       setPermissionGranted(permission);
 
+      if (permission) {
+        await setupNotificationChannel();
+        if (Platform.OS === 'ios') {
+          await messaging().registerDeviceForRemoteMessages();
+          await syncIosBadgeWithActiveAlerts();
+        }
+      }
+
       if (!permission) return;
       const token = await messaging().getToken();
       setFcmToken(token);
@@ -63,7 +75,7 @@ export const useFirebase = (): UseFirebaseReturn => {
     const unsubscribeForeground = messaging().onMessage(
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
         setForegroundNotification(remoteMessage);
-        await displayNotification(remoteMessage);
+        await displayNotification(remoteMessage, 'foreground');
       },
     );
 
@@ -81,10 +93,17 @@ export const useFirebase = (): UseFirebaseReturn => {
       },
     );
 
+    const appStateSub = AppState.addEventListener('change', nextState => {
+      if (nextState === 'active' && Platform.OS === 'ios') {
+        syncIosBadgeWithActiveAlerts();
+      }
+    });
+
     return () => {
       unsubscribeForeground();
       unsubscribeBackground();
       unsubscribeTokenRefresh();
+      appStateSub.remove();
     };
   }, []);
 
