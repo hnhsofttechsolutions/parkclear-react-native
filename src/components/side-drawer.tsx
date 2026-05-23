@@ -189,11 +189,11 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                     onPress={() => navigateTo(PATHS.ActiveAlert)}
                   />
                 )}
-                <DrawerRow
+                {/* <DrawerRow
                   icon={<CpuIcon color="white" size={25} />}
                   label={'Beta'}
                   onPress={() => navigateTo(PATHS.Beta)}
-                />
+                /> */}
                 <View style={{ flex: 1 }} />
                 <DrawerRow
                   icon={<LogoutIcon width={25} height={25} />}
