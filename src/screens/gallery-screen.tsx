@@ -14,7 +14,6 @@ import AppText from '../components/ui/app-text';
 import { GradientButton } from '../components/ui/gradient-button';
 import { FlutterStrings } from '../constants/flutterStrings';
 import { PATHS } from '../navigation/paths';
-import { baseURL } from '../store/api/baseApi';
 import { useGetUploadImageQuery } from '../store/api/uploadApi';
 import { Colors } from '../utils/colors';
 const { width } = Dimensions.get('window');
@@ -61,7 +60,7 @@ const GalleryScreen = ({ navigation }: any) => {
                 <FastImage
                   style={styles.thumb}
                   source={{
-                    uri: `${baseURL}${item?.image}`,
+                    uri: item?.image ?? '',
                     priority: FastImage.priority.high,
                   }}
                   resizeMode={FastImage.resizeMode.cover}

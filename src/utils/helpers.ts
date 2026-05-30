@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { ImagePickerResponse } from 'react-native-image-picker';
 import Share from 'react-native-share';
 
@@ -48,7 +49,11 @@ export const shareApp = async () => {
     title: 'ParkClear App',
     message: `Confusing Parking Signs? ParkClear can Help!
 Download App:
-https://play.google.com/store/apps/details?id=com.app.parkclear&pcampaignid=web_share`,
+${
+  Platform.OS === 'ios'
+    ? 'https://apps.apple.com/us/app/parkclear-smart-parking-app/id6746191345'
+    : 'https://play.google.com/store/apps/details?id=com.app.parkclear'
+}`,
   };
   try {
     await Share.open(shareOptions);

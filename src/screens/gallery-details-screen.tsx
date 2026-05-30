@@ -5,7 +5,6 @@ import Markdown from 'react-native-markdown-display';
 import SafeAreaWrapper from '../components/safe-area-wrapper';
 import { AppBar } from '../components/ui/app-bar';
 import { FlutterStrings } from '../constants/flutterStrings';
-import { baseURL } from '../store/api/baseApi';
 import { Colors } from '../utils/colors';
 import { FontFamily } from '../utils/fonts';
 
@@ -27,7 +26,7 @@ const GalleryDetailsScreen = ({ navigation, route }: any) => {
           <FastImage
             style={styles.image}
             source={{
-              uri: `${baseURL}${item?.image}`,
+              uri: item?.image ?? '',
               priority: FastImage.priority.high,
             }}
             resizeMode={FastImage.resizeMode.cover}
