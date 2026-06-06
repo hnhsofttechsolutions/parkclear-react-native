@@ -70,6 +70,23 @@ export const uploadApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    getNearbyZones: builder.mutation<
+      any,
+      { lat: string; lng: string; radius?: string; timezone: string }
+    >({
+      query: ({ lat, lng, radius = 1000, timezone }) => ({
+        url: 'authentication/v1/parking/nearby-zones/',
+        method: 'POST',
+        body: { lat, lng, radius, timezone },
+      }),
+    }),
+    getZoneSchedule: builder.mutation<any, { policy_ids: string[] }>({
+      query: ({ policy_ids }) => ({
+        url: 'authentication/v1/parking/zone-schedule/',
+        method: 'POST',
+        body: { policy_ids },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -84,4 +101,6 @@ export const {
   useResultRemindMutation,
   useResultFeedbackMutation,
   useBetaCanIParkHereMutation,
+  useGetNearbyZonesMutation,
+  useGetZoneScheduleMutation,
 } = uploadApi;

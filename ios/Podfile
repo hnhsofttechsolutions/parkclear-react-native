@@ -17,6 +17,12 @@ prepare_react_native_project!
 # NOTE:
 # Global modular headers can conflict with some React Native/Hermes pods.
 # Keep it targeted only for Firebase-related pods below.
+# Targeted modular headers for Firebase static Swift pod integration.
+pod 'FirebaseCore', :modular_headers => true
+pod 'FirebaseCoreInternal', :modular_headers => true
+pod 'GoogleUtilities', :modular_headers => true
+rn_maps_path = '../node_modules/react-native-maps'
+pod 'react-native-maps/Google', :path => rn_maps_path
 
 # ⬇️ uncomment the permissions you need
 setup_permissions([
@@ -50,11 +56,6 @@ end
 
 target 'parkclear' do
   config = use_native_modules!
-
-  # Targeted modular headers for Firebase static Swift pod integration.
-  pod 'FirebaseCore', :modular_headers => true
-  pod 'FirebaseCoreInternal', :modular_headers => true
-  pod 'GoogleUtilities', :modular_headers => true
 
   use_react_native!(
     :path => config[:reactNativePath],

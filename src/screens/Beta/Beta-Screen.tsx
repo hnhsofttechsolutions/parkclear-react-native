@@ -216,7 +216,8 @@ const BetaScreen = () => {
           <GradientButton
             label="Can I Park Here?"
             disabled={isBusy}
-            onPress={runParkingCheck}
+            // onPress={runParkingCheck}
+            onPress={() => navigation.navigate(PATHS.ParkMap)}
           />
           <View style={styles.profileBtnContainer}>
             <TouchableOpacity

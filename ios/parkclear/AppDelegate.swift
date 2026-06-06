@@ -5,6 +5,7 @@ import ReactAppDependencyProvider
 import FirebaseCore
 import GoogleSignIn
 import UserNotifications
+import GoogleMaps
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     FirebaseApp.configure()
+    GMSServices.provideAPIKey("AIzaSyDxxMzEE8yfJgLg6ZCOjOrYsoNT0Wr7uEo")
     UNUserNotificationCenter.current().delegate = self
     application.registerForRemoteNotifications()
 

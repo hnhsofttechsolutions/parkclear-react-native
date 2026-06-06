@@ -62,8 +62,6 @@ const ActiveAlertScreen = ({ navigation }: any) => {
   const [deleteParkingReminder, { isLoading: isDeleting }] =
     useDeleteParkingReminderMutation();
 
-  console.log('data------->', data);
-
   const [cancellingId, setCancellingId] = useState<number | string | null>(
     null,
   );
