@@ -6,13 +6,15 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import AppText from './app-text';
 import { Colors } from '../../utils/colors';
 
 interface PageLoaderProps {
   visible: boolean;
+  message?: string;
 }
 
-const PageLoader = ({ visible }: PageLoaderProps) => {
+const PageLoader = ({ visible, message }: PageLoaderProps) => {
   return (
     <Modal
       transparent
@@ -24,6 +26,16 @@ const PageLoader = ({ visible }: PageLoaderProps) => {
       <View style={styles.container}>
         <View style={styles.backdrop} />
         <ActivityIndicator size="large" color={Colors.white} />
+        {message ? (
+          <AppText
+            size={15}
+            color={Colors.white}
+            align="center"
+            style={styles.message}
+          >
+            {message}
+          </AppText>
+        ) : null}
       </View>
     </Modal>
   );
@@ -40,6 +52,10 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  message: {
+    marginTop: 16,
+    paddingHorizontal: 32,
   },
   content: {
     position: 'absolute',

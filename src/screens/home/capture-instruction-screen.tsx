@@ -1,25 +1,24 @@
 import { ChevronLeft } from 'lucide-react-native';
 import moment from 'moment-timezone';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
-  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import Toast from 'react-native-toast-message';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
 import PageLoader from '../../components/ui/page-loader';
 import { useCameraPermission } from '../../hooks/use-camera-permission';
 import { PATHS } from '../../navigation/paths';
+import { processPickedImage } from '../../services/s3/processPickedImage';
+import { uploadImagePickerOptions } from '../../utils/compressImage';
 import { useUploadImageMutation } from '../../store/api/uploadApi';
 import { Colors } from '../../utils/colors';
-import { pickerOptions, uriFromResponse } from '../../utils/helpers';
 
 const { height, width } = Dimensions.get('window');
 
@@ -27,71 +26,148 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadImageMutation();
   const { requestCameraPermission } = useCameraPermission();
   const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
-  const { onCapture } = route.params;
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
+  const routeParams = route.params ?? {};
+  const from = routeParams.from;
 
-  const openCamera = async () => {
-    const ok = await requestCameraPermission();
-    if (!ok) return;
-    const res = await launchCamera({
-      ...pickerOptions,
-      saveToPhotos: true,
-    });
+  useEffect(() => {
+    return () => {
+      ImagePicker.clean()
+        .then(() => {})
+        .catch(() => {});
+    };
+  }, []);
 
-    if (res.didCancel) return;
-    if (res.errorCode) {
-      Alert.alert('Camera Error', res.errorMessage || res.errorCode);
-      return;
+  const uploadImageToS3 = async (uri: string) => {
+    setIsUploading(true);
+    setUploadStatus('Preparing image...');
+    console.time('[CaptureInstruction] s3-pipeline');
+
+    try {
+      const result = await processPickedImage(uri, setUploadStatus);
+      console.timeEnd('[CaptureInstruction] s3-pipeline');
+      console.log('[CaptureInstruction] s3Url ---->', result?.s3Url);
+
+      // Toast.show({
+      //   type: 'success',
+      //   text1: 'Upload Complete',
+      //   text2: 'Image uploaded to S3 successfully.',
+      // });
+
+      return result;
+    } catch (error: any) {
+      console.timeEnd('[CaptureInstruction] s3-pipeline');
+      console.log('[CaptureInstruction] S3 upload error ---->', error);
+      Toast.show({
+        type: 'error',
+        text1: 'S3 Upload Failed',
+        text2: error?.message || 'Could not upload image to S3.',
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+      setUploadStatus('');
     }
-    const uri = res.assets?.[0]?.uri;
-    if (!uri) return;
+  };
 
-    const from = route.params?.from;
-
-    if (from === 'Camera' && onCapture) {
-      onCapture?.(uri);
-      navigation.goBack();
-      return;
-    }
-
-    setCapturedImageUri(uri);
+  const uploadImageToApi = async (s3Url: string) => {
+    console.time('[CaptureInstruction] api-call');
+    console.log('[CaptureInstruction] api file_url ---->', s3Url);
 
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const shortTZ = moment().tz(timezone).format('z');
     const formData = new FormData();
-    const fileOBJ = {
-      uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
-      type: 'image/jpeg',
-      name: 'parking_sign.jpg',
-    };
-    formData.append('file', fileOBJ);
+
+    formData.append('file_url', s3Url);
     formData.append('timezone', shortTZ);
 
+    const result = await uploadImage({ formData }).unwrap();
+    console.timeEnd('[CaptureInstruction] api-call');
+    console.log('[CaptureInstruction] api result ---->', result);
+
+    if (result?.status === true) {
+      navigation.navigate(PATHS.Result, {
+        data: result,
+        screen_name: 'capture',
+      });
+      return;
+    }
+
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: result?.message || 'Invalid image.',
+    });
+  };
+
+  const openCamera = async () => {
+    console.time('[CaptureInstruction] open-camera-total');
+    const ok = await requestCameraPermission();
+    if (!ok) {
+      console.timeEnd('[CaptureInstruction] open-camera-total');
+      return;
+    }
+
     try {
-      const result = await uploadImage({ formData }).unwrap();
+      console.time('[CaptureInstruction] camera-capture');
+      const res = await ImagePicker.openCamera(uploadImagePickerOptions);
+      console.timeEnd('[CaptureInstruction] camera-capture');
 
-      console.log('result instruction screen---->', result);
-      console.log('formData instruction screen---->', formData);
+      const uri = res?.path;
+      if (!uri) {
+        console.timeEnd('[CaptureInstruction] open-camera-total');
+        return;
+      }
+      console.log('[CaptureInstruction] captured uri ---->', uri);
 
-      if (result?.status === true) {
-        navigation.navigate(PATHS.Result, {
-          data: result,
-          screen_name: 'capture',
+      const uploadResult = await uploadImageToS3(uri);
+      if (!uploadResult?.s3Url) {
+        console.timeEnd('[CaptureInstruction] open-camera-total');
+        return;
+      }
+      const previewUri = uploadResult.s3Url;
+      console.log('[CaptureInstruction] preview s3Url ---->', previewUri);
+
+      if (from === 'Camera') {
+        console.timeEnd('[CaptureInstruction] open-camera-total');
+        navigation.navigate(PATHS.Camera, {
+          capturedImageUri: previewUri,
+          capturedS3Url: uploadResult.s3Url,
         });
-      } else {
+        return;
+      }
+
+      setCapturedImageUri(previewUri);
+
+      try {
+        await uploadImageToApi(uploadResult.s3Url);
+      } catch (error: any) {
+        console.log('[CaptureInstruction] api error ---->', error);
         Toast.show({
           type: 'error',
           text1: 'Error',
-          text2: result?.message || 'Invalid image.',
+          text2: error?.data?.message || error?.message || 'Upload failed.',
         });
       }
-    } catch (error: any) {
+      console.timeEnd('[CaptureInstruction] open-camera-total');
+    } catch (err: any) {
+      console.timeEnd('[CaptureInstruction] camera-capture');
+      console.timeEnd('[CaptureInstruction] open-camera-total');
+      console.log('[CaptureInstruction] camera error ---->', err);
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: error?.message || 'Upload failed.',
+        text1: 'Camera Error',
+        text2: 'Could not open camera. Please try again.',
       });
     }
   };
+
+  const loaderMessage = isUploading
+    ? uploadStatus
+    : isLoading
+    ? 'Analyzing parking sign...'
+    : '';
 
   return (
     <SafeAreaWrapper
@@ -99,12 +175,13 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
       backgroundColor="#000000"
       statusBarStyle="light-content"
     >
-      <PageLoader visible={isLoading} />
+      <PageLoader visible={isUploading || isLoading} message={loaderMessage} />
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           activeOpacity={0.8}
           onPress={() => navigation.goBack()}
+          disabled={isUploading || isLoading}
         >
           <ChevronLeft size={22} color={Colors.darkBlue} />
         </TouchableOpacity>
@@ -131,6 +208,7 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
           style={styles.captureButtonOuter}
           activeOpacity={0.8}
           onPress={openCamera}
+          disabled={isUploading || isLoading}
         >
           <View style={styles.captureButtonInner} />
         </TouchableOpacity>

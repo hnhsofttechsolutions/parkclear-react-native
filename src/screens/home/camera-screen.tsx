@@ -4,12 +4,12 @@ import {
   Image as ImageIcon,
   RefreshCcw,
 } from 'lucide-react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
-  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -20,11 +20,14 @@ import Toast from 'react-native-toast-message';
 import CustomDatePicker from '../../components/modals/CustomDatePicker';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import AppText from '../../components/ui/app-text';
+import PageLoader from '../../components/ui/page-loader';
 import {
   GradientButton,
   OutlineButton,
 } from '../../components/ui/gradient-button';
 import { PATHS } from '../../navigation/paths';
+import { processPickedImage } from '../../services/s3/processPickedImage';
+import { uploadImagePickerOptions } from '../../utils/compressImage';
 import { useUploadCustomImageMutation } from '../../store/api/uploadApi';
 import { Colors, Gradient } from '../../utils/colors';
 import { formatDateToYYYYMMDD, formatTimeToAMPM } from '../../utils/helpers';
@@ -34,15 +37,35 @@ const { height } = Dimensions.get('window');
 const CameraScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadCustomImageMutation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedS3Url, setSelectedS3Url] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [time, setTime] = useState<Date | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
 
-  React.useEffect(() => {
-    if (route.params?.capturedImageUri) {
-      setSelectedImage(route.params.capturedImageUri);
-      navigation.setParams({ capturedImageUri: undefined });
-    }
-  }, [route.params?.capturedImageUri, navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      const imageUri = route.params?.capturedImageUri;
+      const s3Url = route.params?.capturedS3Url;
+
+      if (imageUri) {
+        setSelectedImage(imageUri);
+      }
+      if (s3Url) {
+        setSelectedS3Url(s3Url);
+      }
+      if (imageUri || s3Url) {
+        navigation.setParams({
+          capturedImageUri: undefined,
+          capturedS3Url: undefined,
+        });
+      }
+    }, [
+      route.params?.capturedImageUri,
+      route.params?.capturedS3Url,
+      navigation,
+    ]),
+  );
 
   useEffect(() => {
     return () => {
@@ -54,29 +77,89 @@ const CameraScreen = ({ navigation, route }: any) => {
     };
   }, []);
 
-  const onSelectImage = (uri: string) => {
+  const onSelectImage = (uri: string, s3Url?: string | null) => {
     setSelectedImage(uri);
+    setSelectedS3Url(s3Url ?? null);
+  };
+
+  const uploadImageToS3 = async (uri: string) => {
+    setIsUploading(true);
+    setUploadStatus('Preparing image...');
+    console.time('[CameraScreen] s3-pipeline');
+
+    try {
+      const result = await processPickedImage(uri, setUploadStatus);
+      console.timeEnd('[CameraScreen] s3-pipeline');
+      console.log('[CameraScreen] s3Url ---->', result?.s3Url);
+
+      // Toast.show({
+      //   type: 'success',
+      //   text1: 'Upload Complete',
+      //   text2: 'Image uploaded to S3 successfully.',
+      // });
+
+      return result;
+    } catch (error: any) {
+      console.timeEnd('[CameraScreen] s3-pipeline');
+      console.log('[CameraScreen] S3 upload error ---->', error);
+      Toast.show({
+        type: 'error',
+        text1: 'S3 Upload Failed',
+        text2: error?.message || 'Could not upload image to S3.',
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+      setUploadStatus('');
+    }
   };
 
   const openGallery = async () => {
-    ImagePicker.openPicker({
-      mediaType: 'photo',
-      quality: 0.9,
-      includeBase64: false,
-    })
-      .then(res => {
-        // console.log('res gallery ---->', res);
-        const uri = res?.path;
-        if (uri) onSelectImage(uri);
-      })
-      .catch(err => {
-        console.log('error gallery ---->', err);
+    console.time('[CameraScreen] gallery-total');
+    try {
+      console.time('[CameraScreen] gallery-pick');
+      const res = await ImagePicker.openPicker(uploadImagePickerOptions);
+      console.timeEnd('[CameraScreen] gallery-pick');
+
+      const uri = res?.path;
+      if (!uri) {
+        console.timeEnd('[CameraScreen] gallery-total');
         return;
+      }
+      console.log('[CameraScreen] gallery uri ---->', uri);
+
+      const uploadResult = await uploadImageToS3(uri);
+      if (!uploadResult?.s3Url) {
+        console.timeEnd('[CameraScreen] gallery-total');
+        return;
+      }
+
+      console.log('[CameraScreen] gallery s3Url ---->', uploadResult.s3Url);
+      onSelectImage(uploadResult.s3Url, uploadResult.s3Url);
+      console.timeEnd('[CameraScreen] gallery-total');
+    } catch (err: any) {
+      console.timeEnd('[CameraScreen] gallery-pick');
+      console.timeEnd('[CameraScreen] gallery-total');
+      if (err?.code === 'E_PICKER_CANCELLED') return;
+
+      console.log('[CameraScreen] gallery error ---->', err);
+      Toast.show({
+        type: 'error',
+        text1: 'Gallery Error',
+        text2: 'Could not open gallery. Please try again.',
       });
+    }
   };
 
   const onUpload = async () => {
-    if (!selectedImage) return;
+    if (!selectedImage || !selectedS3Url) {
+      Toast.show({
+        type: 'info',
+        text1: 'Image Required',
+        text2: 'Please select an image before uploading.',
+      });
+      return;
+    }
     if (!selectedDate || !time) {
       Toast.show({
         type: 'info',
@@ -89,31 +172,29 @@ const CameraScreen = ({ navigation, route }: any) => {
       weekday: 'long',
     });
     try {
+      console.time('[CameraScreen] api-call');
+      console.log('[CameraScreen] api file_url ---->', selectedS3Url);
+
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const shortTZ = moment().tz(timezone).format('z');
       const formData = new FormData();
-      const fileOBJ = {
-        uri:
-          Platform.OS === 'android'
-            ? selectedImage
-            : selectedImage.replace('file://', ''),
-        type: 'image/jpeg',
-        name: 'parking_sign.jpg',
-      };
-      formData.append('file', fileOBJ);
+      formData.append('file_url', selectedS3Url);
       formData.append('timezone', shortTZ);
       formData.append('day', dayFromDate);
       formData.append('date', formatDateToYYYYMMDD(selectedDate));
       formData.append('time', formatTimeToAMPM(time));
+
       const result = await uploadImage({ formData }).unwrap();
-      console.log('formData camera screen---->', formData);
-      console.log('result camera screen---->', result);
+      console.timeEnd('[CameraScreen] api-call');
+      console.log('[CameraScreen] api result ---->', result);
+
       if (result?.status === true) {
         navigation.navigate(PATHS.Result, {
           data: result,
           screen_name: 'camera',
         });
         setSelectedImage(null);
+        setSelectedS3Url(null);
         setSelectedDate(null);
         setTime(null);
       } else {
@@ -124,7 +205,8 @@ const CameraScreen = ({ navigation, route }: any) => {
         });
       }
     } catch (error: any) {
-      console.log('error upload -----', error);
+      console.timeEnd('[CameraScreen] api-call');
+      console.log('[CameraScreen] api error ---->', error);
       Toast.show({
         type: 'error',
         text1: 'Upload Failed',
@@ -147,6 +229,7 @@ const CameraScreen = ({ navigation, route }: any) => {
         statusBarStyle="light-content"
         ignoreStatusBar
       >
+        <PageLoader visible={isUploading} message={uploadStatus} />
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
@@ -218,7 +301,6 @@ const CameraScreen = ({ navigation, route }: any) => {
                   onPress={() =>
                     navigation.navigate(PATHS.CaptureInstruction, {
                       from: 'Camera',
-                      onCapture: (uri: string) => setSelectedImage(uri),
                     })
                   }
                   leftIcon={<Camera size={20} color={Colors.white} />}
@@ -238,7 +320,11 @@ const CameraScreen = ({ navigation, route }: any) => {
                 />
                 <OutlineButton
                   label="Choose Different Image"
-                  onPress={() => (isLoading ? null : setSelectedImage(null))}
+                  onPress={() => {
+                    if (isLoading) return;
+                    setSelectedImage(null);
+                    setSelectedS3Url(null);
+                  }}
                   leftIcon={<RefreshCcw size={16} color={Gradient.colors[0]} />}
                 />
               </>
