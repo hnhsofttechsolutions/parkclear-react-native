@@ -1,4 +1,5 @@
 import type { Region } from 'react-native-maps';
+import { CURB_ZONE_STATUS_THEME, SCHEDULE_THEME } from './constants';
 import type {
   CurbZoneGeometry,
   CurbZoneItem,
@@ -26,8 +27,21 @@ export function formatParkingAngle(angle?: string): string {
 
 export function mapZoneStatus(available_spaces: number): CurbZoneStatus {
   if (available_spaces <= 0) return 'full';
-  if (available_spaces === 1) return 'limited';
+  if (available_spaces === 1) return 'unknown';
   return 'available';
+}
+
+function normalizeApiZoneStatus(
+  apiStatus: string | undefined,
+  available_spaces: number,
+): CurbZoneStatus {
+  const normalized = apiStatus?.toLowerCase().trim();
+
+  if (normalized === 'full') return 'full';
+  if (normalized === 'unknown' || normalized === 'limited') return 'unknown';
+  if (normalized === 'available') return 'available';
+
+  return mapZoneStatus(available_spaces);
 }
 
 export function isNearbyZoneApiItem(value: unknown): value is NearbyZoneApiItem {
@@ -57,7 +71,7 @@ export function mapApiZoneToItem(zone: NearbyZoneApiItem): CurbZoneItem {
     parking_angle: zone.parking_angle,
     parking_type_label: formatParkingAngle(zone.parking_angle),
     available_spaces: spaces,
-    status: mapZoneStatus(spaces),
+    status: normalizeApiZoneStatus(zone.status, spaces),
     curb_policy_ids: Array.isArray(zone.curb_policy_ids)
       ? zone.curb_policy_ids
       : [],
@@ -72,7 +86,7 @@ export function getZonePolylineColor(zone: CurbZoneItem): string {
   return zone.target_line_color ?? getSegmentColor(zone.status);
 }
 
-export type PrimaryRuleParkingStatus = ScheduleStatus | 'limited';
+export type PrimaryRuleParkingStatus = ScheduleStatus | 'unknown';
 
 export type PrimaryRuleCardTheme = {
   status: PrimaryRuleParkingStatus;
@@ -81,10 +95,51 @@ export type PrimaryRuleCardTheme = {
   accentColor: string;
 };
 
+export function getPrimaryZoneRuleMessage(zone: CurbZoneItem): string | null {
+  const message = getPrimaryZoneRule(zone.rules)?.message?.trim();
+  return message || null;
+}
+
+export type PrimaryZoneRuleBadge = {
+  label: string;
+  badgeBg: string;
+  badgeText: string;
+};
+
+export function getPrimaryZoneRuleBadge(zone: CurbZoneItem): PrimaryZoneRuleBadge {
+  const isAllowed = getPrimaryZoneRule(zone.rules)?.is_allowed;
+
+  if (isAllowed === true) {
+    return {
+      label: SCHEDULE_THEME.allowed.label,
+      badgeBg: SCHEDULE_THEME.allowed.badgeBg,
+      badgeText: SCHEDULE_THEME.allowed.badgeText,
+    };
+  }
+
+  if (isAllowed === false) {
+    return {
+      label: 'No parking',
+      badgeBg: SCHEDULE_THEME.blocked.badgeBg,
+      badgeText: SCHEDULE_THEME.blocked.badgeText,
+    };
+  }
+
+  return {
+    label: SCHEDULE_THEME.unknown.label,
+    badgeBg: SCHEDULE_THEME.unknown.badgeBg,
+    badgeText: SCHEDULE_THEME.unknown.badgeText,
+  };
+}
+
 function resolvePrimaryRuleParkingStatus(
   zone: CurbZoneItem,
 ): PrimaryRuleParkingStatus {
   const primaryRule = getPrimaryZoneRule(zone.rules);
+
+  if (primaryRule?.is_allowed === true) return 'allowed';
+  if (primaryRule?.is_allowed === false) return 'blocked';
+
   const schedule = primaryRule?.weekly_schedule ?? [];
 
   if (schedule.length > 0) {
@@ -95,7 +150,7 @@ function resolvePrimaryRuleParkingStatus(
 
     if (blockedCount > 0 && allowedCount === 0) return 'blocked';
     if (allowedCount > 0 && blockedCount === 0) return 'allowed';
-    if (allowedCount > 0 && blockedCount > 0) return 'limited';
+    if (allowedCount > 0 && blockedCount > 0) return 'unknown';
   }
 
   const lineColor = (
@@ -107,8 +162,8 @@ function resolvePrimaryRuleParkingStatus(
   if (['#EC4646', '#FF0000', '#D93030'].includes(lineColor)) {
     return 'blocked';
   }
-  if (['#EFB71C', '#C98A00'].includes(lineColor)) {
-    return 'limited';
+  if (['#EFB71C', '#C98A00', '#302F26'].includes(lineColor)) {
+    return 'unknown';
   }
   if (['#49B945', '#2E8B2E', '#00FF00'].includes(lineColor)) {
     return 'allowed';
@@ -122,10 +177,10 @@ function resolvePrimaryRuleParkingStatus(
   ) {
     return 'blocked';
   }
-  if (ruleStatus.includes('limit')) return 'limited';
+  if (ruleStatus.includes('limit')) return 'unknown';
 
   if (zone.status === 'full') return 'blocked';
-  if (zone.status === 'limited') return 'limited';
+  if (zone.status === 'unknown') return 'unknown';
   return 'allowed';
 }
 
@@ -143,12 +198,12 @@ export function getPrimaryRuleCardTheme(
     };
   }
 
-  if (status === 'limited') {
+  if (status === 'unknown') {
     return {
       status,
-      backgroundColor: '#FFF6E0',
-      borderColor: '#F5DFA8',
-      accentColor: '#C98A00',
+      backgroundColor: CURB_ZONE_STATUS_THEME.unknown.badgeBg,
+      borderColor: '#e0e0e0',
+      accentColor: CURB_ZONE_STATUS_THEME.unknown.accent,
     };
   }
 
@@ -185,7 +240,11 @@ export function getZoneScheduleItems(zone: CurbZoneItem): ScheduleItem[] {
   const primaryRule = getPrimaryZoneRule(zone.rules);
   if (!primaryRule) return [];
 
-  return normalizeZoneScheduleResponse(primaryRule).schedule;
+  const parentIsAllowed = primaryRule.is_allowed;
+
+  return extractScheduleCandidates(primaryRule)
+    .filter(isZoneScheduleApiItem)
+    .map((item, index) => mapScheduleApiItem(item, index, parentIsAllowed));
 }
 
 function lineToCoordinates(line: number[][]): MapCoordinate[] {
@@ -332,33 +391,66 @@ export function normalizeZonesResponse(response: unknown): CurbZoneItem[] {
 
 export function getZoneStatusLabel(zone: CurbZoneItem): string {
   if (zone.status === 'full') return 'Full';
+  if (zone.status === 'unknown') return 'Unknown';
   return `${zone.available_spaces} Space${zone.available_spaces === 1 ? '' : 's'} Available`;
 }
 
 export function getSegmentColor(status: CurbZoneStatus): string {
   if (status === 'full') return '#EC4646';
-  if (status === 'limited') return '#EFB71C';
+  if (status === 'unknown') return CURB_ZONE_STATUS_THEME.unknown.dot;
   return '#49B945';
 }
 
-function mapScheduleStatus(item: ZoneScheduleApiItem): ScheduleStatus {
+function getScheduleStatusText(item: ZoneScheduleApiItem): string {
+  return [
+    item.activity,
+    item.rule,
+    item.status,
+    item.parking_status,
+  ]
+    .filter(
+      (value): value is string =>
+        typeof value === 'string' && value.trim().length > 0,
+    )
+    .join(' ')
+    .toLowerCase();
+}
+
+function mapScheduleStatus(
+  item: ZoneScheduleApiItem,
+  parentIsAllowed?: boolean,
+): ScheduleStatus {
+  if (parentIsAllowed === false) return 'blocked';
+  if (parentIsAllowed === true && item.is_allowed !== false) return 'allowed';
+
   if (item.is_allowed === true) return 'allowed';
   if (item.is_allowed === false) return 'blocked';
 
-  const status = (
-    item.status ?? item.parking_status ?? ''
-  ).toLowerCase();
+  const text = getScheduleStatusText(item);
 
   if (
-    status.includes('block') ||
-    status.includes('no_parking') ||
-    status.includes('restrict') ||
-    status === 'denied'
+    text.includes('no stopping') ||
+    text.includes('no parking') ||
+    text.includes('no_parking') ||
+    text.includes('tow-away') ||
+    text.includes('tow away') ||
+    text.includes('block') ||
+    text.includes('restrict') ||
+    text.includes('denied') ||
+    text.includes('prohibited')
   ) {
     return 'blocked';
   }
 
-  return 'allowed';
+  if (
+    text.includes('allowed') ||
+    text.includes('permitted') ||
+    text.includes('permit parking')
+  ) {
+    return 'allowed';
+  }
+
+  return 'unknown';
 }
 
 function formatScheduleTime(item: ZoneScheduleApiItem): string {
@@ -400,6 +492,7 @@ function isZoneScheduleApiItem(value: unknown): value is ZoneScheduleApiItem {
 function mapScheduleApiItem(
   item: ZoneScheduleApiItem,
   index: number,
+  parentIsAllowed?: boolean,
 ): ScheduleItem {
   return {
     id: `schedule-${index}`,
@@ -412,7 +505,7 @@ function mapScheduleApiItem(
       'Parking Rule',
     days: formatScheduleDays(item),
     time: formatScheduleTime(item),
-    status: mapScheduleStatus(item),
+    status: mapScheduleStatus(item, parentIsAllowed),
   };
 }
 
@@ -500,6 +593,6 @@ export function normalizeZoneScheduleResponse(
     target_line_color: extractTargetLineColor(response),
     schedule: extractScheduleCandidates(response)
       .filter(isZoneScheduleApiItem)
-      .map(mapScheduleApiItem),
+      .map((item, index) => mapScheduleApiItem(item, index)),
   };
 }

@@ -1,4 +1,4 @@
-export type CurbZoneStatus = 'available' | 'limited' | 'full';
+export type CurbZoneStatus = 'available' | 'unknown' | 'full';
 
 export type CurbZoneGeometry = {
   type: 'MultiLineString' | 'LineString';
@@ -13,6 +13,8 @@ export type ZoneRule = {
   status?: string;
   target_line_color?: string;
   primary_governing_rule?: string;
+  is_allowed?: boolean;
+  message?: string;
   weekly_schedule?: ZoneScheduleApiItem[];
 };
 
@@ -21,6 +23,7 @@ export type NearbyZoneApiItem = {
   street_name: string;
   parking_angle: string;
   available_spaces: number;
+  status?: string;
   curb_policy_ids: string[];
   geometry: CurbZoneGeometry;
   rules?: ZoneRule[];
@@ -72,7 +75,7 @@ export type CurbSegmentRouteParams = {
   zone?: CurbZoneItem;
 };
 
-export type ScheduleStatus = 'allowed' | 'blocked';
+export type ScheduleStatus = 'allowed' | 'blocked' | 'unknown';
 
 export type ScheduleItem = {
   id: string;

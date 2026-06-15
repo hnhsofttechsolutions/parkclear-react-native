@@ -22,6 +22,7 @@
     android:allowBackup="false"
     android:theme="@style/AppTheme"
     android:usesCleartextTraffic="true"
+    tools:replace="android:allowBackup"
     android:supportsRtl="true">
     <!-- If you use Google (AdMob) as a mediated network, add your AdMob App ID from AdMob console:
          <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy"/> -->

@@ -43,7 +43,6 @@ import { useGetNearbyZonesMutation } from '../../store/api/uploadApi';
 import { Colors } from '../../utils/colors';
 import { useCurrentLocation } from '../../utils/useCurrentLocation';
 import {
-  CURB_ZONE_STATUS_THEME,
   INITIAL_MAP_REGION,
   MAP_LEGEND,
   NEARBY_RADIUS_METERS,
@@ -53,9 +52,9 @@ import {
 } from './constants';
 import {
   getPrimaryRuleCardTheme,
-  getRegionFromZones,
+  getPrimaryZoneRuleBadge,
+  getPrimaryZoneRuleMessage,
   getZoneScheduleItems,
-  getZoneStatusLabel,
   normalizeZonesResponse,
   zonesToMapPolylines,
 } from './curb-zone.utils';
@@ -63,11 +62,20 @@ import type { CurbZoneItem } from './types';
 
 const IOS_MAP_TYPES: MapType[] = ['hybridFlyover', 'standard', 'satellite'];
 const ANDROID_MAP_TYPES: MapType[] = ['standard', 'satellite', 'hybrid'];
+const USER_LOCATION_DELTA = 0.004;
+
+const regionFromCoords = (latitude: number, longitude: number): Region => ({
+  latitude,
+  longitude,
+  latitudeDelta: USER_LOCATION_DELTA,
+  longitudeDelta: USER_LOCATION_DELTA,
+});
 
 const ParkMapScreen = () => {
   const navigation = useNavigation<any>();
   const mapRef = useRef<MapView>(null);
   const shouldFollowUserRef = useRef(false);
+  const hasInitializedLocationRef = useRef(false);
   const insets = useSafeAreaInsets();
 
   const [zones, setZones] = useState<CurbZoneItem[]>([]);
@@ -123,15 +131,14 @@ const ParkMapScreen = () => {
     [stopFollowingUser],
   );
 
-  const fitMapToZones = useCallback(() => {
-    const allCoordinates = polylines.flatMap(line => line.coordinates);
-    if (allCoordinates.length === 0) return;
-
-    mapRef.current?.fitToCoordinates(allCoordinates, {
-      edgePadding: { top: 100, right: 48, bottom: 120, left: 48 },
-      animated: true,
-    });
-  }, [polylines]);
+  const centerMapOnCoords = useCallback(
+    (latitude: number, longitude: number) => {
+      const next = regionFromCoords(latitude, longitude);
+      setRegion(next);
+      mapRef.current?.animateToRegion(next, 400);
+    },
+    [],
+  );
 
   const handleMyLocation = useCallback(async () => {
     if (hasPermission !== true && !(await requestPermission())) return;
@@ -148,56 +155,64 @@ const ParkMapScreen = () => {
     });
   }, []);
 
-  const fetchNearbyZones = useCallback(async () => {
-    const lat = __DEV__ ? TEST_MAP_LAT : region.latitude;
-    const lng = __DEV__ ? TEST_MAP_LNG : region.longitude;
+  const fetchNearbyZones = useCallback(
+    async (coords?: { lat: number; lng: number }) => {
+      const lat = __DEV__
+        ? TEST_MAP_LAT
+        : coords?.lat ?? location?.latitude ?? region.latitude;
+      const lng = __DEV__
+        ? TEST_MAP_LNG
+        : coords?.lng ?? location?.longitude ?? region.longitude;
 
-    try {
-      const response = await getNearbyZones({
-        lat: String(lat),
-        lng: String(lng),
-        radius: NEARBY_RADIUS_METERS,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      }).unwrap();
+      try {
+        const response = await getNearbyZones({
+          lat: String(lat),
+          lng: String(lng),
+          radius: NEARBY_RADIUS_METERS,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }).unwrap();
 
-      if (response.status === 'success' && response?.total_zones > 0) {
-        const nextZones = normalizeZonesResponse(response);
-        setZones(nextZones);
+        console.log('response park map screen---->', response);
 
-        const nextRegion = getRegionFromZones(nextZones);
-        if (nextRegion) {
-          setInitialRegion(nextRegion);
-          setRegion(nextRegion);
+        if (response.status === 'success' && response?.total_zones > 0) {
+          const nextZones = normalizeZonesResponse(response);
+          setZones(nextZones);
+        } else {
+          setZones([]);
+          Toast.show({
+            type: 'info',
+            text1: 'No curb zones found nearby.',
+          });
         }
-      } else {
+      } catch (err: any) {
         setZones([]);
         Toast.show({
-          type: 'info',
-          text1: 'No curb zones found nearby.',
+          type: 'error',
+          text1: 'Failed to load zones',
+          text2: err?.data?.message ?? 'Something went wrong',
         });
+      } finally {
+        setHasFetched(true);
       }
-    } catch (err: any) {
-      setZones([]);
-      Toast.show({
-        type: 'error',
-        text1: 'Failed to load zones',
-        text2: err?.data?.message ?? 'Something went wrong',
-      });
-    } finally {
-      setHasFetched(true);
-    }
-  }, [getNearbyZones]);
+    },
+    [
+      getNearbyZones,
+      location?.latitude,
+      location?.longitude,
+      region.latitude,
+      region.longitude,
+    ],
+  );
 
   const handleRefreshZones = useCallback(() => {
     stopFollowingUser();
     setSelectedZone(null);
-    fetchNearbyZones();
-  }, [fetchNearbyZones, stopFollowingUser]);
+    fetchNearbyZones({ lat: region.latitude, lng: region.longitude });
+  }, [fetchNearbyZones, region.latitude, region.longitude, stopFollowingUser]);
 
   useEffect(() => {
     fetchLocation();
-    fetchNearbyZones();
-  }, [fetchLocation, fetchNearbyZones]);
+  }, [fetchLocation]);
 
   useEffect(() => {
     if (!locationError) return;
@@ -205,25 +220,48 @@ const ParkMapScreen = () => {
   }, [locationError]);
 
   useEffect(() => {
+    if (hasInitializedLocationRef.current) return;
+    if (location?.latitude == null || location?.longitude == null) return;
+
+    hasInitializedLocationRef.current = true;
+
+    const next = regionFromCoords(location.latitude, location.longitude);
+    setInitialRegion(next);
+    setRegion(next);
+
+    if (mapReady) {
+      centerMapOnCoords(location.latitude, location.longitude);
+    }
+
+    fetchNearbyZones({ lat: location.latitude, lng: location.longitude });
+  }, [
+    centerMapOnCoords,
+    fetchNearbyZones,
+    location?.latitude,
+    location?.longitude,
+    mapReady,
+  ]);
+
+  useEffect(() => {
+    if (!mapReady || !hasInitializedLocationRef.current) return;
+    if (location?.latitude == null || location?.longitude == null) return;
+
+    centerMapOnCoords(location.latitude, location.longitude);
+  }, [centerMapOnCoords, location?.latitude, location?.longitude, mapReady]);
+
+  useEffect(() => {
+    if (!locationError || hasInitializedLocationRef.current) return;
+
+    hasInitializedLocationRef.current = true;
+    fetchNearbyZones();
+  }, [fetchNearbyZones, locationError]);
+
+  useEffect(() => {
     if (!shouldFollowUserRef.current) return;
     if (location?.latitude == null || location?.longitude == null) return;
 
-    const next = {
-      latitude: location.latitude,
-      longitude: location.longitude,
-      latitudeDelta: 0.004,
-      longitudeDelta: 0.004,
-    };
-    setRegion(next);
-    mapRef.current?.animateToRegion(next, 400);
-  }, [location?.latitude, location?.longitude]);
-
-  useEffect(() => {
-    if (!mapReady || polylines.length === 0) return;
-
-    const timer = setTimeout(fitMapToZones, 300);
-    return () => clearTimeout(timer);
-  }, [fitMapToZones, mapReady, polylines.length, zones.length]);
+    centerMapOnCoords(location.latitude, location.longitude);
+  }, [centerMapOnCoords, location?.latitude, location?.longitude]);
 
   const handlePolylinePress = useCallback((zone: CurbZoneItem) => {
     setSelectedZone(zone);
@@ -233,12 +271,16 @@ const ParkMapScreen = () => {
     setSelectedZone(null);
   }, []);
 
-  const selectedTheme = selectedZone
-    ? CURB_ZONE_STATUS_THEME[selectedZone.status]
+  const selectedRuleBadge = selectedZone
+    ? getPrimaryZoneRuleBadge(selectedZone)
     : null;
 
   const selectedRuleTheme = selectedZone
     ? getPrimaryRuleCardTheme(selectedZone)
+    : null;
+
+  const selectedRuleMessage = selectedZone
+    ? getPrimaryZoneRuleMessage(selectedZone)
     : null;
 
   return (
@@ -256,10 +298,7 @@ const ParkMapScreen = () => {
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         mapType={mapType}
         initialRegion={initialRegion}
-        onMapReady={() => {
-          setMapReady(true);
-          fitMapToZones();
-        }}
+        onMapReady={() => setMapReady(true)}
         onRegionChangeComplete={setRegion}
         showsUserLocation={hasPermission === true}
         showsCompass={false}
@@ -399,15 +438,15 @@ const ParkMapScreen = () => {
               <View
                 style={[
                   styles.statusBadge,
-                  { backgroundColor: selectedTheme?.badgeBg },
+                  { backgroundColor: selectedRuleBadge?.badgeBg },
                 ]}
               >
                 <AppText
                   font="medium"
                   size={13}
-                  color={selectedTheme?.badgeText}
+                  color={selectedRuleBadge?.badgeText}
                 >
-                  {getZoneStatusLabel(selectedZone)}
+                  {selectedRuleBadge?.label}
                 </AppText>
               </View>
               {selectedZone.target_line_color ? (
@@ -425,7 +464,7 @@ const ParkMapScreen = () => {
               ) : null}
             </View>
 
-            {selectedZone.primary_governing_rule ? (
+            {selectedRuleMessage ? (
               <View
                 style={[
                   styles.ruleCard,
@@ -453,10 +492,10 @@ const ParkMapScreen = () => {
                     color={selectedRuleTheme?.accentColor}
                     style={styles.ruleLabel}
                   >
-                    PRIMARY GOVERNING RULE
+                    PARKING STATUS
                   </AppText>
                   <AppText font="bold" size={15} color={Colors.primary}>
-                    {selectedZone.primary_governing_rule}
+                    {selectedRuleMessage}
                   </AppText>
                 </View>
               </View>

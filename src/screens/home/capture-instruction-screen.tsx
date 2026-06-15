@@ -30,6 +30,23 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
   const [uploadStatus, setUploadStatus] = useState('');
   const routeParams = route.params ?? {};
   const from = routeParams.from;
+  const { onCapture } = routeParams;
+
+  const clearRouteParams = () => {
+    if (route.params?.from || route.params?.onCapture) {
+      navigation.setParams({
+        from: undefined,
+        onCapture: undefined,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      clearRouteParams();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     return () => {
@@ -42,12 +59,9 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
   const uploadImageToS3 = async (uri: string) => {
     setIsUploading(true);
     setUploadStatus('Preparing image...');
-    console.time('[CaptureInstruction] s3-pipeline');
 
     try {
       const result = await processPickedImage(uri, setUploadStatus);
-      console.timeEnd('[CaptureInstruction] s3-pipeline');
-      console.log('[CaptureInstruction] s3Url ---->', result?.s3Url);
 
       // Toast.show({
       //   type: 'success',
@@ -57,8 +71,6 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
 
       return result;
     } catch (error: any) {
-      console.timeEnd('[CaptureInstruction] s3-pipeline');
-      console.log('[CaptureInstruction] S3 upload error ---->', error);
       Toast.show({
         type: 'error',
         text1: 'S3 Upload Failed',
@@ -72,9 +84,6 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
   };
 
   const uploadImageToApi = async (s3Url: string) => {
-    console.time('[CaptureInstruction] api-call');
-    console.log('[CaptureInstruction] api file_url ---->', s3Url);
-
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const shortTZ = moment().tz(timezone).format('z');
     const formData = new FormData();
@@ -83,8 +92,6 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
     formData.append('timezone', shortTZ);
 
     const result = await uploadImage({ formData }).unwrap();
-    console.timeEnd('[CaptureInstruction] api-call');
-    console.log('[CaptureInstruction] api result ---->', result);
 
     if (result?.status === true) {
       navigation.navigate(PATHS.Result, {
@@ -102,39 +109,26 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
   };
 
   const openCamera = async () => {
-    console.time('[CaptureInstruction] open-camera-total');
     const ok = await requestCameraPermission();
-    if (!ok) {
-      console.timeEnd('[CaptureInstruction] open-camera-total');
-      return;
-    }
+    if (!ok) return;
 
     try {
-      console.time('[CaptureInstruction] camera-capture');
       const res = await ImagePicker.openCamera(uploadImagePickerOptions);
-      console.timeEnd('[CaptureInstruction] camera-capture');
 
       const uri = res?.path;
-      if (!uri) {
-        console.timeEnd('[CaptureInstruction] open-camera-total');
-        return;
-      }
-      console.log('[CaptureInstruction] captured uri ---->', uri);
+      if (!uri) return;
 
       const uploadResult = await uploadImageToS3(uri);
-      if (!uploadResult?.s3Url) {
-        console.timeEnd('[CaptureInstruction] open-camera-total');
-        return;
-      }
+      if (!uploadResult?.s3Url) return;
       const previewUri = uploadResult.s3Url;
-      console.log('[CaptureInstruction] preview s3Url ---->', previewUri);
 
       if (from === 'Camera') {
-        console.timeEnd('[CaptureInstruction] open-camera-total');
-        navigation.navigate(PATHS.Camera, {
+        onCapture?.({
           capturedImageUri: previewUri,
           capturedS3Url: uploadResult.s3Url,
         });
+        clearRouteParams();
+        navigation.goBack();
         return;
       }
 
@@ -143,18 +137,13 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
       try {
         await uploadImageToApi(uploadResult.s3Url);
       } catch (error: any) {
-        console.log('[CaptureInstruction] api error ---->', error);
         Toast.show({
           type: 'error',
           text1: 'Error',
           text2: error?.data?.message || error?.message || 'Upload failed.',
         });
       }
-      console.timeEnd('[CaptureInstruction] open-camera-total');
     } catch (err: any) {
-      console.timeEnd('[CaptureInstruction] camera-capture');
-      console.timeEnd('[CaptureInstruction] open-camera-total');
-      console.log('[CaptureInstruction] camera error ---->', err);
       Toast.show({
         type: 'error',
         text1: 'Camera Error',
@@ -180,7 +169,10 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
         <TouchableOpacity
           style={styles.backButton}
           activeOpacity={0.8}
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            clearRouteParams();
+            navigation.goBack();
+          }}
           disabled={isUploading || isLoading}
         >
           <ChevronLeft size={22} color={Colors.darkBlue} />
