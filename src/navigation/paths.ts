@@ -29,6 +29,7 @@ export const PATHS = {
   CaptureInstruction: 'CaptureInstruction',
   GalleryDetails: 'GalleryDetails',
   Beta: 'Beta',
+  Beta2: 'Beta2',
   SelectCurbZone: 'SelectCurbZone',
   CurbSegment: 'CurbSegment',
   ParkMap: 'ParkMap',

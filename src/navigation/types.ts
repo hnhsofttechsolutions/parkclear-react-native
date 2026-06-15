@@ -43,6 +43,7 @@ export type RootStackParamList = {
   [PATHS.Update]: undefined;
   [PATHS.Camera]: undefined;
   [PATHS.GalleryDetails]: { imageUrl: string };
+  [PATHS.Beta2]: undefined;
 };
 
 export type HomeScreenProps = NativeStackScreenProps<
