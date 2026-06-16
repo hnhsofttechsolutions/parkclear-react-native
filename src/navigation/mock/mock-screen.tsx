@@ -25,6 +25,7 @@ import UpdateScreen from '../../screens/update-screen';
 import UploadPhotoScreen from '../../screens/upload-photo-screen';
 import { PATHS } from '../paths';
 import BetaScreen from '../../screens/Beta/Beta-Screen';
+import Beta2Screen from '../../screens/Beta/beta-2-screen';
 import CurbSegmentScreen from '../../screens/Beta/curb-segment-screen';
 import SelectCurbZoneScreen from '../../screens/Beta/select-curb-zone-screen';
 import ParkMapScreen from '../../screens/Beta/park-map-screen';
@@ -52,6 +53,7 @@ export const APP_SCREENS = [
   { name: PATHS.Result, component: ResultScreen },
   { name: PATHS.Trial, component: TrialScreen },
   { name: PATHS.Beta, component: BetaScreen },
+  { name: PATHS.Beta2, component: Beta2Screen },
   { name: PATHS.SelectCurbZone, component: SelectCurbZoneScreen },
   { name: PATHS.CurbSegment, component: CurbSegmentScreen },
   { name: PATHS.ParkMap, component: ParkMapScreen },

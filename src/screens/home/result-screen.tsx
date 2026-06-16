@@ -21,6 +21,7 @@ import { useGetAdStatusQuery } from '../../store/api/settingApi';
 import { RootState } from '../../store/store';
 import { Colors, Gradient } from '../../utils/colors';
 import { FontFamily } from '../../utils/fonts';
+import Toast from 'react-native-toast-message';
 
 const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   const {
@@ -64,6 +65,13 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   };
 
   const handleConfirmReminder = () => {
+    if (!arrowSide && has_arrow) {
+      Toast.show({
+        type: 'info',
+        text1: 'Please select an arrow side.',
+      });
+      return;
+    }
     setShowReminderModal(true);
   };
 

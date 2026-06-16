@@ -1,5 +1,5 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { Bell, CpuIcon, HomeIcon } from 'lucide-react-native';
+import { Bell, CpuIcon, Globe, HomeIcon } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -189,13 +189,16 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                     onPress={() => navigateTo(PATHS.ActiveAlert)}
                   />
                 )}
-                {/* {__DEV__ && ( */}
-                  <DrawerRow
-                    icon={<CpuIcon color="white" size={25} />}
-                    label={'Beta'}
-                    onPress={() => navigateTo(PATHS.Beta)}
-                  />
-                {/* )} */}
+                {/* <DrawerRow
+                  icon={<CpuIcon color="white" size={25} />}
+                  label={'Beta'}
+                  onPress={() => navigateTo(PATHS.Beta)}
+                />
+                <DrawerRow
+                  icon={<Globe color="white" size={25} />}
+                  label={'Beta 2'}
+                  onPress={() => navigateTo(PATHS.Beta2)}
+                /> */}
                 <View style={{ flex: 1 }} />
                 <DrawerRow
                   icon={<LogoutIcon width={25} height={25} />}
