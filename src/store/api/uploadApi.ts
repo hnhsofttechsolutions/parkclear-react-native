@@ -1,7 +1,28 @@
 import { baseApi } from './baseApi';
 
+export type GenerateS3PresignedUrlData = {
+  presigned_put_url: string;
+  file_url: string;
+  object_key: string;
+};
+
+export type GenerateS3PresignedUrlResponse = {
+  status: boolean;
+  message: string;
+  data: GenerateS3PresignedUrlData;
+};
+
 export const uploadApi = baseApi.injectEndpoints({
   endpoints: builder => ({
+    generateS3PresignedUrl: builder.query<
+      GenerateS3PresignedUrlResponse,
+      { fileExtension?: string }
+    >({
+      query: ({ fileExtension = 'jpg' } = {}) => ({
+        url: 'authentication/v1/user/generate_s3_presigned_url/',
+        params: { file_extension: fileExtension },
+      }),
+    }),
     uploadImage: builder.mutation<any, any>({
       query: ({ formData }: any) => ({
         url: 'authentication/v1/parking-sign-analysis/',
@@ -92,6 +113,8 @@ export const uploadApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGenerateS3PresignedUrlQuery,
+  useLazyGenerateS3PresignedUrlQuery,
   useUploadImageMutation,
   useUploadCustomImageMutation,
   useGetUploadImageQuery,

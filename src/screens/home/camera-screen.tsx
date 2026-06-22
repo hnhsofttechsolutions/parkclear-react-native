@@ -26,8 +26,12 @@ import {
 } from '../../components/ui/gradient-button';
 import { PATHS } from '../../navigation/paths';
 import { processPickedImage } from '../../services/s3/processPickedImage';
+import { parsePresignedUrlResponse } from '../../services/s3/uploadToS3';
 import { uploadImagePickerOptions } from '../../utils/compressImage';
-import { useUploadCustomImageMutation } from '../../store/api/uploadApi';
+import {
+  useLazyGenerateS3PresignedUrlQuery,
+  useUploadCustomImageMutation,
+} from '../../store/api/uploadApi';
 import { Colors, Gradient } from '../../utils/colors';
 import { formatDateToYYYYMMDD, formatTimeToAMPM } from '../../utils/helpers';
 
@@ -35,6 +39,7 @@ const { height } = Dimensions.get('window');
 
 const CameraScreen = ({ navigation, route }: any) => {
   const [uploadImage, { isLoading }] = useUploadCustomImageMutation();
+  const [fetchPresignedUrl] = useLazyGenerateS3PresignedUrlQuery();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedS3Url, setSelectedS3Url] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -60,7 +65,15 @@ const CameraScreen = ({ navigation, route }: any) => {
     setUploadStatus('Preparing image...');
 
     try {
-      const result = await processPickedImage(uri, setUploadStatus);
+      const result = await processPickedImage(uri, {
+        onStatus: setUploadStatus,
+        getPresignedUrls: async () => {
+          const response = await fetchPresignedUrl({
+            fileExtension: 'jpg',
+          }).unwrap();
+          return parsePresignedUrlResponse(response);
+        },
+      });
 
       // Toast.show({
       //   type: 'success',
@@ -70,6 +83,12 @@ const CameraScreen = ({ navigation, route }: any) => {
 
       return result;
     } catch (error: any) {
+      console.log('[Upload] camera-screen uploadImageToS3 error:', {
+        message: error?.message,
+        status: error?.status,
+        data: error?.data,
+        error,
+      });
       Toast.show({
         type: 'error',
         text1: 'S3 Upload Failed',

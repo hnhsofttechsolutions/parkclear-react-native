@@ -2,12 +2,6 @@
  * @format
  */
 
-import 'react-native-get-random-values';
-import 'react-native-url-polyfill/auto';
-import { Buffer } from 'buffer';
-
-global.Buffer = global.Buffer ?? Buffer;
-
 import notifee, { EventType } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 import { AppRegistry } from 'react-native';

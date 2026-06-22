@@ -1,78 +1,65 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { awsConfig, getS3PublicUrl, isAwsS3Configured } from '../../config/aws';
-import { readLocalFileAsUint8Array } from '../../utils/readLocalFile';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+import type { GenerateS3PresignedUrlResponse } from '../../store/api/uploadApi';
+
+const LOG = '[Upload]';
 
 export type S3UploadParams = {
   uri: string;
-  fileName: string;
+  presignedUrl: string;
+  publicUrl: string;
   contentType?: string;
-  folder?: string;
+  onStatus?: (message: string) => void;
 };
 
 export type S3UploadResult = {
-  key: string;
   url: string;
-  bucket: string;
 };
 
-let s3Client: S3Client | null = null;
-
-function buildObjectKey(fileName: string, folder?: string): string {
-  const baseFolder = (folder ?? awsConfig.folder).replace(/\/+$/, '');
-  const timestamp = Date.now();
-  const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
-
-  return `${baseFolder}/${timestamp}-${safeName}`;
-}
-
-function getS3Client(): S3Client {
-  if (!isAwsS3Configured()) {
-    throw new Error(
-      'AWS S3 is not configured. Add credentials to your .env file.',
-    );
+function normalizeUploadPath(uri: string): string {
+  if (uri.startsWith('file://') || uri.startsWith('content://')) {
+    return uri;
   }
 
-  if (!s3Client) {
-    s3Client = new S3Client({
-      region: awsConfig.region,
-      credentials: {
-        accessKeyId: awsConfig.accessKeyId,
-        secretAccessKey: awsConfig.secretAccessKey,
-      },
-    });
-  }
-
-  return s3Client;
+  return `file://${uri}`;
 }
 
-async function uploadBodyToS3(
-  key: string,
-  body: Uint8Array,
+export function parsePresignedUrlResponse(
+  response: GenerateS3PresignedUrlResponse,
+): { presignedUrl: string; publicUrl: string } {
+  const { presigned_put_url, file_url } = response.data ?? {};
+
+  if (typeof presigned_put_url !== 'string' || typeof file_url !== 'string') {
+    throw new Error('Could not get upload URL from server.');
+  }
+
+  return {
+    presignedUrl: presigned_put_url,
+    publicUrl: file_url,
+  };
+}
+
+async function uploadBodyToPresignedUrl(
+  presignedUrl: string,
+  fileUri: string,
   contentType: string,
 ): Promise<void> {
-  const command = new PutObjectCommand({
-    Bucket: awsConfig.bucket,
-    Key: key,
-    ContentType: contentType,
-  });
+  const path = normalizeUploadPath(fileUri);
 
-  const presignedUrl = await getSignedUrl(getS3Client(), command, {
-    expiresIn: 300,
-  });
-
-  const response = await fetch(presignedUrl, {
-    method: 'PUT',
-    headers: {
+  const response = await ReactNativeBlobUtil.fetch(
+    'PUT',
+    presignedUrl,
+    {
       'Content-Type': contentType,
     },
-    body,
-  });
+    ReactNativeBlobUtil.wrap(path),
+  );
 
-  if (!response.ok) {
-    const responseText = await response.text().catch(() => '');
+  const status = response.info().status;
+
+  if (status !== 200 && status !== 204) {
+    const responseText = response.text();
     throw new Error(
-      `S3 upload failed (${response.status}). ${responseText || 'Check AWS credentials and bucket settings.'}`,
+      `Upload failed (${status}). ${responseText || 'Please try again.'}`,
     );
   }
 }
@@ -80,25 +67,25 @@ async function uploadBodyToS3(
 export async function uploadFileToS3(
   params: S3UploadParams,
 ): Promise<S3UploadResult> {
-  const contentType = params.contentType ?? 'image/jpeg';
-  const key = buildObjectKey(params.fileName, params.folder);
-  const body = await readLocalFileAsUint8Array(params.uri);
+  const contentType = params.contentType ?? 'image/jpg';
+
+  params.onStatus?.('Uploading image...');
 
   try {
-    await uploadBodyToS3(key, body, contentType);
+    await uploadBodyToPresignedUrl(
+      params.presignedUrl,
+      params.uri,
+      contentType,
+    );
   } catch (error: any) {
     if (error?.message?.includes('Network request failed')) {
       throw new Error(
-        'Network request failed. Check internet connection and AWS .env values, then rebuild the app.',
+        'Network request failed. Check your internet connection and try again.',
       );
     }
 
     throw error;
   }
 
-  return {
-    key,
-    url: getS3PublicUrl(key),
-    bucket: awsConfig.bucket,
-  };
+  return { url: params.publicUrl };
 }
