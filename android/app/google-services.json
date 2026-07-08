@@ -1,45 +1,45 @@
 {
   "project_info": {
-    "project_number": "429728101706",
-    "project_id": "parkclear-e23b2",
-    "storage_bucket": "parkclear-e23b2.firebasestorage.app"
+    "project_number": "537777711724",
+    "project_id": "parkclear-e22e5",
+    "storage_bucket": "parkclear-e22e5.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:429728101706:android:428df29525ba629e98fdb3",
+        "mobilesdk_app_id": "1:537777711724:android:ead085a0559bd8b0f5c649",
         "android_client_info": {
           "package_name": "com.app.parkclear"
         }
       },
       "oauth_client": [
         {
-          "client_id": "429728101706-90vcl3c8iokcf2kt2uqq1koasu6rkn9j.apps.googleusercontent.com",
+          "client_id": "537777711724-1oo130hfm4pbld10qu1nfereeth3qm6e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.app.parkclear",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "d9e014cf8c613d69b4409967ff04c821b3d34718"
           }
         },
         {
-          "client_id": "429728101706-pa4t6569okuiqtj5eond0n77a48t7rba.apps.googleusercontent.com",
+          "client_id": "537777711724-t4tej50rs9h787ihjm45as1h2n4jnhs3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBI2HVSJjuXIPO-yjK1LfiMx5JuGMCPJvA"
+          "current_key": "AIzaSyBWm5Gb0j4w5_OnHF8fJMo9QpkFytRA96M"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "429728101706-pa4t6569okuiqtj5eond0n77a48t7rba.apps.googleusercontent.com",
+              "client_id": "537777711724-t4tej50rs9h787ihjm45as1h2n4jnhs3.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "429728101706-5nep6pdopculmj4pqpvm895f7kc1ijo1.apps.googleusercontent.com",
+              "client_id": "537777711724-hch9r3kebq56u3schpfu8dvoaektjg6v.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.app.parkclear",

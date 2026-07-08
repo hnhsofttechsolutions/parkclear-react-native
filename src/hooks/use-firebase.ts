@@ -63,6 +63,7 @@ export const useFirebase = (): UseFirebaseReturn => {
 
       if (!permission) return;
       const token = await messaging().getToken();
+      console.log('FCM token', token);
       setFcmToken(token);
       const initialNotif = await messaging().getInitialNotification();
       if (initialNotif) {

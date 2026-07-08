@@ -32,9 +32,7 @@ function SignInForm({ navigation }: any) {
       Object.keys(values).forEach(key => {
         formData.append(key, values[key]);
       });
-      console.log('formData login form---->', formData);
       const response = await login({ formData }).unwrap();
-      console.log('response---->', response);
       if (response?.status) {
         dispatch(
           setCredentials({

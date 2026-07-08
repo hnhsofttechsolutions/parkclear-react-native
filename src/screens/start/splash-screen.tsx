@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Image, StyleSheet } from 'react-native';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
+import { PATHS } from '../../navigation/paths';
+import { logScreenView } from '../../utils/analytics-service';
 import { Colors } from '../../utils/colors';
 
 const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -8,6 +10,8 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
   const opacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
+    logScreenView(PATHS.Splash);
+
     Animated.timing(scale, {
       toValue: 1,
       duration: 1500,
