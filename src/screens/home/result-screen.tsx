@@ -65,7 +65,7 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
   };
 
   const handleConfirmReminder = () => {
-    if (!arrowSide && has_arrow) {
+    if (!arrowSide && right_end_time_iso && left_end_time_iso && has_arrow) {
       Toast.show({
         type: 'info',
         text1: 'Please select an arrow side.',

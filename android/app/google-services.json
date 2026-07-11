@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "537777711724-gfp938v8cn7lenu2frst24r7i16qlvj5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.parkclear",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "537777711724-hdn124ejc6ljrrvuqjoums7ajiga3lg9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.parkclear",
+            "certificate_hash": "d6f84f44783d0d749a16dda13f1b2503607f02a4"
+          }
+        },
+        {
           "client_id": "537777711724-t4tej50rs9h787ihjm45as1h2n4jnhs3.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react';
-import messaging, {
+import {
+  AuthorizationStatus,
   FirebaseMessagingTypes,
+  getInitialNotification,
+  getMessaging,
+  getToken,
+  onMessage,
+  onNotificationOpenedApp,
+  onTokenRefresh,
+  registerDeviceForRemoteMessages,
+  requestPermission,
 } from '@react-native-firebase/messaging';
 import { AppState, PermissionsAndroid, Platform } from 'react-native';
 import {
@@ -8,20 +17,66 @@ import {
   setupNotificationChannel,
   syncIosBadgeWithActiveAlerts,
 } from '../utils/notification-service';
+import {
+  getCachedFcmToken,
+  setCachedFcmToken,
+  subscribeFcmToken,
+} from '../utils/fcm-token';
+
+const messaging = getMessaging();
+
+let fcmInitPromise: Promise<void> | null = null;
 
 const requestNotificationPermission = async (): Promise<boolean> => {
-  if (Platform.OS === 'android' && Platform.Version >= 33) {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-    );
-    return granted === PermissionsAndroid.RESULTS.GRANTED;
+  if (Platform.OS === 'android') {
+    if (Platform.Version >= 33) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+
+    return true;
   }
 
-  const authStatus = await messaging().requestPermission();
+  const authStatus = await requestPermission(messaging);
   return (
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    authStatus === AuthorizationStatus.AUTHORIZED ||
+    authStatus === AuthorizationStatus.PROVISIONAL
   );
+};
+
+const initFcm = async () => {
+  try {
+    const permission = await requestNotificationPermission();
+    console.log('[FCM] permission granted:', permission);
+
+    if (!permission) {
+      console.warn('[FCM] Notification permission denied — token not fetched');
+      return;
+    }
+
+    await setupNotificationChannel();
+
+    if (Platform.OS === 'ios') {
+      await registerDeviceForRemoteMessages(messaging);
+      await syncIosBadgeWithActiveAlerts();
+    }
+
+    const token = await getToken(messaging);
+    console.log('[FCM] token', token);
+    setCachedFcmToken(token);
+  } catch (error) {
+    console.error('[FCM] init failed', error);
+  }
+};
+
+const ensureFcmInitialized = () => {
+  if (!fcmInitPromise) {
+    fcmInitPromise = initFcm();
+  }
+
+  return fcmInitPromise;
 };
 
 type UseFirebaseReturn = {
@@ -33,9 +88,9 @@ type UseFirebaseReturn = {
 };
 
 export const useFirebase = (): UseFirebaseReturn => {
-  const [fcmToken, setFcmToken] = useState<string | null>(null);
+  const [fcmToken, setFcmToken] = useState<string | null>(getCachedFcmToken());
+  const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
 
-  // ✅ Correct types
   const [foregroundNotification, setForegroundNotification] =
     useState<FirebaseMessagingTypes.RemoteMessage | null>(null);
 
@@ -45,52 +100,44 @@ export const useFirebase = (): UseFirebaseReturn => {
   const [quitNotification, setQuitNotification] =
     useState<FirebaseMessagingTypes.RemoteMessage | null>(null);
 
-  const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
-
   useEffect(() => {
-    // 1. Quit
-    const init = async () => {
-      const permission = await requestNotificationPermission();
-      setPermissionGranted(permission);
+    const unsubscribeToken = subscribeFcmToken(setFcmToken);
 
-      if (permission) {
-        await setupNotificationChannel();
-        if (Platform.OS === 'ios') {
-          await messaging().registerDeviceForRemoteMessages();
-          await syncIosBadgeWithActiveAlerts();
+    void ensureFcmInitialized().then(async () => {
+      setPermissionGranted(Boolean(getCachedFcmToken()));
+
+      try {
+        const initialNotif = await getInitialNotification(messaging);
+        if (initialNotif) {
+          setQuitNotification(initialNotif);
         }
+      } catch (error) {
+        console.error('[FCM] getInitialNotification failed', error);
       }
+    });
 
-      if (!permission) return;
-      const token = await messaging().getToken();
-      console.log('FCM token', token);
-      setFcmToken(token);
-      const initialNotif = await messaging().getInitialNotification();
-      if (initialNotif) {
-        setQuitNotification(initialNotif);
-      }
-    };
-    init();
-
-    // 2. Foreground
-    const unsubscribeForeground = messaging().onMessage(
+    const unsubscribeForeground = onMessage(
+      messaging,
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+        console.log('[FCM] foreground message', remoteMessage);
         setForegroundNotification(remoteMessage);
         await displayNotification(remoteMessage, 'foreground');
       },
     );
 
-    // 3. Background
-    const unsubscribeBackground = messaging().onNotificationOpenedApp(
+    const unsubscribeBackground = onNotificationOpenedApp(
+      messaging,
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+        console.log('[FCM] opened from background', remoteMessage);
         setBackgroundNotification(remoteMessage);
       },
     );
 
-    // Token refresh
-    const unsubscribeTokenRefresh = messaging().onTokenRefresh(
+    const unsubscribeTokenRefresh = onTokenRefresh(
+      messaging,
       (token: string) => {
-        setFcmToken(token);
+        console.log('[FCM] token refreshed', token);
+        setCachedFcmToken(token);
       },
     );
 
@@ -101,6 +148,7 @@ export const useFirebase = (): UseFirebaseReturn => {
     });
 
     return () => {
+      unsubscribeToken();
       unsubscribeForeground();
       unsubscribeBackground();
       unsubscribeTokenRefresh();

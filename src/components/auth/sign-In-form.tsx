@@ -8,6 +8,7 @@ import { FlutterStrings } from '../../constants/flutterStrings';
 import { loginSchema } from '../../schema/authSchema';
 import { useLoginMutation } from '../../store/api/authApi';
 import { setCredentials } from '../../store/slices/authSlice';
+import { logLoginSuccess } from '../../utils/analytics-service';
 import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
 import { AppTextField } from '../ui/app-text-field';
@@ -16,24 +17,25 @@ import { GradientButton } from '../ui/gradient-button';
 import PhonePrefix from '../ui/phone-prefix';
 import ForgotPasswordForm from './forgot-password-form';
 import SocialButtons from './social-button';
-import { useFirebase } from '../../hooks/use-firebase';
+import { getCachedFcmToken } from '../../utils/fcm-token';
 
 function SignInForm({ navigation }: any) {
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const [securePassword, setSecurePassword] = useState(true);
   const [isForgotVisible, setIsForgotVisible] = useState(false);
-  const { fcmToken } = useFirebase();
 
   const handleLogin = async (values: any) => {
     try {
+      const fcmToken = getCachedFcmToken();
       const formData = new FormData();
-      formData.append('fcm_token', fcmToken);
+      formData.append('fcm_token', fcmToken ?? '');
       Object.keys(values).forEach(key => {
         formData.append(key, values[key]);
       });
       const response = await login({ formData }).unwrap();
       if (response?.status) {
+        void logLoginSuccess(response?.data?.id, 'email');
         dispatch(
           setCredentials({
             token: response?.access_token,
@@ -128,7 +130,7 @@ function SignInForm({ navigation }: any) {
               {FlutterStrings.orSignInWith}
             </AppText>
             <View style={{ height: 15 }} />
-            <SocialButtons />
+            <SocialButtons mode="login" />
           </View>
         )}
       </Formik>

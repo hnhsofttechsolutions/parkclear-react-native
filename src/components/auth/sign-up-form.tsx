@@ -6,7 +6,7 @@ import Toast from 'react-native-toast-message';
 import EmailImg from '../../assets/images/email.svg';
 import UserImg from '../../assets/images/user_img.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
-import { useFirebase } from '../../hooks/use-firebase';
+import { getCachedFcmToken } from '../../utils/fcm-token';
 import { signUpSchema } from '../../schema/authSchema';
 import { useSignupMutation } from '../../store/api/authApi';
 import { Colors } from '../../utils/colors';
@@ -19,15 +19,15 @@ import PhonePrefix from '../ui/phone-prefix';
 import SocialButtons from './social-button';
 
 function SignUpForm({ navigation }: any) {
-  const { fcmToken } = useFirebase();
   const [signup, { isLoading }] = useSignupMutation();
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
   const [securePassword, setSecurePassword] = useState(true);
 
   const handleSignUp = async (values: any) => {
     try {
+      const fcmToken = getCachedFcmToken();
       const formData = new FormData();
-      formData.append('fcm_token', fcmToken);
+      formData.append('fcm_token', fcmToken ?? '');
       Object.keys(values).forEach(key => {
         formData.append(key, values[key]);
       });
@@ -156,7 +156,7 @@ function SignUpForm({ navigation }: any) {
                 {FlutterStrings.orSignInWith}
               </AppText>
               <View style={{ height: 15 }} />
-              <SocialButtons />
+              <SocialButtons mode="signup" />
             </View>
             <RegisterModal
               isVisible={isRegisterVisible}

@@ -8,14 +8,23 @@ const REVENUECAT_API_KEY = Platform.select({
   android: 'goog_QEsNqmtAzOJzkLobdZwIiVSEZpY',
 });
 
+let isConfigured = false;
+let lastLoggedInUserId: string | undefined;
+
 export const initRevenueCat = async (userId?: string) => {
   try {
     if (!REVENUECAT_API_KEY) {
       throw new Error('RevenueCat key missing');
     }
-    Purchases.configure({ apiKey: REVENUECAT_API_KEY });
-    if (userId) {
+
+    if (!isConfigured) {
+      Purchases.configure({ apiKey: REVENUECAT_API_KEY });
+      isConfigured = true;
+    }
+
+    if (userId && String(userId) !== lastLoggedInUserId) {
       await Purchases.logIn(String(userId));
+      lastLoggedInUserId = String(userId);
     }
   } catch (error) {
     console.log('RC Init Error:', error);
@@ -69,10 +78,6 @@ export const handlePaywallResult = async (result: PAYWALL_RESULT) => {
       break;
     case PAYWALL_RESULT.CANCELLED:
       console.log('Cancelled');
-      // Toast.show({
-      //   type: 'info',
-      //   text1: 'Cancelled',
-      // });
       break;
     case PAYWALL_RESULT.ERROR:
       Toast.show({

@@ -7,20 +7,23 @@ import { useDispatch } from 'react-redux';
 import AppleLogo from '../../assets/images/apple.svg';
 import GoogleLogo from '../../assets/images/google_logo.svg';
 import { FlutterStrings } from '../../constants/flutterStrings';
-import { useFirebase } from '../../hooks/use-firebase';
+import { getCachedFcmToken } from '../../utils/fcm-token';
 import {
   useAppleLoginMutation,
   useGoogleLoginMutation,
 } from '../../store/api/authApi';
 import { setCredentials } from '../../store/slices/authSlice';
+import {
+  logLoginSuccess,
+  logSignupSuccess,
+} from '../../utils/analytics-service';
 import { Colors } from '../../utils/colors';
 import AppText from '../ui/app-text';
 import { GreyPillButton } from '../ui/gradient-button';
 import PageLoader from '../ui/page-loader';
 
-function SocialButtons() {
+function SocialButtons({ mode = 'login' }: { mode?: 'login' | 'signup' }) {
   const dispatch = useDispatch();
-  const { fcmToken } = useFirebase();
   const [googleLogin, { isLoading: isLoadingGoogle }] =
     useGoogleLoginMutation();
   const [appleLogin, { isLoading: isLoadingApple }] = useAppleLoginMutation();
@@ -33,14 +36,17 @@ function SocialButtons() {
       const result = (await GoogleSignin.signIn()) as any;
       console.log('result---->', result);
       const token = result?.data?.idToken;
+      const fcmToken = getCachedFcmToken();
       const formData = new FormData();
-      formData.append('fcm_token', fcmToken);
+      formData.append('fcm_token', fcmToken ?? '');
       formData.append('token', token);
       formData.append('given_name', result?.data?.user?.givenName);
       formData.append('family_name', result?.data?.user?.familyName);
       console.log('formData google button---->', formData);
       const response = await googleLogin({ formData }).unwrap();
       if (response?.status) {
+        const trackAuth = mode === 'signup' ? logSignupSuccess : logLoginSuccess;
+        void trackAuth(response?.data?.id, 'google');
         dispatch(
           setCredentials({
             token: response?.access_token,
@@ -71,8 +77,9 @@ function SocialButtons() {
 
       console.log('appleAuthRequestResponse---->', appleAuthRequestResponse);
 
+      const fcmToken = getCachedFcmToken();
       const formData = new FormData();
-      formData.append('fcm_token', fcmToken);
+      formData.append('fcm_token', fcmToken ?? '');
       formData.append('token', appleAuthRequestResponse?.identityToken);
       formData.append(
         'first_name',
@@ -85,6 +92,8 @@ function SocialButtons() {
       console.log('formData apple button---->', formData);
       const response = await appleLogin({ formData }).unwrap();
       if (response?.status) {
+        const trackAuth = mode === 'signup' ? logSignupSuccess : logLoginSuccess;
+        void trackAuth(response?.data?.id, 'apple');
         dispatch(
           setCredentials({
             token: response?.access_token,

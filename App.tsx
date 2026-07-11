@@ -1,21 +1,20 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useColorScheme } from 'react-native';
+import { AppState, AppStateStatus, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import SpInAppUpdates from 'sp-react-native-in-app-updates';
 import { AdSdkInitializer } from './src/components/ad-sdk-initializer';
 import { useFirebase } from './src/hooks/use-firebase';
-import { navigate, navigationRef } from './src/navigation/RootNavigation';
-import { PATHS } from './src/navigation/paths';
+import { navigationRef } from './src/navigation/RootNavigation';
 import StackNavigation from './src/navigation/stack-navigation';
 import { persistor, store } from './src/store/store';
 import {
   initAnalytics,
+  logScreenDwellTime,
   logScreenView,
 } from './src/utils/analytics-service';
 import { MyDarkTheme, MyLightTheme } from './src/utils/colors';
@@ -24,26 +23,38 @@ function App() {
   const isDark = useColorScheme() === 'dark';
   const {} = useFirebase();
   const routeNameRef = useRef<string | undefined>(undefined);
-  const inAppUpdates = new SpInAppUpdates(__DEV__ ?? false);
+  const startTimeRef = useRef(Date.now());
+  const appStateRef = useRef<AppStateStatus>(AppState.currentState);
 
   useEffect(() => {
     initAnalytics();
   }, []);
 
-  const checkUpdate = async () => {
-    try {
-      if (__DEV__) {
-        navigate(PATHS.Update);
-        return;
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      const currentScreen = navigationRef.isReady()
+        ? navigationRef.getCurrentRoute()?.name
+        : undefined;
+
+      if (
+        appStateRef.current === 'active' &&
+        nextAppState.match(/inactive|background/)
+      ) {
+        void logScreenDwellTime(currentScreen, startTimeRef.current);
+      } else if (
+        appStateRef.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        startTimeRef.current = Date.now();
       }
-      const result = await inAppUpdates.checkNeedsUpdate();
-      if (result.shouldUpdate) {
-        navigate(PATHS.Update);
-      }
-    } catch (error) {
-      console.log('Update check failed (Normal in dev):', error);
-    }
-  };
+
+      appStateRef.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   GoogleSignin.configure({
     webClientId:
@@ -51,18 +62,39 @@ function App() {
   });
 
   const trackCurrentScreen = useCallback(() => {
-    const currentRoute = navigationRef.getCurrentRoute()?.name;
-
-    if (currentRoute && routeNameRef.current !== currentRoute) {
-      routeNameRef.current = currentRoute;
-      logScreenView(currentRoute);
+    if (!navigationRef.isReady()) {
+      return;
     }
+
+    const previousRouteName = routeNameRef.current;
+    const currentRouteName = navigationRef.getCurrentRoute()?.name;
+
+    if (!currentRouteName || previousRouteName === currentRouteName) {
+      return;
+    }
+
+    if (previousRouteName) {
+      void logScreenDwellTime(previousRouteName, startTimeRef.current);
+    }
+
+    routeNameRef.current = currentRouteName;
+    startTimeRef.current = Date.now();
+    void logScreenView(currentRouteName);
   }, []);
 
   const onNavigationReady = useCallback(() => {
-    checkUpdate();
-    trackCurrentScreen();
-  }, [trackCurrentScreen]);
+    if (!navigationRef.isReady()) {
+      return;
+    }
+
+    const currentRouteName = navigationRef.getCurrentRoute()?.name;
+    routeNameRef.current = currentRouteName;
+    startTimeRef.current = Date.now();
+
+    if (currentRouteName) {
+      void logScreenView(currentRouteName);
+    }
+  }, []);
 
   const onNavigationStateChange = useCallback(() => {
     trackCurrentScreen();

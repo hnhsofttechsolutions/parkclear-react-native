@@ -15,6 +15,7 @@ import { GradientButton } from '../../components/ui/gradient-button';
 import { FlutterStrings } from '../../constants/flutterStrings';
 import { PATHS } from '../../navigation/paths';
 import { useOtpRegisterMutation } from '../../store/api/authApi';
+import { logSignupSuccess } from '../../utils/analytics-service';
 import { Colors } from '../../utils/colors';
 
 const CELL_COUNT = 5;
@@ -43,6 +44,7 @@ const OtpRegisterScreen = ({ navigation, route }: any) => {
       formData.append('otp', value);
       const response = await useOtpRegister({ formData }).unwrap();
       if (response?.status) {
+        void logSignupSuccess(response?.data?.id, 'email');
         Toast.show({
           type: 'success',
           text1: 'Verified Successfully!',

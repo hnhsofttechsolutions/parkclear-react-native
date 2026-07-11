@@ -4,12 +4,25 @@ import { settingApi } from '../store/api/settingApi';
 import { store } from '../store/store';
 
 /** Android: res/raw/noti_tune.mp3 — filename without extension */
-export const NOTIFICATION_CHANNEL_ID = 'parkclear_alerts';
+export const NOTIFICATION_CHANNEL_ID = 'parkclear_alerts_v2';
+const LEGACY_ANDROID_CHANNEL_IDS = ['parkclear_alerts'];
 const ANDROID_SOUND = 'noti_tune';
 /** iOS bundle resource — must match Copy Bundle Resources + aps.sound on push */
 export const IOS_NOTIFICATION_SOUND = 'noti_tune.caf';
 
+/** Notifee: even count, all positive — [vibrateMs, pauseMs, vibrateMs, pauseMs] */
+const ANDROID_VIBRATION_PATTERN = [300, 200, 300, 200];
+
 let channelReady = false;
+
+function getAndroidNotificationId(remoteMessage: any): string {
+  return (
+    remoteMessage?.messageId ??
+    remoteMessage?.data?.notification_id ??
+    remoteMessage?.data?.id ??
+    `parkclear-${Date.now()}`
+  );
+}
 
 export async function setupNotificationChannel(): Promise<string> {
   if (channelReady) {
@@ -17,12 +30,23 @@ export async function setupNotificationChannel(): Promise<string> {
   }
 
   await notifee.requestPermission();
-  await notifee.createChannel({
-    id: NOTIFICATION_CHANNEL_ID,
-    name: 'ParkClear Alerts',
-    importance: AndroidImportance.HIGH,
-    sound: ANDROID_SOUND,
-  });
+
+  for (const legacyChannelId of LEGACY_ANDROID_CHANNEL_IDS) {
+    await notifee.deleteChannel(legacyChannelId);
+  }
+
+  const existingChannel = await notifee.getChannel(NOTIFICATION_CHANNEL_ID);
+  if (existingChannel == null) {
+    await notifee.createChannel({
+      id: NOTIFICATION_CHANNEL_ID,
+      name: 'ParkClear Alerts',
+      importance: AndroidImportance.HIGH,
+      sound: ANDROID_SOUND,
+      vibration: true,
+      vibrationPattern: ANDROID_VIBRATION_PATTERN,
+    });
+  }
+
   channelReady = true;
   return NOTIFICATION_CHANNEL_ID;
 }
@@ -33,7 +57,7 @@ type NotificationDisplayContext = 'foreground' | 'background';
  * Foreground: Notifee shows alert + custom sound (iOS/Android).
  * Background/killed iOS: OS shows FCM notification — sound only if server sends
  *   apns.payload.aps.sound = "noti_tune.caf" (see fcm-ios-push-payload.ts).
- * Background Android: skip Notifee when FCM already includes `notification` (no duplicate).
+ * Background Android: always Notifee so vibration/sound stay under app control.
  */
 export function shouldDisplayWithNotifee(
   remoteMessage: any,
@@ -43,8 +67,8 @@ export function shouldDisplayWithNotifee(
     return true;
   }
 
-  if (Platform.OS === 'ios') {
-    return remoteMessage?.notification == null;
+  if (Platform.OS === 'android') {
+    return true;
   }
 
   return remoteMessage?.notification == null;
@@ -125,21 +149,28 @@ async function applyIosBadgeFromPush(
 }
 
 function getNotificationContent(remoteMessage: any): {
-  title?: string;
-  body?: string;
+  title: string;
+  body: string;
 } {
   const data = remoteMessage?.data ?? {};
-  return {
-    title:
-      remoteMessage?.notification?.title ??
-      data.title ??
-      data.notification_title,
-    body:
-      remoteMessage?.notification?.body ??
-      data.body ??
-      data.notification_body ??
-      data.message,
-  };
+  const title =
+    remoteMessage?.notification?.title ??
+    data.title ??
+    data.notification_title ??
+    data.subject ??
+    'ParkClear';
+
+  const body =
+    remoteMessage?.notification?.body ??
+    data.body ??
+    data.notification_body ??
+    data.message ??
+    data.alert ??
+    data.text ??
+    data.content ??
+    '';
+
+  return { title, body };
 }
 
 export async function displayNotification(
@@ -164,19 +195,24 @@ export async function displayNotification(
 
   const { title, body } = getNotificationContent(remoteMessage);
 
-  if (!title || !body) {
+  if (!body) {
+    console.warn('[FCM] Skipping notification — no body in payload', remoteMessage);
     return;
   }
 
   const channelId = await setupNotificationChannel();
   const badgeCount = parseBadgeFromMessage(remoteMessage);
+  const notificationId = getAndroidNotificationId(remoteMessage);
 
   await notifee.displayNotification({
+    id: notificationId,
     title,
     body,
     android: {
       channelId,
+      importance: AndroidImportance.HIGH,
       sound: ANDROID_SOUND,
+      vibrationPattern: ANDROID_VIBRATION_PATTERN,
       smallIcon: 'ic_launcher',
       pressAction: {
         id: 'default',

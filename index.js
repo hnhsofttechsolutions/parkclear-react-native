@@ -3,14 +3,31 @@
  */
 
 import notifee, { EventType } from '@notifee/react-native';
-import messaging from '@react-native-firebase/messaging';
-import { AppRegistry } from 'react-native';
+import {
+  getMessaging,
+  setBackgroundMessageHandler,
+} from '@react-native-firebase/messaging';
+import { AppRegistry, Platform } from 'react-native';
 import App from './App';
 import { name as appName } from './app.json';
-import { displayNotification } from './src/utils/notification-service';
+import {
+  displayNotification,
+  setupNotificationChannel,
+} from './src/utils/notification-service';
 
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  await displayNotification(remoteMessage, 'background');
+if (Platform.OS === 'android') {
+  void setupNotificationChannel();
+}
+
+const messaging = getMessaging();
+
+setBackgroundMessageHandler(messaging, async remoteMessage => {
+  console.log('[FCM] background message', remoteMessage);
+  try {
+    await displayNotification(remoteMessage, 'background');
+  } catch (error) {
+    console.error('[FCM] background display failed', error);
+  }
 });
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {

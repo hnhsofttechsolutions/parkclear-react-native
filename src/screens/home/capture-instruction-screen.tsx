@@ -113,6 +113,8 @@ const CaptureInstructionScreen = ({ navigation, route }: any) => {
 
     const result = await uploadImage({ formData }).unwrap();
 
+    console.log('result in capture-instruction-screen', result);
+
     if (result?.status === true) {
       navigation.navigate(PATHS.Result, {
         data: result,

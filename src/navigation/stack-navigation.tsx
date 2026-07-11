@@ -7,6 +7,7 @@ import { APP_SCREENS, AUTH_SCREENS } from './mock/mock-screen';
 import { PATHS } from './paths';
 import { RootStackParamList } from './types';
 import { initRevenueCat } from '../utils/revenuecat-service';
+import { checkAppUpdate } from '../utils/app-update';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,6 +23,14 @@ const StackNavigation = () => {
     };
     oninitRevenueCat();
   }, [user?.id]);
+
+  useEffect(() => {
+    if (!splashDone) {
+      return;
+    }
+
+    void checkAppUpdate();
+  }, [splashDone]);
 
   if (!splashDone) {
     return <SplashScreen onComplete={() => setSplashDone(true)} />;

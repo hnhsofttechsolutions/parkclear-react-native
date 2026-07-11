@@ -35,8 +35,9 @@ export function buildFcmMessageWithIosSound(params: {
     },
     android: {
       notification: {
-        channel_id: 'parkclear_alerts',
+        channel_id: 'parkclear_alerts_v2',
         sound: 'noti_tune',
+        default_vibrate_timings: true,
       },
     },
   };
