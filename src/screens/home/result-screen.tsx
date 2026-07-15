@@ -1,7 +1,13 @@
 import { ArrowLeft, MessageSquare } from 'lucide-react-native';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Markdown from 'react-native-markdown-display';
 import Sound from 'react-native-sound';
@@ -170,6 +176,13 @@ const ResultScreen = ({ navigation, route }: ResultScreenProps) => {
 
             <Markdown style={markdownStyles}>{summarize_message}</Markdown>
 
+            {isResolve && (
+              <Text style={styles.disclaimer}>
+                *ParkClear helps with parking rules,{'\n'}we do not process
+                payments.
+              </Text>
+            )}
+
             {isResolve && isPaid && screen_name !== 'camera' && (
               <>
                 {has_arrow && left_end_time_iso && right_end_time_iso && (
@@ -327,6 +340,16 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 10,
+  },
+  disclaimer: {
+    marginTop: 4,
+    lineHeight: 24,
+    marginBottom: 20,
+    fontStyle: 'italic',
+    fontSize: 16,
+    color: Colors.white,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   actionsWrapper: {
     paddingBottom: 20,

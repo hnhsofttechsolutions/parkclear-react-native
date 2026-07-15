@@ -30,6 +30,8 @@ import { Colors } from '../utils/colors';
 import DeleteModal from './modals/delete-modal';
 import DrawerRow from './settings/drawer-row';
 import PageLoader from './ui/page-loader';
+import { CommonActions } from '@react-navigation/native';
+import { navigationRef } from '../navigation/RootNavigation';
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.82;
@@ -91,6 +93,21 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
   const navigateTo = (path: string) => {
     onClose();
     navigation.navigate(path);
+  };
+
+  const navigateHome = () => {
+    onClose();
+
+    if (!navigationRef.isReady()) {
+      return;
+    }
+
+    navigationRef.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: PATHS.Dashboard }],
+      }),
+    );
   };
 
   const handlerLogout = async () => {
@@ -158,7 +175,7 @@ export default function SideDrawer({ drawer, setDrawer, navigation }: any) {
                 <DrawerRow
                   icon={<HomeIcon color="white" size={25} />}
                   label="Home"
-                  onPress={onClose}
+                  onPress={navigateHome}
                 />
                 <DrawerRow
                   icon={<GalleryIcon width={25} height={25} />}
