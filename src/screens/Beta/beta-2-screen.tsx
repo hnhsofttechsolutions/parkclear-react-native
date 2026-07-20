@@ -1,35 +1,66 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { WebView } from 'react-native-webview';
 import { useDispatch, useSelector } from 'react-redux';
 import SafeAreaWrapper from '../../components/safe-area-wrapper';
 import SideDrawer from '../../components/side-drawer';
 import PageLoader from '../../components/ui/page-loader';
-import {
-  BETA_TABS,
-  BetaCustomTabBar,
-} from '../../navigation/beta-bottom-tabs';
+import { BETA_TABS, BetaCustomTabBar } from '../../navigation/beta-bottom-tabs';
 import { PATHS } from '../../navigation/paths';
 import { useScreenStatusMutation } from '../../store/api/uploadApi';
 import { setCredentials } from '../../store/slices/authSlice';
 import { RootState } from '../../store/store';
+import { Colors } from '../../utils/colors';
 import ActiveAlertScreen from '../active-alert-screen';
 import MyProfileScreen from '../my-profile-screen';
-import { Colors } from '../../utils/colors';
 
 const Tab = createBottomTabNavigator();
 const BETA_2_URL = 'https://street-sense-spark.lovable.app';
 
+const SCROLL_FIX = `
+(function() {
+  function enableScroll() {
+    document.querySelectorAll('[class*="overflow-y-auto"], [class*="fixed"][class*="inset-0"]').forEach(function(el) {
+      el.style.webkitOverflowScrolling = 'touch';
+      if (el.scrollHeight > el.clientHeight + 10) {
+        el.style.overflowY = 'auto';
+      }
+    });
+  }
+  enableScroll();
+  new MutationObserver(function() {
+    setTimeout(enableScroll, 100);
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+true;
+`;
+
 const Beta2WebContent = () => {
+  const webViewRef = useRef<WebView>(null);
+
+  const applyScrollFix = useCallback(() => {
+    webViewRef.current?.injectJavaScript(SCROLL_FIX);
+  }, []);
+
   return (
     <SafeAreaWrapper style={styles.safe} edges={['top']}>
       <WebView
+        ref={webViewRef}
         source={{ uri: BETA_2_URL }}
         style={styles.webview}
         startInLoadingState={true}
+        scrollEnabled={false}
+        nestedScrollEnabled={true}
+        onLoadEnd={applyScrollFix}
+        onNavigationStateChange={applyScrollFix}
+        autoManageStatusBarEnabled
+        bounces={false}
+        overScrollMode="never"
+        javaScriptEnabled
+        scalesPageToFit
       />
     </SafeAreaWrapper>
   );
@@ -113,7 +144,7 @@ const Beta2Screen = () => {
 export default Beta2Screen;
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.white },
+  safe: { flex: 1, backgroundColor: Colors.gradientStart },
   webview: { flex: 1 },
   emptyTab: {
     flex: 1,

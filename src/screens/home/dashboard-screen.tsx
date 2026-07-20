@@ -104,7 +104,10 @@ const DashboardScreen = ({ navigation }: any) => {
   return (
     <View style={styles.root}>
       <PageLoader visible={isStatusLoading} />
-      <StatusBar backgroundColor={Colors.gradientStart} />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={Colors.gradientStart}
+      />
       <LinearGradient
         colors={[Colors.gradientStart, Colors.darkBlue, Colors.darkBlue]}
         style={StyleSheet.absoluteFill}
